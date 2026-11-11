@@ -79,6 +79,7 @@ Protokollierung.
 | `ephemeris.py` | NASA-Bahnvorhersage (OEM) laden, prüfen, interpolieren, zwischenspeichern |
 | `vehicles.py` | Andockereignisse, Crew, Ereignisse und Starts aus Launch Library 2 |
 | `streams.py` | Laufende ISS-Livestreams von NASA (YouTube-Stream-Seite) und Sen (Schnittstelle von sen.com, sonst YouTube) ermitteln (`/__streams`), weil feste Video-Kennungen nach einiger Zeit privat werden |
+| `calib-panel.mjs` | Kalibrierfeld im Kamerafenster (Knopf Calibrate): Nullpunkte, Vorzeichen, Videoverzögerung und Kameraversatz am Livebild einstellen, Export/Import |
 | `cameras.mjs` | Außenkameras als Modell (anklickbar) und Kamerafenster: Livestream neben der Zwillingsansicht im Bildformat und Sichtfeld der gewählten Kamera, Überlagerung, Schwenk/Neigung/Zoom je Kamera (localStorage `iss.cams`), Stream-Auswahl mit Ausweichen bei gesperrten Videos |
 | `tools/export_viewer.mjs`, `tools/viewer_template.html` | Erzeugen `ISS_Model_Viewer_v1.3.html`: bauen das Modell wie die Seite, backen Geometrie, Materialien und Texturen ein und schreiben einen eigenständigen Viewer (Node.js) |
 | `tests/harness.mjs` | Gemeinsamer Aufbau aller JavaScript-Tests und des Viewer-Exports: lädt die Seite ohne WebGL in jsdom |
@@ -201,6 +202,7 @@ Ausführlich in [MODELL_UND_KALIBRIERUNG.md](MODELL_UND_KALIBRIERUNG.md).
 | `iss.graphs` | angeheftete Kanäle im Graphs-Panel |
 | `iss.cal.mss4` | gelernte MSS-Kalibrierung |
 | `iss.cal.trrj` | Drehsinn der Radiatorgelenke, falls die Prüfung im AUTOTRACK ihn korrigiert hat (v1.15) |
+| `iss.calib` | Kalibrierfeld: Videoverzögerung, Gelenk-Vorzeichen/-Offsets, Greifpunkt-Rollwinkel, Zusatzoffsets (v1.17) |
 | `iss.cams` | Kamerafenster: Schwenk, Neigung, Zoom und Kamerakopf je Kamera, gewählter Stream |
 | `iss.payloads` | was Canadarm2 hält und wo abgesetzte Nutzlasten stehen; zurücksetzen mit `ISS.resetPayloads()` in der Konsole |
 | `iss.ll2`, `iss.ll2.*` | Zwischenspeicher der LL2-Antworten, wenn ohne Launcher gearbeitet wird |

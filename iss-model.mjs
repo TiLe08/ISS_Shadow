@@ -444,6 +444,11 @@ export function placeMbsFixture(id, k) {
   f.position.set(...MBS_PDGF[id]); f.rotation.set(0, 0, -Math.PI / 2); f.rotateY(MBS_ROLLS[k & 7] * D2R); f.updateMatrix();
   f.userData.mbsCandidate = k;
 }
+// Rollwinkel eines MBS-Greifpunkts frei in Grad setzen (Kalibrierfeld); null = Kandidat k beibehalten.
+export function setMbsFixtureRoll(id, deg) {
+  const f = MODEL.anchors?.[id]; if (!f || deg == null || !isFinite(deg)) return;
+  f.position.set(...MBS_PDGF[id]); f.rotation.set(0, 0, -Math.PI / 2); f.rotateY(deg * D2R); f.updateMatrix();
+}
 
 /* ---------- Roboterarme ---------- */
 // Generischer Arm mit sieben Gelenken (Dextres Arme): Gliedlängen L, Seitenversatz O, Radien rh/rb,

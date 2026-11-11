@@ -14,6 +14,10 @@ Schwenk, Neigung, Zoom und die Frage, welche Kamera der Stream gerade zeigt, ste
 öffentlichen Telemetrie. Diese Werte stellt man im Fenster so ein, dass der Zwilling zum Livebild
 passt; sie werden je Kamera gespeichert (`localStorage iss.cams`).
 
+**Calibrate** öffnet das Kalibrierfeld (`calib-panel.mjs`, Beschreibung in
+`MODELL_UND_KALIBRIERUNG.md`): Videoverzögerung, Gelenk-Nullpunkte und ein Feinversatz der Kamera
+(`dx`/`dy`/`dz` in m entlang rechts/oben/hinten, `roll` in Grad), falls die Einbaulage nicht genau stimmt.
+
 ## Kameras und Einbaustellen
 
 | Kamera | Einbaustelle | Beleg | Lage im Modell |

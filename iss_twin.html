@@ -553,10 +553,11 @@ tr.fresh td.v{color:var(--ok)}
 <script type="module">
 import * as THREE from 'three';
 import { CollisionMonitor, radiatorTarget } from './model-checks.mjs';
-import { MODEL, MAT, setRenderStyle, setLabelFactory, buildStation, solarAngles, solarNormal, radiatorNormal, SSRMS_AX, DEXTRE_AX, MBS_IDS, MBS_PRIOR, placeMbsFixture } from './iss-model.mjs';
+import { MODEL, MAT, setRenderStyle, setLabelFactory, buildStation, solarAngles, solarNormal, radiatorNormal, SSRMS_AX, DEXTRE_AX, MBS_IDS, MBS_PRIOR, placeMbsFixture, setMbsFixtureRoll } from './iss-model.mjs';
 import { PlanetOverlay } from './planet-overlay.mjs';
 import { EarthTiles } from './earth-tiles.mjs';
 import { setupCameras } from './cameras.mjs';
+import { setupCalibPanel } from './calib-panel.mjs';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
@@ -621,7 +622,7 @@ const CAL = {
   bga1A: { sign: 1, offset: -135 }, bga3A: { sign: -1, offset: -135 }, bga3B: { sign: 1, offset: -135 }, bga1B: { sign: -1, offset: -135 },
   bga2A: { sign: -1, offset: 45 }, bga4A: { sign: 1, offset: 45 }, bga4B: { sign: -1, offset: 45 }, bga2B: { sign: 1, offset: 45 },
   ssrms:{ sign: 1, offset: 0 },
-  sgant:{ sign: 1, offset: 0 },
+  sgant:{ sign: 1, offset: 0 }, kuCross: { sign: 1, offset: 0 },
 };
 
 /* ---------- Telemetrie-Verzeichnis (öffentliche PUIs von NASA ISSLive) ---------- */
@@ -1188,7 +1189,7 @@ function mbsChoices() {
   return out;
 }
 // Setzt alle vier MBS-Greifpunkte auf ihren aktuell gewählten Roll-Kandidaten.
-function applyMssCal() { const ch = mbsChoices(); for (const id of MBS_IDS) placeMbsFixture(id, ch[id]); }
+function applyMssCal() { const ch = mbsChoices(); for (const id of MBS_IDS) { placeMbsFixture(id, ch[id]); setMbsFixtureRoll(id, CALIB.mbsRoll[id]); } }
 // Text für den Tooltip: woher die MSS-Kalibrierung der angezeigten Pose stammt.
 function mssCalLabel(J) {
   const id = J.baseLoc, parts = [];
@@ -1273,8 +1274,22 @@ function learnMssFromPose(raw) {
    (PDGF3, LEE A, Gelenke nach Hardware benannt) bleiben frei von der Station. Die Handgelenk-Vorzeichen
    sind damit nicht bestimmt (in der Pose vom 11.11. stehen alle drei auf 0) und bleiben +. */
 const SSRMS_CONV = { s: [1, 1, -1, 1, 1, 1, 1], o: [180, 0, 0, 0, 0, 0, 0] };
-// Telemetriewinkel a des Gelenks i -> Rig-Winkel in Radiant (über SSRMS_CONV).
-const ssrmsRig = (a, i) => (SSRMS_CONV.s[i] * a + SSRMS_CONV.o[i]) * D2R;
+/* Kalibrierfeld (calib-panel.mjs, v1.17): Abweichungen von den festen Konventionen, die Tim am Livebild
+   einstellt. Gespeichert in localStorage (iss.calib), exportierbar als JSON. Leer = Konventionen wie oben.
+   flip = Vorzeichen umkehren, off = zusätzlicher Nullpunkt in Grad, mbsRoll = Rollwinkel eines MBS-Greifpunkts
+   in Grad statt des gelernten Kandidaten, dextreRoll = Drehung von Dextre um die Achse seines Greifpunkts,
+   cal = zusätzlicher Offset zu CAL (SARJ, BGA, TRRJ, Ku), delay = Anzeige um so viele s verzögert
+   (Laufzeit des Videostreams). */
+const CALIB = (() => {
+  const d = { delay: 0, ssrms: { flip: Array(7).fill(false), off: Array(7).fill(0) }, dextre: { flip: Array(15).fill(false), off: Array(15).fill(0) },
+    mbsRoll: {}, dextreRoll: 0, cal: {} };
+  try { const st = JSON.parse(localStorage.getItem('iss.calib') || 'null'); if (st) for (const k of Object.keys(d)) if (st[k] != null) d[k] = st[k]; } catch (e) {}
+  return d;
+})();
+// Telemetriewinkel a des Gelenks i -> Rig-Winkel in Radiant (über SSRMS_CONV und das Kalibrierfeld).
+const ssrmsRig = (a, i) => ((CALIB.ssrms.flip[i] ? -1 : 1) * SSRMS_CONV.s[i] * a + SSRMS_CONV.o[i] + (+CALIB.ssrms.off[i] || 0)) * D2R;
+// Dextre: Telemetriewinkel des Kanals i (0-6 Arm 1, 7-13 Arm 2, 14 Körper) -> Modellwinkel in Radiant.
+const dextreRig = (a, i) => ((CALIB.dextre.flip[i] ? -1 : 1) * (a || 0) + (+CALIB.dextre.off[i] || 0)) * D2R;
 
 /* ================================================================
    SZENE: Renderer, LVLH-System, Erde, Sterne, Sonne
@@ -1998,8 +2013,8 @@ function updateOrbit(now) {
    ================================================================ */
 CAL.mt = { sign: 1, offset: 0 };
 // Kalibrierung anwenden: Telemetriewert -> Modellwinkel (cal) bzw. umgekehrt (uncal).
-const cal = (k, v) => CAL[k].sign * v + CAL[k].offset;
-const uncal = (k, v) => (v - CAL[k].offset) / CAL[k].sign;     // Modellwinkel -> Telemetriewert
+const cal = (k, v) => CAL[k].sign * v + CAL[k].offset + (+CALIB.cal[k] || 0);
+const uncal = (k, v) => (v - CAL[k].offset - (+CALIB.cal[k] || 0)) / CAL[k].sign;     // Modellwinkel -> Telemetriewert
 
 const ARM_NEUTRAL = [185, 192, -100, -156, -87, -110, 5];
 // Rohe Live-Gelenke und Lage aus der Telemetrie (kalibriert, ohne Vorhersage):
@@ -2016,7 +2031,7 @@ function liveJointsRaw() {
     // Ohne MSS-Telemetrie: die zuletzt geprüfte Konfiguration (20.10.2026, MBS PDGF3, LEE A).
     mt: clamp(cal('mt', tv('CSAMT000001', 287.02) / 100), -21, 21),
     arm: SSRMS_PUI.map((p, i) => cal('ssrms', tv(p, ARM_NEUTRAL[i]))),
-    sgant: cal('sgant', tv('Z1000014', 0)), kuCross:tv('Z1000015',0),
+    sgant: cal('sgant', tv('Z1000014', 0)), kuCross: cal('kuCross', tv('Z1000015', 0)),
     sband:['S1000004','S1000005','P1000004','P1000005'].map(p=>tv(p,0)),
     dextre:[...Array.from({length:7},(_,i)=>i+3),...Array.from({length:7},(_,i)=>i+11),20].map(i=>tv('CSASPDM'+String(i).padStart(4,'0'),0)),
     radDeploy:[1,1,1,1,1,1],pvDeploy:[1,1,1,1], baseLoc:tv('CSASSRMS002',11), baseEnd:tv('CSASSRMS003',0), dextreBase:tv('CSASPDM0002',NaN),
@@ -3200,6 +3215,7 @@ let lastFrame = performance.now(), lastUi = 0, lastAlt = 0;
 
 // Gelenkwinkel J auf das 3D-Modell übertragen: SARJ, BGA, TRRJ, Antennen, Transporter,
 // Canadarm2 (inkl. Wechsel der Basis), Dextre und deren Verankerung.
+const DEXTRE_UP = new THREE.Vector3(0, 1, 0);
 function applyJoints(J) {
   const P = MODEL.pivots;
   P.sarjP.rotation.y = solarAngles(J.sarjP,0).a; P.sarjS.rotation.y = solarAngles(J.sarjS,0).a;
@@ -3215,9 +3231,11 @@ function applyJoints(J) {
    const tip=J.dextreBase===19?(J.baseEnd===0?MODEL.armBase:MODEL.armTip):null;
    if(tip){if(m.parent!==tip){tip.add(m);m.quaternion.identity();}m.position.set(0,-3.9,0);}
    else if(f&&J.dextreBase!==J.baseLoc){if(m.parent!==f){f.add(m);m.position.set(0,0,0);m.quaternion.identity();}}
-   else if(m.parent!==MODEL.dextreDefault.parent){const d=MODEL.dextreDefault;d.parent.add(m);m.position.copy(d.position);m.quaternion.copy(d.quaternion);}}
-  MODEL.dextreBody.rotation.y=(J.dextre?.[14]||0)*D2R;
-  MODEL.dextre.forEach((joints,side)=>joints.forEach((joint,i)=>{joint.rotation[DEXTRE_AX[i]]=(J.dextre?.[side*7+i]||0)*D2R;}));
+   else if(m.parent!==MODEL.dextreDefault.parent){const d=MODEL.dextreDefault;d.parent.add(m);m.position.copy(d.position);m.quaternion.copy(d.quaternion);}
+   // Kalibrierfeld: Drehung um die Achse des Greifpunkts (+Y), nur am Greifpunkt oder am Arm.
+   if(m.parent!==MODEL.dextreDefault.parent)m.quaternion.setFromAxisAngle(DEXTRE_UP,(+CALIB.dextreRoll||0)*D2R);}
+  MODEL.dextreBody.rotation.y=dextreRig(J.dextre?.[14],14);
+  MODEL.dextre.forEach((joints,side)=>joints.forEach((joint,i)=>{joint.rotation[DEXTRE_AX[i]]=dextreRig(J.dextre?.[side*7+i],side*7+i);}));
   MODEL.radiators.forEach((panels,i)=>{
     const fold=Math.acos(clamp(J.radDeploy?.[i]??1,0,1));
     panels.forEach((h,j)=>h.rotation.y=(j?2*(j%2?-1:1):1)*fold);
@@ -3349,6 +3367,7 @@ function attitudeSource() {
 }
 let STOPPED = false;
 let EXTCAM = null;     // Außenkameras und Kamerafenster (cameras.mjs)
+let CALIB_UI = null;   // Kalibrierfeld (calib-panel.mjs)
 /* Bildzeit nach Abschnitt (Entwicklung: ISS.PERF.on = true; ISS.PERF.acc auslesen). */
 const PERF = { on: false, acc: {}, t: 0 };
 // Zeitmessung eines Abschnitts der Bildschleife (nur mit PERF.on).
@@ -3356,6 +3375,17 @@ const perf = k => { if (!PERF.on) return; const n = performance.now(); PERF.acc[
 // Bildschleife (requestAnimationFrame): Zeit, Bahn, Erde und Sonne, Gelenke und Lage aus der
 // jeweiligen Quelle, Kommandomodus-Schritt, Kalibrierung, Kollisionsprüfung, Besuchsfahrzeuge,
 // Abgasstrahlen, Rendern und die Aktualisierung aller Oberflächenblöcke.
+/* Anzeigeverzögerung (Kalibrierfeld): Der Livestream läuft der Telemetrie hinterher. Mit CALIB.delay > 0
+   zeigt der Zwilling die Pose von vor so vielen Sekunden, damit Zwilling und Video zusammenpassen.
+   Puffer: alle 250 ms eine Pose, höchstens 300 s. */
+const DELAY_BUF = [];
+function delayedJoints(J, nowP) {
+  const last = DELAY_BUF[DELAY_BUF.length - 1];
+  if (!last || nowP - last.t >= 250) { DELAY_BUF.push({ t: nowP, J: structuredClone(J) }); while (DELAY_BUF.length && nowP - DELAY_BUF[0].t > 301e3) DELAY_BUF.shift(); }
+  const d = (+CALIB.delay || 0) * 1000; if (d <= 0 || LINK.src === 'sim') return J;
+  let pick = null; for (const e of DELAY_BUF) { if (e.t <= nowP - d) pick = e; else break; }
+  return pick ? structuredClone(pick.J) : structuredClone(DELAY_BUF[0].J);
+}
 function frame(nowP) {
   if (STOPPED) return;
   requestAnimationFrame(frame);
@@ -3382,7 +3412,7 @@ function frame(nowP) {
   let J;
   if (CMD.active) {
     J = CMD.st;
-  } else J = liveJoints();
+  } else J = delayedJoints(liveJoints(), nowP);
   const q = J.q; S.att.quaternion.set(q[1], q[2], q[3], q[0]);
   D.ypr = q2ypr(...q);
   D.predicted = null;
@@ -3728,6 +3758,9 @@ function init() {
   setInterval(() => { try { linkWatchdog(); } catch (e) { console.error(e); } }, 2000);
   try { EXTCAM = setupCameras({ THREE, S, MODEL, t, onOpen: id => logEvent(t('Camera view: {0}', t(EXTCAM.list.find(c => c.id === id).name))) }); $('#camBtn').onclick = () => EXTCAM.open(); applyRender(); }
   catch (e) { console.error(e); logEvent('Cameras unavailable: ' + e.message, 'warn'); }
+  // Kalibrierfeld im Kamerafenster (calib-panel.mjs)
+  try { CALIB_UI = setupCalibPanel({ CALIB, CAL, SSRMS_CONV, EXTCAM, MBS_IDS, applyMssCal, t, logEvent, read: p => V(p), save: () => { try { localStorage.setItem('iss.calib', JSON.stringify(CALIB)); } catch (e) {} } }); }
+  catch (e) { console.error(e); }
   requestAnimationFrame(frame);
 }
 /* ---------- Sprache ---------- */
@@ -3765,7 +3798,7 @@ function initLauncher() {
   };
 }
 init();
-window.ISS = { get EXTCAM() { return EXTCAM; }, resetPayloads, PL, updatePayloads, placeMbsFixture, applyJoints, liveJoints, mssConvention, PERF, setLanguage, setVehicleEvents, refreshVehicles, VV, MSS_CAL, mbsChoices, liveJointsRaw, learnMssFromPose, gmstRad, propagate, S, MODEL, CMD, TM, ORB, CAL, LINK, NASA_ORBIT, ingest, updateOrbit, switchSource, enterCmd, exitCmd, commandVirtual, stepCmd, autotrack };    // Handle für die Entwicklerkonsole
+window.ISS = { get EXTCAM() { return EXTCAM; }, get CALIB_UI() { return CALIB_UI; }, CALIB, resetPayloads, PL, updatePayloads, placeMbsFixture, applyJoints, liveJoints, mssConvention, PERF, setLanguage, setVehicleEvents, refreshVehicles, VV, MSS_CAL, mbsChoices, liveJointsRaw, learnMssFromPose, gmstRad, propagate, S, MODEL, CMD, TM, ORB, CAL, LINK, NASA_ORBIT, ingest, updateOrbit, switchSource, enterCmd, exitCmd, commandVirtual, stepCmd, autotrack };    // Handle für die Entwicklerkonsole
 
 </script>
 </body>

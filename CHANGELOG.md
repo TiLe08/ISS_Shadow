@@ -18,6 +18,12 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 - Öffentliche Unterlagen zu Nullpunkten und Drehsinn der ISSLive-Kanäle gesucht: keine gefunden
   (Quellen in `docs/MODELL_UND_KALIBRIERUNG.md`). SARJ, BGA und Ku-Antenne bleiben wie kalibriert (Sonne bzw.
   TDRS); wenige Grad Abweichung der Solarflügel im Livebild erklärt vermutlich die Laufzeit des Videos (SARJ dreht etwa 4°/min), nicht geprüft.
+- **Kalibrierfeld** (`calib-panel.mjs`, Knopf **Calibrate** im Kamerafenster): Werte direkt an der
+  Überlagerung mit dem Livebild einstellen statt im Code raten. Videoverzögerung (Zwilling zeigt die
+  Telemetrie von vor n s), je Gelenk von Canadarm2 und Dextre Vorzeichen und Offset, Rollwinkel der
+  MBS-Greifpunkte, Drehung von Dextre an seinem Greifpunkt, Zusatzoffsets für SARJ, BGA, TRRJ und Ku,
+  Versatz und Rollen der gewählten Kamera. Gespeichert unter `iss.calib` (Kamera unter `iss.cams`),
+  Export/Import als JSON. Alle Werte stehen auf 0, bis man sie ändert; die eingebaute Kalibrierung bleibt.
 
 # v1.16: Livestreams geprüft, Sen über sen.com (11.11.)
 

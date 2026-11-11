@@ -147,6 +147,25 @@ die Station, also schließt jede Live-Pose die Hypothesen aus, unter denen sie k
 des MBS). Basis 19 („SSRMS TIP LEE“) heißt: Dextre hängt mit seinem oberen Greifpunkt (3,9 m über dem
 eigenen Fuß-LEE) am freien Ende von Canadarm2.
 
+## Kalibrierfeld (v1.17)
+
+Weil es keine öffentliche Festlegung der Nullpunkte gibt, lassen sich alle Konventionen im Browser
+nachstellen: Kamerafenster öffnen, **Overlay** einschalten, **Calibrate** drücken. Das Feld
+(`calib-panel.mjs`) schreibt in `CALIB` (localStorage `iss.calib`):
+
+| Feld | Wirkung |
+|---|---|
+| `delay` | der Zwilling zeigt die Telemetrie von vor `delay` s (Puffer `DELAY_BUF`, alle 250 ms, höchstens 300 s; nicht im Simulator) |
+| `ssrms.flip/off[i]` | Canadarm2, Gelenk SR..WR: Rig-Winkel = (−1 falls flip) · `SSRMS_CONV.s` · Telemetrie + `SSRMS_CONV.o` + off (`ssrmsRig`) |
+| `dextre.flip/off[i]` | Dextre, Kanäle CSASPDM0003-0009 (Arm 1), 0011-0017 (Arm 2), 0020 (Körper) (`dextreRig`) |
+| `mbsRoll[id]` | Rollwinkel des MBS-Greifpunkts in Grad, ersetzt den gelernten Kandidaten (`setMbsFixtureRoll`) |
+| `dextreRoll` | Drehung von Dextre um die Achse seines Greifpunkts, wenn Dextre nicht auf seinem Standardplatz steht |
+| `cal[k]` | Zusatzoffset zu `CAL[k]` (SARJ, BGA, TRRJ, SGANT, Ku) in `cal`/`uncal` |
+
+Der Kamerateil verschiebt die Zwillingskamera (`dx`, `dy`, `dz` in m, `roll` in Grad) und speichert in
+`iss.cams`. **Export** lädt alles als JSON herunter und kopiert es; gefundene Werte gehören danach in
+`SSRMS_CONV`, `MBS_PRIOR`, `CAL` bzw. `CAMERAS`, damit sie für alle gelten.
+
 ## Umsetzen von Canadarm2 im Kommandomodus
 
 Im Kommandomodus kann man Canadarm2 wie bei einem echten „walk-off“ an einen anderen Greifpunkt

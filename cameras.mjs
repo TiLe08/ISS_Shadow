@@ -266,6 +266,10 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     const { g, head } = byId[id], v = view(id);
     head.rotation.set(v.tilt * Math.PI / 180, -v.pan * Math.PI / 180, 0, 'YXZ'); head.updateWorldMatrix(true, false);
     out.matrixWorld.copy(head.matrixWorld); out.matrixWorld.decompose(out.position, out.quaternion, out.scale);
+    // Feinjustage aus dem Kalibrierfeld (calib-panel.mjs): Versatz in m entlang rechts/oben/hinten der Kamera,
+    // Rollen um die Blickachse. Die Einbaulagen sind Näherungen nach NASA-Beschreibung.
+    if (v.dx || v.dy || v.dz) { out.translateX(v.dx || 0); out.translateY(v.dy || 0); out.translateZ(v.dz || 0); }
+    if (v.roll) out.rotateZ(v.roll * Math.PI / 180);
     out.fov = v.fov; out.aspect = OPTICS[v.optic].aspect; out.updateProjectionMatrix(); out.updateMatrixWorld(true);
   }
   $('#camMain').onclick = () => {
@@ -308,5 +312,5 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     updateFrustum();
     $('#camCap').textContent = t('TWIN') + ' · ' + t(camOf(cur).name);
   }
-  return { open, close, tick, list: CAMERAS, pose, state: st, refreshStreams };
+  return { open, close, tick, list: CAMERAS, pose, state: st, refreshStreams, save, get current() { return cur; } };
 }
