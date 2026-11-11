@@ -199,7 +199,7 @@ Ausführlich in [MODELL_UND_KALIBRIERUNG.md](MODELL_UND_KALIBRIERUNG.md).
 | `iss.layout` | Spaltenbreiten, Kartenhöhe, eingeklappte Panels |
 | `iss.dash` | Dashboard-Layout |
 | `iss.graphs` | angeheftete Kanäle im Graphs-Panel |
-| `iss.cal.mss3` | gelernte MSS-Kalibrierung |
+| `iss.cal.mss4` | gelernte MSS-Kalibrierung |
 | `iss.cal.trrj` | Drehsinn der Radiatorgelenke, falls die Prüfung im AUTOTRACK ihn korrigiert hat (v1.15) |
 | `iss.cams` | Kamerafenster: Schwenk, Neigung, Zoom und Kamerakopf je Kamera, gewählter Stream |
 | `iss.payloads` | was Canadarm2 hält und wo abgesetzte Nutzlasten stehen; zurücksetzen mit `ISS.resetPayloads()` in der Konsole |

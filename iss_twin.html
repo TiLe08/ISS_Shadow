@@ -553,7 +553,7 @@ tr.fresh td.v{color:var(--ok)}
 <script type="module">
 import * as THREE from 'three';
 import { CollisionMonitor, radiatorTarget } from './model-checks.mjs';
-import { MODEL, MAT, setRenderStyle, setLabelFactory, buildStation, solarAngles, solarNormal, radiatorNormal, SSRMS_AX, DEXTRE_AX, MBS_IDS, placeMbsFixture } from './iss-model.mjs';
+import { MODEL, MAT, setRenderStyle, setLabelFactory, buildStation, solarAngles, solarNormal, radiatorNormal, SSRMS_AX, DEXTRE_AX, MBS_IDS, MBS_PRIOR, placeMbsFixture } from './iss-model.mjs';
 import { PlanetOverlay } from './planet-overlay.mjs';
 import { EarthTiles } from './earth-tiles.mjs';
 import { setupCameras } from './cameras.mjs';
@@ -1072,17 +1072,20 @@ function plMovables() {
 // Lage eines Objekts im Stationssystem setzen (Matrix relativ zu root).
 function plSetLocal(obj, m) { m.decompose(obj.position, obj.quaternion, new THREE.Vector3()); obj.updateMatrixWorld(true); }
 function plHome(obj) { const h = obj.userData.home; if (h) { obj.position.copy(h.p); obj.quaternion.copy(h.q); } }
+// Freies LEE des Arms: LEE B (MODEL.armTip), bei LEE A als Basis und Gelenken nach Hardware (baseEnd 0)
+// das LEE-B-Ende der Kette, also MODEL.armBase (siehe applyJoints).
+const plFree = J => J?.baseEnd === 0 ? MODEL.armBase : MODEL.armTip;
 // Objektlage (relativ zu root), bei der sein Greifpunkt mit dem System des freien LEE zusammenfällt.
-function plFollowTip(m) {
-  const root = MODEL.root; root.updateMatrixWorld(true); MODEL.armTip.updateMatrixWorld(true);
+function plFollowTip(m, J) {
+  const root = MODEL.root, free = plFree(J); root.updateMatrixWorld(true); free.updateMatrixWorld(true);
   m.obj.updateMatrixWorld(true);
   const fixRel = PL_M().copy(m.obj.matrixWorld).invert().multiply(m.fix.matrixWorld);
-  return PL_M().copy(root.matrixWorld).invert().multiply(MODEL.armTip.matrixWorld).multiply(fixRel.invert());
+  return PL_M().copy(root.matrixWorld).invert().multiply(free.matrixWorld).multiply(fixRel.invert());
 }
 // Welches Objekt beim Greifen am freien LEE hängt (siehe Regeln oben); null = nichts zu bewegen.
 function plChoose(J, now, list) {
   if (J.dextreBase === 19) return null;
-  const tip = new THREE.Vector3().setFromMatrixPosition(MODEL.armTip.matrixWorld);
+  const tip = new THREE.Vector3().setFromMatrixPosition(plFree(J).matrixWorld);
   for (const [id, f] of Object.entries(MODEL.anchors || {})) if (+id !== J.baseLoc && new THREE.Vector3().setFromMatrixPosition(f.matrixWorld).distanceTo(tip) < 0.5) return null;
   let best = null, bd = 1.0;
   for (const m of list) {
@@ -1121,7 +1124,7 @@ function updatePayloads(J, now) {
     PL.prev = tipSt;
   }
   for (const m of list) {
-    if (PL.st.held === m.key && live) { plSetLocal(m.obj, plFollowTip(m)); m.obj.visible = true; }
+    if (PL.st.held === m.key && live) { plSetLocal(m.obj, plFollowTip(m, J)); m.obj.visible = true; }
     else if (PL.st.away[m.key]) { plSetLocal(m.obj, PL_M().fromArray(PL.st.away[m.key])); m.obj.visible = true; }
     else { plHome(m.obj); if (m.key === 'unknown') m.obj.visible = false; }
   }
@@ -1161,24 +1164,26 @@ function buildISS() {
    Station, also schließt jede Live-Pose die Hypothesen aus, unter denen sie kollidieren würde.
    Jeder MBS-Greifpunkt hat 8 Roll-Kandidaten, die Konvention hat 2. Gewählt wird die Hypothese,
    die dem modellierten Vorwissen am nächsten liegt, unter allen, die noch mit jeder gesehenen
-   Pose vereinbar sind. Gespeichert in localStorage (iss.cal.mss3). Kontakt des Arms mit sich
+   Pose vereinbar sind. Gespeichert in localStorage (iss.cal.mss4; v1.17 verwirft die unter der alten Gelenkkonvention gesammelten Belege aus iss.cal.mss3). Kontakt des Arms mit sich
    selbst gilt nicht als Beleg. */
 const MSS_CAL = (() => {
   const fresh = () => Object.fromEntries(MBS_IDS.map(id => [id, { B: Array(8).fill(true), A: Array(8).fill(true) }]));
   const d = { conv: { B: true, A: true }, mbs: fresh(), poses: 0, conflicts: 0 };
   // v1.10: Greifpunktpositionen kommen aus dem IGOAL-Modell; gelernt wird nur der Rollwinkel. Ältere
   // gespeicherte Belege (iss.cal.mss2) wurden gegen die alte Anordnung gesammelt und werden verworfen.
-  try { localStorage.removeItem('iss.cal.mss2'); const st = JSON.parse(localStorage.getItem('iss.cal.mss3') || 'null'); if (st && st.mbs && st.conv) Object.assign(d, st); } catch (e) {}
+  try { localStorage.removeItem('iss.cal.mss2'); localStorage.removeItem('iss.cal.mss3'); const st = JSON.parse(localStorage.getItem('iss.cal.mss4') || 'null'); if (st && st.mbs && st.conv) Object.assign(d, st); } catch (e) {}
   return d;
 })();
 // Kalibrierung speichern (Fehler, etwa in privaten Fenstern, werden ignoriert).
-function saveMssCal() { try { localStorage.setItem('iss.cal.mss3', JSON.stringify(MSS_CAL)); } catch (e) {} }
-const mssConvention = () => MSS_CAL.conv.B ? 'B' : 'A';          // B = Gelenke vom Betriebsbasis-Ende aus benannt
+function saveMssCal() { try { localStorage.setItem('iss.cal.mss4', JSON.stringify(MSS_CAL)); } catch (e) {} }
+// B = Gelenke vom Betriebsbasis-Ende aus benannt, A = nach Hardware. v1.17: A ist das Vorwissen, weil mit der
+// neuen SP-Konvention nur A die Pose vom 19.10.2026 (LEE A an PDGF3) frei von der Station hält.
+const mssConvention = () => MSS_CAL.conv.A ? 'A' : 'B';
 function mbsChoices() {
   const conv = mssConvention(), out = {}, pref = MSS_CAL.pref || {};
   for (const id of MBS_IDS) {
     const alive = MSS_CAL.mbs[id][conv].map((v, k) => v ? k : -1).filter(k => k >= 0);
-    out[id] = pref[id] !== undefined && alive.includes(pref[id]) ? pref[id] : alive[0] ?? 0;
+    out[id] = pref[id] !== undefined && alive.includes(pref[id]) ? pref[id] : alive.includes(MBS_PRIOR[id]) ? MBS_PRIOR[id] : alive[0] ?? 0;
   }
   return out;
 }
@@ -1188,7 +1193,7 @@ function applyMssCal() { const ch = mbsChoices(); for (const id of MBS_IDS) plac
 function mssCalLabel(J) {
   const id = J.baseLoc, parts = [];
   if (MBS_IDS.includes(id)) { const n = MSS_CAL.mbs[id][mssConvention()].filter(Boolean).length; parts.push(`MBS fixture roll: ${n === 8 ? 'model prior (no live evidence yet)' : 'learned from live poses, ' + n + ' of 8 candidates left'}`); }
-  if (J.leeA) parts.push('LEE A base, joints named from the base' + (MSS_CAL.conv.A ? ' (not yet confirmed by live poses)' : ' (confirmed)'));
+  if (J.leeA || J.baseEnd === 0) parts.push(J.leeA ? 'LEE A base, joints named from the base (confirmed by live poses)' : 'LEE A base, joints named by hardware' + (MSS_CAL.conv.B ? ' (not yet confirmed by live poses)' : ' (confirmed)'));
   return parts.join(' · ');
 }
 /* Beleg: Ist die rohe Live-Pose (wie die Telemetrie sie liefert) unter jedem noch offenen Paar
@@ -1257,8 +1262,17 @@ function learnMssFromPose(raw) {
    IGOAL-Geometrie: alle Vorzeichen +, Nicken und Gieren null = gestreckter Arm, Offset des
    Schulter-Rollgelenks 180° im hier verwendeten Rig-System, Gelenke vom Betriebsbasis-Ende aus
    benannt. Das ist die kollisionsfreie Wahl mit dem größten Abstand in beiden Posen; mehrere
-   andere Kombinationen sind ebenfalls kollisionsfrei, sie bleibt also eine dokumentierte Annahme. */
-const SSRMS_CONV = { s: [1, 1, 1, 1, 1, 1, 1], o: [180, 0, 0, 0, 0, 0, 0] };
+   andere Kombinationen sind ebenfalls kollisionsfrei, sie bleibt also eine dokumentierte Annahme.
+   v1.17: Vorzeichen des Schulter-Nickgelenks (SP) umgekehrt, Greifpunkt MBS PDGF3 mit Roll 0° statt 135°.
+   Beleg: Livebilder CP8 vom 10.11.2026 13:26 UTC und 11.11.2026 14:10 UTC mit der aufgezeichneten Pose
+   (Basis MBS PDGF3, LEE B; SR 245,0 SY 52,0 SP −77,0 EP −115,0 WP/WY/WR 0). Im Livebild steht der Arm als
+   umgekehrtes V: Ellbogen oben, Schulter am MBS, Handgelenk mit freiem LEE auf MBS-Höhe zur Kamera hin.
+   Unter allen 1024 Kombinationen (Vorzeichen SR..EP, Halbdrehung SR/SY/SP, 8 Rollwinkel) trifft diese den
+   Ellbogen auf 4 % und das Handgelenk auf 1,3 % der Bildbreite; die alte Wahl legte den Ellbogen hoch über
+   den Kamerakopf und den Unterarm waagrecht nach Steuerbord. Die Posen vom 14.10. (Node 2) und 19.10.
+   (PDGF3, LEE A, Gelenke nach Hardware benannt) bleiben frei von der Station. Die Handgelenk-Vorzeichen
+   sind damit nicht bestimmt (in der Pose vom 11.11. stehen alle drei auf 0) und bleiben +. */
+const SSRMS_CONV = { s: [1, 1, -1, 1, 1, 1, 1], o: [180, 0, 0, 0, 0, 0, 0] };
 // Telemetriewinkel a des Gelenks i -> Rig-Winkel in Radiant (über SSRMS_CONV).
 const ssrmsRig = (a, i) => (SSRMS_CONV.s[i] * a + SSRMS_CONV.o[i]) * D2R;
 

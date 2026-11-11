@@ -109,6 +109,20 @@ Node 2; 20.10.2026, MBS PDGF3, Basis LEE A): alle Vorzeichen +, Offset des Schul
 Gelenke vom Betriebsbasis-Ende aus benannt. Das ist die kollisionsfreie Wahl mit dem größten Abstand
 in beiden Posen. Sie bleibt eine dokumentierte Annahme.
 
+**v1.17: an Livebildern geprüft.** Öffentliche Unterlagen zu Nullpunkt und Drehsinn der ISSLive-Kanäle
+gibt es nicht (gesucht in NASA NTRS, Robotik-Flugbüchern, ISS Mimic und Fachartikeln zur Kinematik).
+Belegt ist nur, dass EP = 0 der gestreckte Arm ist (Singularität bei −15° < EP < +15°, STS-133 Robotics
+Book). Deshalb wurde die Konvention an zwei Livebildern von CP8 (10.11.2026 13:26 UTC, 11.11.2026 14:10 UTC)
+mit der dazu aufgezeichneten Pose geprüft (Basis MBS PDGF3, LEE B; SR 245,0 SY 52,0 SP −77,0 EP −115,0,
+Handgelenk 0). Im Bild steht der Arm als umgekehrtes V: Ellbogen oben, Schulter am MBS, freies LEE auf
+MBS-Höhe zur Kamera hin. Getestet wurden 1024 Kombinationen (Vorzeichen SR..EP, Halbdrehung SR/SY/SP,
+8 Rollwinkel des Greifpunkts). Gewählt: **Vorzeichen SP −1**, sonst wie bisher, Rollwinkel PDGF3 0°.
+Ellbogen auf 4 %, Handgelenk auf 1,3 % der Bildbreite getroffen. Die alte Wahl legte den Unterarm
+waagrecht über die Kamera. Die Posen vom 14.10. (Node 2) und 19.10. (PDGF3, LEE A) bleiben frei, die vom
+19.10. aber nur mit Gelenknamen nach Hardware (Konvention A, jetzt Vorwissen). Die Handgelenk-Vorzeichen
+bleiben offen (in der geprüften Pose stehen sie auf 0). Dextre auf PDGF2: Rollwinkel 90° statt 135°,
+damit Arm und Dextre in beiden Posen frei bleiben (Annahme).
+
 **Greifpunkte.** Jeder Greifpunkt (PDGF) hat ein System: Ursprung auf der Greiffläche, +Y aus dem
 Greifpunkt heraus. „Gegriffen“ heißt: Das System des freien LEE fällt mit dem Greifpunktsystem
 zusammen. Die vier MBS-Greifpunkte (IDs 7, 8, 11, 13 = PDGF1-4) sitzen an den Ecken der Vorderseite
@@ -120,13 +134,13 @@ Wie jeder MBS-Greifpunkt um seine Achse gedreht ist und wie ISSLive die Gelenke 
 die Basis ist, ist nicht veröffentlicht. Das Programm **lernt** beides: Der echte Arm durchdringt nie
 die Station, also schließt jede Live-Pose die Hypothesen aus, unter denen sie kollidieren würde.
 
-- Kandidaten: 8 Rollwinkel je MBS-Greifpunkt (Vorwissen 135°), 2 Gelenkkonventionen.
+- Kandidaten: 8 Rollwinkel je MBS-Greifpunkt (Vorwissen `MBS_PRIOR`: PDGF3 0°, PDGF2 90°, sonst 135°), 2 Gelenkkonventionen (Vorwissen A).
 - Gelernt wird nur aus einer vollständigen Pose, die 3 s stabil war (der Schnappschuss kommt in
   Paketen; eine halbe Pose würde richtige Hypothesen ausschließen).
 - Kontakt Arm ↔ Dextre ist kein Beleg (einer der beiden Rollwinkel kann noch falsch sein); er dient
   nur zur Auswahl unter den Überlebenden.
 - Gewählt wird die Hypothese, die dem Vorwissen am nächsten liegt.
-- Gespeichert im Browser unter `iss.cal.mss3` (Funktionen `learnMssFromPose`, `placeMbsFixture`,
+- Gespeichert im Browser unter `iss.cal.mss4` (v1.17 verwirft die alten Belege aus `iss.cal.mss3`) (Funktionen `learnMssFromPose`, `placeMbsFixture`,
   `mssCalLabel`). Der Tooltip der Pose zeigt den Stand.
 
 **Dextre** steht auf dem Greifpunkt, den `CSASPDM0002` meldet (ohne diesen Kanal auf der Zenitseite

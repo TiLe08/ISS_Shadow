@@ -2,6 +2,23 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.17: Canadarm2 an Livebildern ausgerichtet (11.11.)
+
+- **Canadarm2 stand falsch.** Mit der am 11.11.2026 aufgezeichneten Pose (MBS PDGF3, LEE B) zeigte der
+  Zwilling den Unterarm waagrecht hoch über CP8, im Livebild steht der Arm als umgekehrtes V. Vorzeichen
+  des Schulter-Nickgelenks (SP) umgekehrt, Rollwinkel von MBS PDGF3 0° statt 135° (`MBS_PRIOR`).
+  Geprüft an CP8 vom 10.11. 13:26 UTC und 11.11. 14:10 UTC gegen 1024 Kombinationen; die Posen vom 14.10.
+  und 19.10. bleiben frei von der Station.
+- Gelenkkonvention bei LEE A als Basis: Vorwissen jetzt „nach Hardware benannt“ (A), weil nur sie die
+  Pose vom 19.10. mit der neuen SP-Konvention frei hält. Dextre auf PDGF2: Vorwissen 90° (Annahme).
+- Greifen bei LEE A als Basis: Das freie Ende ist dann LEE B (`armBase`); Nutzlasten folgen jetzt diesem
+  Ende statt des festsitzenden.
+- Gelernte MSS-Kalibrierung unter `iss.cal.mss4`; die unter der alten Konvention gesammelten Belege
+  (`iss.cal.mss3`) werden verworfen.
+- Öffentliche Unterlagen zu Nullpunkten und Drehsinn der ISSLive-Kanäle gesucht: keine gefunden
+  (Quellen in `docs/MODELL_UND_KALIBRIERUNG.md`). SARJ, BGA und Ku-Antenne bleiben wie kalibriert (Sonne bzw.
+  TDRS); wenige Grad Abweichung der Solarflügel im Livebild erklärt vermutlich die Laufzeit des Videos (SARJ dreht etwa 4°/min), nicht geprüft.
+
 # v1.16: Livestreams geprüft, Sen über sen.com (11.11.)
 
 - Laufende Streams am 11.11.2026 im Browser geprüft: NASA `M3HKLzjvKPc` (Stationsbild 4:3, wechselnde
