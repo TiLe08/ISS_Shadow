@@ -13,8 +13,8 @@ npm install                                   # einmalig: three, jsdom
 npm test                                      # alle JavaScript-Suiten nacheinander
 ```
 
-Node.js wird nur für die Entwicklertests gebraucht, nicht für den Betrieb des Dashboards. Stand v1.15:
-13 JavaScript-Testdateien (15 PASS-Zeilen) und 24 Python-Tests, alle bestanden (Stand v1.16).
+Node.js wird nur für die Entwicklertests gebraucht, nicht für den Betrieb des Dashboards. Stand v1.17:
+14 JavaScript-Testdateien (16 PASS-Zeilen) und 24 Python-Tests, alle bestanden.
 `tests/test_feed_integration.py` dauert etwa eine Minute und wird übersprungen, wenn `aiohttp`,
 `amqtt`, `paho-mqtt` oder `lightstreamer-client-lib` fehlen.
 
@@ -35,6 +35,7 @@ Kommentaren.) Aufruf: `const { t, w } = await loadTwin(['buildISS', 'MODEL', …
 | `test_virtual_station.js` | `virtual-station.js`: 12 Düsen mit Kraft/Moment/Treibstoff, ausgeglichene Paare, freies Driften, Pulse, leerer Tank, Ziel-Brennvorgang, Batterie-Energiebilanz, Stromausfall, Kreiselgrenzen, Luftschleuse, Lebenserhaltung, Langlauf; Erfassung aus 30° auf allen Achsen, Erholung aus dem Taumeln, Entladen der Kreisel; Lage der Triebwerke am Heck von Swesda (drei Teile, je eine PASS-Zeile) |
 | `test_model.mjs` | 3D-Modell und DOM: beide Arm-Anker, Mitbewegung mit dem MT, feste Verankerung, gezeichnete Normalen von Solarflügeln und Radiatoren (zwei volle simulierte Umläufe vom Telemetriestrom bis zum Mesh), Halbdrehung der äußeren Träger, Quaternion-Führung, Radiator-Schwenkbereich ohne Lücken und Kollisionen, Falten, Kollisionsdetektor, Kachelgeometrie, abgeschaltete Antriebe, Regler, Pause, echte DOM-Handler |
 | `test_ui.mjs` | Oberfläche: NASA-Rückfall, Erholung der Live-Daten, Ablauf, Isolierung der Kommando-Abspaltung, Simulator, fehlende Pose, Kanal-Browser, Dashboard, Widgets jeder Kanalart, Dekodierung (u. a. Stationsmodus 16 = EXTERNAL OPS, russischer Modus 7 = STANDARD, 3 = REBOOST), Sprachen (gleiche Schlüssel in allen Tabellen) |
+| `test_window_frame.mjs` | `window-frame.mjs`: Verschieben im sichtbaren Bereich, Größenänderung an allen acht Kanten und Ecken mit Mindestgröße und fester Gegenkante, Zurückholen nach Verkleinern des Browserfensters |
 | `test_planet.mjs` | `earth-tiles.mjs`: keine überlappenden Detailstufen bei Kacheln, die in beliebiger Reihenfolge eintreffen; begrenzter Cache; Wechsel Foto/Radar |
 | `test_regression.mjs` | Regressionen seit v1.0: exakte Überlappungsprüfung, Nutzlastplätze S3/P3, Dextre/ERA, vollständige Alpha/Beta-Abstandsprüfung, Live-Schnappschuss 14.10. (Konventionen gegen die Sonne, Einheiten, Zeitstempel-Epoche), Autotrack-Daten 20.10. (SARJ-Ziel, jeder Flügel zur Sonne, Ku auf TDRS), Live-Robotik 19.10., Zeitbasis (fremde Epoche, eingefrorener Schnappschuss, PC-Uhr 45 s daneben), Watchdog, späte Callbacks gestoppter Clients, **bei NASA eingefrorener Feed** (21.10.: Uhr 11,5 h zurück → STALE ab dem ersten Schnappschuss), Vorhersage über Datenlücken, Besuchsfahrzeuge (LL2, Manifest, russische Flags), Dashboard-Struktur, Trenner, Kommandofenster, zerlegter Zeitraffer |
 | `test_arm_walk.mjs` | Umsetzen von Canadarm2 über die echten Schaltflächen: Plan → koordinierte Bewegung → Greifen → Lösen, von Node 2 (LEE B) zu MBS PDGF3 (LEE A) und zurück, Sperre bei beidseitigem Greifen, kein Sprung beim Basiswechsel, Ablehnung unerreichbarer Ziele |

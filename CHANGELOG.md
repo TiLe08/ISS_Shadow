@@ -2,6 +2,19 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.17: Kamerafenster verschiebbar und in der Größe änderbar (11.11.)
+
+- Das Kamerafenster lässt sich an der Kopfleiste verschieben und an allen vier Kanten und Ecken in der
+  Größe ändern (Mindestgröße 420 × 240 px). Bisher stand es fest unten rechts; die Größenänderung des
+  Browsers (`resize: both`) ging nur an der unteren rechten Ecke und brach ab, sobald der Zeiger über
+  das YouTube-Video lief.
+- Neues Modul `window-frame.mjs`: Ziehen mit Zeigererfassung, eingebettete iframes bekommen während des
+  Ziehens keine Mausereignisse. Lage und Größe stehen in `localStorage iss.camwin`; das Fenster bleibt
+  beim Verkleinern des Browserfensters und beim erneuten Öffnen im sichtbaren Bereich. Doppelklick auf
+  eine freie Stelle der Kopfleiste stellt Lage und Größe zurück.
+- Test `tests/test_window_frame.mjs` (Rechnung ohne Browser); im Browser geprüft: Verschieben,
+  Größenänderung über zwei Ecken, Wiederherstellen nach Neuladen, Zurücksetzen.
+
 # v1.16: Livestreams geprüft, Sen über sen.com (11.11.)
 
 - Laufende Streams am 11.11.2026 im Browser geprüft: NASA `M3HKLzjvKPc` (Stationsbild 4:3, wechselnde

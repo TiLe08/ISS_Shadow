@@ -18,11 +18,13 @@
 //     240 km × 180 km Bodenabdeckung, das sind etwa 32° × 24°. Für Horizont- und Andockkamera gibt es
 //     keine veröffentlichten Winkel; die Werte hier sind Schätzungen und so gekennzeichnet.
 // Was nicht in der Telemetrie steht: Schwenk, Neigung, Zoom und welche Kamera der Stream gerade zeigt.
-// Das stellt der Nutzer im Fenster ein (gespeichert unter localStorage iss.cams).
+// Das stellt der Nutzer im Fenster ein (gespeichert unter localStorage iss.cams). Das Fenster lässt sich
+// verschieben und in der Größe ändern (window-frame.mjs, gespeichert unter localStorage iss.camwin).
 //
 // Schnittstelle: setupCameras({ THREE, S, MODEL, t, onOpen }) baut die Modelle und gibt
 // { open(id), close(), tick(now), list } zurück. Die Kameramodelle sind Bauteile des Stationsmodells
 // (MODEL.parts) und folgen damit der gewählten Darstellung.
+import { makeFrame } from './window-frame.mjs';
 import { box, cyl } from './iss-model.mjs';
 
 // Optiken: Bildformat und senkrechtes Sichtfeld (Grad) am kurzen und langen Zoomende.
@@ -103,7 +105,7 @@ export function streamChoices(found = []) {
 export function fitRect(aspect, w, h) { const ww = Math.min(w, h * aspect), hh = ww / aspect; return [(w - ww) / 2, (h - hh) / 2, ww, hh]; }
 
 const CSS = `
-#camWin{position:fixed;right:14px;bottom:14px;width:min(1180px,calc(100vw - 28px));height:min(540px,calc(100vh - 90px));z-index:60;background:var(--panel-solid,#09131c);border:1px solid var(--line2,#1f4458);display:flex;flex-direction:column;resize:both;overflow:hidden;font:12px var(--f-mono,monospace);color:var(--fg,#cfe6f2)}
+#camWin{position:fixed;right:14px;bottom:14px;width:min(1180px,calc(100vw - 28px));height:min(540px,calc(100vh - 90px));min-width:320px;min-height:200px;z-index:60;background:var(--panel-solid,#09131c);border:1px solid var(--line2,#1f4458);display:flex;flex-direction:column;overflow:visible;font:12px var(--f-mono,monospace);color:var(--fg,#cfe6f2)}
 #camWin[hidden]{display:none}
 #camWin header{display:flex;gap:8px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--line,#16303f);flex-wrap:wrap}
 #camWin header b{font:600 12px var(--f-disp,sans-serif);letter-spacing:.08em;text-transform:uppercase;color:var(--acc,#3fe0ff)}
@@ -111,7 +113,7 @@ const CSS = `
 #camWin input[type=text]{flex:1;min-width:160px;max-width:none}
 #camWin button,#camWin a.btn{background:transparent;color:inherit;border:1px solid var(--line2,#1f4458);font:inherit;padding:2px 8px;cursor:pointer;text-decoration:none}
 #camWin button[aria-pressed=true]{border-color:var(--acc,#3fe0ff);color:var(--acc,#3fe0ff)}
-#camWin .panes{flex:1;display:flex;min-height:0;position:relative}
+#camWin .panes{flex:1;display:flex;min-height:0;position:relative;overflow:hidden}
 #camWin .pane{flex:1;position:relative;min-width:0;background:#000;border-right:1px solid var(--line,#16303f);overflow:hidden}
 #camWin .pane:last-child{border-right:0}
 #camWin iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -183,6 +185,9 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     <button id="camReset">${t('Reset camera')}</button><span class="note" id="camNote"></span></div>`;
   document.body.append(win);
   const $ = s => win.querySelector(s);
+  // Fenster an der Kopfleiste verschieben, an Kanten und Ecken in der Größe ändern (window-frame.mjs).
+  const frame = makeFrame(win, $('header'), { key: 'iss.camwin', minW: 420, minH: 240 });
+  $('header').title = t('Drag to move, drag an edge or corner to resize, double-click to reset');
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true }); renderer.setPixelRatio(1);
   renderer.outputColorSpace = S.renderer.outputColorSpace; renderer.toneMapping = S.renderer.toneMapping; renderer.toneMappingExposure = S.renderer.toneMappingExposure;
   $('.twin').append(renderer.domElement);
@@ -244,7 +249,7 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     } catch (e) {}
   }
   function open(id) {
-    cur = id || cur || 'cp8'; win.hidden = false; syncCtl();
+    cur = id || cur || 'cp8'; win.hidden = false; frame.fit(); syncCtl();
     if (!$('#camFrame').getAttribute('src')) setStream(st.stream || choices[0]?.url || '');
     onOpen?.(cur);
   }
