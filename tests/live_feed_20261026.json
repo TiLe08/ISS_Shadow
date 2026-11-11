@@ -1,0 +1,11 @@
+{
+ "_note": "Messung des öffentlichen NASA-ISSLive-Datenstroms (Lightstreamer, Adapter ISSLIVE) im Browser, 26.10.2026 ca. 08:55 UTC, 114 s. Dient als Beleg für die Annahmen in iss_twin.html (TIMEBASE, feedLagH) und bridge.py (TimeBase, feed_lag_h).",
+ "time_channel": {
+  "updates": 2756, "rate_per_s": 24,
+  "gap_s": {"p50": 0.023, "p90": 0.046, "p99": 0.162, "max": 16.7},
+  "lag_s_dec31_epoch": {"min": 3.3, "p50": 4.8, "p99": 5.6, "max": 9.1},
+  "status_class_runs": [{"class": "24", "from_s": 0.0, "to_s": 10.5}, {"class": "9", "at_s": 13.3}, {"class": "24", "from_s": 30.0, "to_s": 114.4}]
+ },
+ "snapshot": {"USLAB000086": 1, "RUSSEG000001": 7, "USLAB000012": 5, "RUSSEG000021": 1, "RUSSEG000025": 6, "CSASSRMS002": 13, "S4000002": 0, "S4000002_timestamp": 0},
+ "earlier_21_oct": {"time_channel_timestamp_h": 7057.047477, "observed_utc": "2026-10-21T12:30Z", "updates_in_300_s": 0, "status_class": "24", "interpretation": "Feed auf NASA-Seite eingefroren seit ca. 01:03 UTC (31.-Dez.-Epoche)"}
+}

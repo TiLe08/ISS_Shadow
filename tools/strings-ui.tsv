@@ -1,0 +1,370 @@
+Live|Live|En vivo|Прямой|Direct|ライブ
+Sim|Sim|Sim|Сим|Sim|シム
+Mirror|Spiegel|Espejo|Зеркало|Miroir|ミラー
+Command|Befehl|Mando|Команды|Commande|コマンド
+Dashboard|Dashboard|Panel|Панель|Tableau de bord|ダッシュボード
+Channels|Kanäle|Canales|Каналы|Canaux|チャンネル
+Log CSV|Log CSV|Registro CSV|Журнал CSV|Journal CSV|ログCSV
+Setup|Einstellungen|Ajustes|Настройки|Réglages|設定
+Exit|Beenden|Salir|Выход|Quitter|終了
+Help|Hilfe|Ayuda|Справка|Aide|ヘルプ
+Link|Verbindung|Enlace|Связь|Liaison|リンク
+Signal|Signal|Señal|Сигнал|Signal|信号
+NASA feed|NASA-Feed|Fuente NASA|Поток NASA|Flux NASA|NASAフィード
+Orbit waiting|Orbit ausstehend|Órbita pendiente|Орбита ожидается|Orbite en attente|軌道待機中
+Telemetry source|Telemetriequelle|Fuente de telemetría|Источник телеметрии|Source de télémétrie|テレメトリ源
+Operating mode|Betriebsart|Modo de operación|Режим работы|Mode de fonctionnement|運用モード
+Direct Lightstreamer feed (ISSLIVE)|Direkter Lightstreamer-Feed (ISSLIVE)|Fuente Lightstreamer directa (ISSLIVE)|Прямой поток Lightstreamer (ISSLIVE)|Flux Lightstreamer direct (ISSLIVE)|Lightstreamer直接接続 (ISSLIVE)
+Via MQTT broker fed by bridge.py|Über den MQTT-Broker, gespeist von bridge.py|A través del broker MQTT alimentado por bridge.py|Через MQTT-брокер от bridge.py|Via le broker MQTT alimenté par bridge.py|bridge.pyが供給するMQTTブローカー経由
+Offline simulator|Offline-Simulator|Simulador sin conexión|Автономный симулятор|Simulateur hors ligne|オフラインシミュレーター
+Digital-shadow mode: the model mirrors telemetry|Digitaler Schatten: das Modell spiegelt die Telemetrie|Modo sombra digital: el modelo refleja la telemetría|Цифровая тень: модель повторяет телеметрию|Mode ombre numérique : le modèle reflète la télémétrie|デジタルシャドウ：モデルがテレメトリを反映
+Fork a virtual ISS and command it|Eine virtuelle ISS abzweigen und steuern|Crear una ISS virtual y comandarla|Создать виртуальную МКС и управлять ею|Créer une ISS virtuelle et la commander|仮想ISSを分岐して操作
+Day of year|Tag des Jahres|Día del año|День года|Jour de l'année|通算日
+Your own dashboard: groups of channel widgets, the 3D view, the ground track and panels|Eigenes Dashboard: Gruppen von Kanal-Widgets, 3D-Ansicht, Bodenspur und Panels|Tu propio panel: grupos de widgets de canales, la vista 3D, la traza terrestre y paneles|Своя панель: группы виджетов каналов, 3D-вид, трасса и панели|Votre tableau de bord : groupes de widgets, vue 3D, trace au sol et panneaux|自分用ダッシュボード：チャンネルウィジェットのグループ、3D表示、地上軌跡、パネル
+Search every public telemetry channel, graph it or add it to the dashboard|Alle öffentlichen Telemetriekanäle durchsuchen, als Graph zeigen oder zum Dashboard hinzufügen|Buscar cualquier canal público de telemetría, graficarlo o añadirlo al panel|Поиск по всем открытым каналам телеметрии, график или добавление на панель|Rechercher tout canal public, le tracer ou l'ajouter au tableau de bord|公開テレメトリチャンネルを検索し、グラフ化やダッシュボード追加
+Download recorded process data as CSV|Aufgezeichnete Prozessdaten als CSV herunterladen|Descargar los datos registrados en CSV|Скачать записанные данные в CSV|Télécharger les données enregistrées en CSV|記録データをCSVでダウンロード
+Connection, language and display settings|Verbindung, Sprache und Anzeige|Conexión, idioma y visualización|Подключение, язык и отображение|Connexion, langue et affichage|接続・言語・表示の設定
+Quick guide and keyboard shortcuts (?)|Kurzanleitung und Tastenkürzel (?)|Guía rápida y atajos de teclado (?)|Краткое руководство и горячие клавиши (?)|Guide rapide et raccourcis clavier (?)|クイックガイドとショートカット (?)
+Stop the broker, bridge and web server|Broker, Bridge und Webserver beenden|Detener broker, puente y servidor web|Остановить брокер, мост и веб-сервер|Arrêter le broker, le pont et le serveur web|ブローカー・ブリッジ・Webサーバーを停止
+Camera|Kamera|Cámara|Камера|Caméra|カメラ
+Iso|Iso|Iso|Изо|Iso|等角
+Zenith|Zenit|Cénit|Зенит|Zénith|天頂
+Fwd|Vorn|Frente|Вперёд|Avant|前方
+Stbd|Stb|Estr|Правый|Trib|右舷
+Orbit|Orbit|Órbita|Орбита|Orbite|軌道
+Isometric view|Isometrische Ansicht|Vista isométrica|Изометрический вид|Vue isométrique|等角図
+Look down from zenith, forward up|Blick vom Zenit nach unten, vorn oben|Vista desde el cénit, frente arriba|Вид сверху из зенита, вперёд вверх|Vue du zénith, avant en haut|天頂から見下ろす（前方が上）
+Look aft from ahead of the station|Blick nach hinten von vor der Station|Mirar hacia popa desde delante de la estación|Взгляд назад спереди станции|Regard vers l'arrière depuis l'avant|ステーション前方から後方を見る
+Look from starboard|Blick von Steuerbord|Mirar desde estribor|Вид с правого борта|Vue depuis tribord|右舷側から見る
+Zoom out to orbit scale|Auf Orbitmaßstab herauszoomen|Alejar a escala orbital|Отдалить до масштаба орбиты|Dézoomer à l'échelle orbitale|軌道スケールにズームアウト
+Display|Anzeige|Visualización|Вид|Affichage|表示
+Rendering, Earth map and overlays|Darstellung, Erdkarte und Einblendungen|Renderizado, mapa terrestre y capas|Отрисовка, карта Земли и слои|Rendu, carte terrestre et superpositions|描画・地球マップ・オーバーレイ
+Station|Station|Estación|Станция|Station|ステーション
+Earth|Erde|Tierra|Земля|Terre|地球
+Overlays|Einblendungen|Capas|Слои|Superpositions|オーバーレイ
+Render style|Darstellungsart|Estilo de render|Стиль отрисовки|Style de rendu|描画スタイル
+Holo|Holo|Holo|Голо|Holo|ホロ
+Solid|Massiv|Sólido|Твёрдый|Solide|ソリッド
+Hologram wireframe|Hologramm-Drahtgitter|Hologramas alámbricos|Голографический каркас|Fil de fer holographique|ホログラム風ワイヤーフレーム
+Lit solid surfaces|Beleuchtete Oberflächen|Superficies sólidas iluminadas|Освещённые поверхности|Surfaces pleines éclairées|陰影付きソリッド面
+Planet map|Planetenkarte|Mapa del planeta|Карта планеты|Carte de la planète|惑星マップ
+Earth photo|Erdfoto|Foto de la Tierra|Фото Земли|Photo de la Terre|地球写真
+Earth radar|Erdradar|Radar terrestre|Радар Земли|Radar terrestre|地球レーダー
+Earth labels|Ortsnamen|Etiquetas|Подписи Земли|Noms de lieux|地名
+NASA Blue Marble imagery|NASA-Blue-Marble-Bilder|Imágenes Blue Marble de la NASA|Снимки NASA Blue Marble|Images Blue Marble de la NASA|NASAブルーマーブル画像
+Coastlines and borders in the skin colour|Küsten und Grenzen in der Skin-Farbe|Costas y fronteras en el color del tema|Береговые линии и границы в цвете темы|Côtes et frontières dans la couleur du thème|スキン色の海岸線と国境
+Place names on the globe|Ortsnamen auf dem Globus|Nombres de lugares en el globo|Названия мест на глобусе|Noms de lieux sur le globe|地球上の地名
+ISS labels|ISS-Beschriftung|Etiquetas ISS|Подписи МКС|Étiquettes ISS|ISSラベル
+Axes|Achsen|Ejes|Оси|Axes|座標軸
+Sun|Sonne|Sol|Солнце|Soleil|太陽
+Module and vehicle names|Modul- und Fahrzeugnamen|Nombres de módulos y naves|Названия модулей и кораблей|Noms des modules et véhicules|モジュール名・機体名
+Body axes: +X velocity, +Y starboard, +Z nadir|Körperachsen: +X Flugrichtung, +Y Steuerbord, +Z Nadir|Ejes del cuerpo: +X velocidad, +Y estribor, +Z nadir|Связанные оси: +X скорость, +Y правый борт, +Z надир|Axes du corps : +X vitesse, +Y tribord, +Z nadir|機体軸：+X進行方向、+Y右舷、+Z天底
+Direction to the Sun|Richtung zur Sonne|Dirección al Sol|Направление на Солнце|Direction du Soleil|太陽方向
+Sunlit|Sonnenlicht|Iluminado|Освещено|Éclairé|日照
+Eclipse|Finsternis|Eclipse|Тень|Éclipse|日陰
+Mirroring|Spiegelung|Reflejando|Зеркалирование|Miroir|ミラー中
+Command mode · virtual ISS only|Befehlsmodus · nur virtuelle ISS|Modo de mando · solo ISS virtual|Режим команд · только виртуальная МКС|Mode commande · ISS virtuelle uniquement|コマンドモード · 仮想ISSのみ
+Ground track|Bodenspur|Traza terrestre|Наземная трасса|Trace au sol|地上軌跡
+Resize left panel column|Linke Spalte in der Breite ändern|Cambiar ancho de la columna izquierda|Изменить ширину левой колонки|Redimensionner la colonne gauche|左列の幅を変更
+Resize right panel column|Rechte Spalte in der Breite ändern|Cambiar ancho de la columna derecha|Изменить ширину правой колонки|Redimensionner la colonne droite|右列の幅を変更
+Resize ground-track map|Bodenspurkarte in der Höhe ändern|Cambiar tamaño del mapa|Изменить размер карты трассы|Redimensionner la carte|地上軌跡マップのサイズ変更
+Drag to resize · double-click to reset|Ziehen zum Ändern · Doppelklick setzt zurück|Arrastra para cambiar · doble clic para restablecer|Тяните для изменения · двойной щелчок: сброс|Glisser pour redimensionner · double-clic pour réinitialiser|ドラッグでサイズ変更・ダブルクリックでリセット
+Channel browser|Kanal-Browser|Explorador de canales|Обозреватель каналов|Explorateur de canaux|チャンネルブラウザー
+Close|Schließen|Cerrar|Закрыть|Fermer|閉じる
+Search: name, PUI, description…|Suche: Name, PUI, Beschreibung…|Buscar: nombre, PUI, descripción…|Поиск: имя, PUI, описание…|Recherche : nom, PUI, description…|検索：名前・PUI・説明…
+Search channels|Kanäle durchsuchen|Buscar canales|Поиск каналов|Rechercher des canaux|チャンネル検索
+Subsystem|Subsystem|Subsistema|Подсистема|Sous-système|サブシステム
+Sort|Sortierung|Orden|Сортировка|Tri|並べ替え
+Sort: subsystem|Sortierung: Subsystem|Orden: subsistema|Сортировка: подсистема|Tri : sous-système|並べ替え：サブシステム
+Sort: name|Sortierung: Name|Orden: nombre|Сортировка: имя|Tri : nom|並べ替え：名前
+Sort: PUI|Sortierung: PUI|Orden: PUI|Сортировка: PUI|Tri : PUI|並べ替え：PUI
+Sort: most recent|Sortierung: neueste zuerst|Orden: más recientes|Сортировка: свежие|Tri : plus récents|並べ替え：新しい順
+received only|nur empfangene|solo recibidos|только полученные|reçus uniquement|受信済みのみ
+in Graphs only|nur in Graphen|solo en gráficos|только в графиках|dans Graphiques uniquement|グラフ登録のみ
+Channel|Kanal|Canal|Канал|Canal|チャンネル
+Value|Wert|Valor|Значение|Valeur|値
+Age|Alter|Antigüedad|Возраст|Âge|経過
+Add a view or panel|Ansicht oder Panel hinzufügen|Añadir vista o panel|Добавить вид или панель|Ajouter une vue ou un panneau|ビューまたはパネルを追加
++ Channel|+ Kanal|+ Canal|+ Канал|+ Canal|+ チャンネル
++ Group|+ Gruppe|+ Grupo|+ Группа|+ Groupe|+ グループ
++ Add view…|+ Ansicht hinzufügen…|+ Añadir vista…|+ Добавить вид…|+ Ajouter une vue…|+ ビューを追加…
+Pick channels in the channel browser|Kanäle im Kanal-Browser auswählen|Elegir canales en el explorador|Выбрать каналы в обозревателе|Choisir des canaux dans l'explorateur|チャンネルブラウザーで選択
+Click a widget for its options. Edit layout: drag widgets and groups, change display and size, rename groups.|Widget anklicken für Optionen. Layout bearbeiten: Widgets und Gruppen ziehen, Anzeige und Größe ändern, Gruppen umbenennen.|Haz clic en un widget para ver sus opciones. Editar diseño: arrastra widgets y grupos, cambia visualización y tamaño, renombra grupos.|Щёлкните по виджету для действий. Правка макета: перетаскивайте виджеты и группы, меняйте вид и размер, переименовывайте группы.|Cliquez sur un widget pour ses options. Modifier la disposition : glisser widgets et groupes, changer l'affichage et la taille, renommer les groupes.|ウィジェットをクリックで操作。レイアウト編集：ウィジェットとグループのドラッグ、表示とサイズ変更、名前変更。
+Edit layout|Layout bearbeiten|Editar diseño|Правка макета|Modifier la disposition|レイアウト編集
+Done|Fertig|Listo|Готово|Terminé|完了
+Reset|Zurücksetzen|Restablecer|Сброс|Réinitialiser|リセット
+Back to console|Zurück zur Konsole|Volver a la consola|Назад к консоли|Retour à la console|コンソールに戻る
+Quick guide|Kurzanleitung|Guía rápida|Краткое руководство|Guide rapide|クイックガイド
+The console mirrors the real ISS from NASA's public telemetry. The 3D station, the ground track and the side panels update live.|Die Konsole spiegelt die echte ISS anhand der öffentlichen NASA-Telemetrie. 3D-Station, Bodenspur und Seitenpanels werden live aktualisiert.|La consola refleja la ISS real a partir de la telemetría pública de la NASA. La estación 3D, la traza y los paneles laterales se actualizan en vivo.|Консоль повторяет настоящую МКС по открытой телеметрии NASA. 3D-станция, трасса и боковые панели обновляются в реальном времени.|La console reflète l'ISS réelle à partir de la télémétrie publique de la NASA. La station 3D, la trace au sol et les panneaux latéraux se mettent à jour en direct.|NASAの公開テレメトリから実際のISSを再現します。3Dステーション、地上軌跡、サイドパネルはリアルタイムで更新されます。
+Click any widget, value or chip in the side panels to graph it, add it to the dashboard or open it in the channel browser.|Ein Widget, einen Wert oder ein Feld in den Seitenpanels anklicken, um es als Graph zu zeigen, ins Dashboard zu übernehmen oder im Kanal-Browser zu öffnen.|Haz clic en cualquier widget, valor o etiqueta de los paneles laterales para graficarlo, añadirlo al panel u abrirlo en el explorador.|Щёлкните по любому виджету, значению или метке в боковых панелях, чтобы построить график, добавить на панель или открыть в обозревателе.|Cliquez sur un widget, une valeur ou une pastille des panneaux latéraux pour le tracer, l'ajouter au tableau de bord ou l'ouvrir dans l'explorateur.|サイドパネルのウィジェット・値・チップをクリックすると、グラフ化、ダッシュボード追加、ブラウザーで表示ができます。
+Searches all 337 public channels and shows a description and a 3 h trend for each.|Durchsucht alle 337 öffentlichen Kanäle und zeigt Beschreibung und 3-h-Verlauf.|Busca en los 337 canales públicos y muestra una descripción y la tendencia de 3 h de cada uno.|Поиск по всем 337 открытым каналам с описанием и трендом за 3 ч.|Recherche parmi les 337 canaux publics, avec description et tendance sur 3 h.|公開337チャンネルを検索し、説明と3時間の推移を表示します。
+Your own layout: groups of widgets (value, graph, bar, gauge, dial, state), the 3D view, the ground track and any panel. Use Edit layout to drag, resize and rename.|Eigenes Layout: Widget-Gruppen (Wert, Graph, Balken, Anzeige, Skala, Zustand), 3D-Ansicht, Bodenspur und beliebige Panels. Mit „Layout bearbeiten“ ziehen, Größe ändern, umbenennen.|Tu propio diseño: grupos de widgets (valor, gráfico, barra, indicador, dial, estado), la vista 3D, la traza y cualquier panel. Usa Editar diseño para mover, redimensionar y renombrar.|Свой макет: группы виджетов (значение, график, шкала, индикатор, циферблат, состояние), 3D-вид, трасса и любые панели. В режиме правки: перетаскивание, размер, имена.|Votre disposition : groupes de widgets (valeur, graphique, barre, jauge, cadran, état), vue 3D, trace au sol et tout panneau. « Modifier la disposition » pour déplacer, redimensionner et renommer.|自分のレイアウト：ウィジェット（値・グラフ・バー・ゲージ・ダイヤル・状態）のグループ、3D表示、地上軌跡、任意のパネル。レイアウト編集で移動・サイズ変更・名前変更。
+Forks a virtual ISS you can steer. The real station is never commanded.|Zweigt eine virtuelle, steuerbare ISS ab. Die echte Station wird nie kommandiert.|Crea una ISS virtual que puedes manejar. La estación real nunca recibe órdenes.|Создаёт виртуальную МКС для управления. Настоящей станции команды не отправляются.|Crée une ISS virtuelle pilotable. La station réelle n'est jamais commandée.|操作できる仮想ISSを分岐します。実機には一切コマンドを送りません。
+Layout|Layout|Diseño|Макет|Disposition|レイアウト
+Panel headers collapse and expand. Drag the thin lines between areas to resize them.|Panel-Kopfzeilen klappen ein und aus. Die dünnen Linien zwischen Bereichen ziehen, um die Größe zu ändern.|Las cabeceras de los paneles se pliegan y despliegan. Arrastra las líneas finas entre zonas para cambiar su tamaño.|Заголовки панелей сворачиваются и разворачиваются. Тяните тонкие линии между областями для изменения размера.|Les en-têtes de panneaux se replient et se déplient. Faites glisser les fines lignes entre zones pour les redimensionner.|パネル見出しで折りたたみ・展開。領域間の細線をドラッグしてサイズ変更。
+Keyboard|Tastatur|Teclado|Клавиатура|Clavier|キーボード
+Dashboard on / off|Dashboard ein / aus|Panel sí / no|Панель вкл / выкл|Tableau de bord on / off|ダッシュボード切替
+This guide|Diese Anleitung|Esta guía|Это руководство|Ce guide|このガイド
+Close menus and windows|Menüs und Fenster schließen|Cerrar menús y ventanas|Закрыть меню и окна|Fermer menus et fenêtres|メニューとウィンドウを閉じる
+Lightstreamer|Lightstreamer|Lightstreamer|Lightstreamer|Lightstreamer|Lightstreamer
+Adapter set|Adapter-Set|Conjunto de adaptadores|Набор адаптеров|Jeu d'adaptateurs|アダプターセット
+MQTT (WebSocket)|MQTT (WebSocket)|MQTT (WebSocket)|MQTT (WebSocket)|MQTT (WebSocket)|MQTT (WebSocket)
+Topic root|Topic-Wurzel|Raíz de tema|Корень топика|Racine du sujet|トピックのルート
+Operator|Operator|Operador|Оператор|Opérateur|オペレーター
+Reset panel sizes|Panelgrößen zurücksetzen|Restablecer tamaños|Сбросить размеры панелей|Réinitialiser les tailles|パネルサイズをリセット
+Drag the thin lines between panels, the map's top edge and the command window's left edge to resize.|Zum Ändern der Größe die dünnen Linien zwischen den Panels, die Oberkante der Karte und den linken Rand des Befehlsfensters ziehen.|Arrastra las líneas finas entre paneles, el borde superior del mapa y el borde izquierdo de la ventana de mando para cambiar tamaños.|Для изменения размеров тяните тонкие линии между панелями, верхний край карты и левый край окна команд.|Faites glisser les fines lignes entre panneaux, le bord supérieur de la carte et le bord gauche de la fenêtre de commande pour redimensionner.|パネル間の細線、マップ上端、コマンド窓の左端をドラッグしてサイズ変更。
+Language|Sprache|Idioma|Язык|Langue|言語
+Skin|Skin|Tema|Тема|Thème|スキン
+Holo cyan|Holo-Cyan|Holo cian|Голубая голограмма|Holo cyan|ホロシアン
+Amber|Bernstein|Ámbar|Янтарь|Ambre|アンバー
+Phosphor|Phosphor|Fósforo|Люминофор|Phosphore|フォスファー
+MQTT is the normal mode: the start file runs the broker and the telemetry bridge in the background. LIVE connects the browser straight to NASA's feed (no logging, no command acknowledgement). NASA orbit predictions are fetched independently by the launcher in both MQTT and Live modes. Orbit labels distinguish predictions from measurements. Hover the orbit badge for the NASA product date and validity. Commands are only sent in MQTT mode.|MQTT ist der Normalbetrieb: die Startdatei betreibt Broker und Telemetrie-Bridge im Hintergrund. LIVE verbindet den Browser direkt mit dem NASA-Feed (ohne Aufzeichnung, ohne Befehlsquittung). NASA-Bahnvorhersagen holt der Launcher in beiden Modi selbst. Bahnangaben unterscheiden Vorhersage und Messung. Über dem Orbit-Feld stehen Datum und Gültigkeit des NASA-Produkts. Befehle werden nur im MQTT-Modus gesendet.|MQTT es el modo normal: el archivo de inicio ejecuta el broker y el puente de telemetría en segundo plano. LIVE conecta el navegador directamente a la fuente de la NASA (sin registro ni acuse de órdenes). El lanzador obtiene las predicciones orbitales de la NASA en ambos modos. Las etiquetas distinguen predicciones y mediciones. Pasa el cursor sobre la órbita para ver fecha y validez del producto NASA. Las órdenes solo se envían en modo MQTT.|MQTT: обычный режим: файл запуска держит брокер и мост телеметрии в фоне. LIVE подключает браузер напрямую к потоку NASA (без записи и подтверждения команд). Прогнозы орбиты NASA загрузчик получает в обоих режимах. Подписи различают прогноз и измерение. Наведите на значок орбиты для даты и срока действия продукта NASA. Команды отправляются только в режиме MQTT.|MQTT est le mode normal : le fichier de démarrage fait tourner le broker et le pont de télémétrie en arrière-plan. LIVE relie le navigateur directement au flux de la NASA (sans enregistrement ni accusé de commande). Le lanceur récupère les prévisions d'orbite NASA dans les deux modes. Les libellés distinguent prévision et mesure. Survolez le badge d'orbite pour la date et la validité du produit NASA. Les commandes ne sont envoyées qu'en mode MQTT.|MQTTが通常モードです。起動ファイルがブローカーとテレメトリブリッジをバックグラウンドで動かします。LIVEはブラウザーをNASAフィードに直接接続します（記録・コマンド応答なし）。NASAの軌道予測はどちらのモードでもランチャーが取得します。軌道表示は予測と計測を区別します。軌道バッジにカーソルを置くとNASA製品の日付と有効期間が表示されます。コマンドはMQTTモードでのみ送信されます。
+Orbit|Orbit|Órbita|Орбита|Orbite|軌道
+Altitude (geodetic)|Höhe (geodätisch)|Altitud (geodésica)|Высота (геодезическая)|Altitude (géodésique)|高度（測地）
+Inertial speed|Inertialgeschwindigkeit|Velocidad inercial|Инерциальная скорость|Vitesse inertielle|慣性速度
+Lat|Breite|Lat|Шир|Lat|緯度
+Lon|Länge|Lon|Долг|Lon|経度
+Apogee|Apogäum|Apogeo|Апогей|Apogée|遠地点
+Perigee|Perigäum|Perigeo|Перигей|Périgée|近地点
+Incl|Inkl|Incl|Накл|Incl|傾斜
+Period|Periode|Período|Период|Période|周期
+Solar β angle|Solarer β-Winkel|Ángulo β solar|Угол β Солнца|Angle β solaire|太陽β角
+Lighting|Beleuchtung|Iluminación|Освещение|Éclairage|照明
+State vector|Zustandsvektor|Vector de estado|Вектор состояния|Vecteur d'état|状態ベクトル
+derived|abgeleitet|derivado|вычислено|dérivé|算出
+SUNLIT|SONNE|AL SOL|НА СОЛНЦЕ|ÉCLAIRÉ|日照
+ECLIPSE|SCHATTEN|ECLIPSE|В ТЕНИ|ÉCLIPSE|日陰
+UNAVAILABLE|NICHT VERFÜGBAR|NO DISPONIBLE|НЕДОСТУПНО|INDISPONIBLE|利用不可
+GNC|GNC|GNC|СУД|GNC|GNC
+US GNC mode|US-GNC-Modus|Modo GNC de EE. UU.|Режим СУД США|Mode GNC US|米国GNCモード
+Station mode|Stationsmodus|Modo de la estación|Режим станции|Mode de la station|ステーションモード
+Yaw|Gieren|Guiñada|Рыскание|Lacet|ヨー
+Pitch|Nicken|Cabeceo|Тангаж|Tangage|ピッチ
+Roll|Rollen|Alabeo|Крен|Roulis|ロール
+Ref|Ref|Ref|Опора|Réf|基準
+Body rate ω|Drehrate ω|Velocidad angular ω|Угловая скорость ω|Vitesse angulaire ω|角速度 ω
+Att. error|Lagefehler|Error de actitud|Ошибка ориентации|Erreur d'attitude|姿勢誤差
+Control moment gyros|Drallstellkreisel|Giroscopios de momento de control|Силовые гироскопы|Gyroscopes à moment de contrôle|コントロールモーメントジャイロ
+CMG momentum|CMG-Drehimpuls|Momento de los CMG|Момент СГК|Moment des CMG|CMG角運動量
+Thrusters|Triebwerke|Propulsores|Двигатели|Propulseurs|スラスター
+Station mass|Stationsmasse|Masa de la estación|Масса станции|Masse de la station|ステーション質量
+GPS 1 / 2|GPS 1 / 2|GPS 1 / 2|GPS 1 / 2|GPS 1 / 2|GPS 1 / 2
+FIRING (virtual)|ZÜNDET (virtuell)|DISPARANDO (virtual)|РАБОТАЮТ (вирт.)|EN POUSSÉE (virtuel)|噴射中（仮想）
+REBOOST (station mode)|BAHNANHEBUNG (Stationsmodus)|REIMPULSO (modo estación)|КОРРЕКЦИЯ ОРБИТЫ (режим станции)|REHAUSSE (mode station)|リブースト（ステーションモード）
+RS THRUSTER ATT. CTRL|RS-TRIEBWERKSLAGEREGELUNG|CONTROL DE ACTITUD CON PROPULSORES RS|ОРИЕНТАЦИЯ ДВИГАТЕЛЯМИ РС|CONTRÔLE D'ATTITUDE PAR PROPULSEURS RS|ロシア区画スラスター姿勢制御
+IDLE (virtual)|BEREIT (virtuell)|INACTIVO (virtual)|ПРОСТОЙ (вирт.)|AU REPOS (virtuel)|待機（仮想）
+ASSIST AVAILABLE · IDLE|UNTERSTÜTZUNG BEREIT · INAKTIV|ASISTENCIA DISPONIBLE · INACTIVO|ПОДДЕРЖКА ДОСТУПНА · ПРОСТОЙ|ASSISTANCE DISPONIBLE · AU REPOS|アシスト可能・待機
+DESAT INHIBITED|ENTSÄTTIGUNG GESPERRT|DESATURACIÓN INHIBIDA|РАЗГРУЗКА ЗАПРЕЩЕНА|DÉSATURATION INHIBÉE|デサチュレーション禁止
+DESAT ENABLED|ENTSÄTTIGUNG FREI|DESATURACIÓN HABILITADA|РАЗГРУЗКА РАЗРЕШЕНА|DÉSATURATION ACTIVÉE|デサチュレーション許可
+Power|Energie|Energía|Электропитание|Énergie|電力
+SARJ port|SARJ backbord|SARJ babor|SARJ левый|SARJ bâbord|SARJ左舷
+SARJ stbd|SARJ steuerbord|SARJ estribor|SARJ правый|SARJ tribord|SARJ右舷
+Mode P|Modus BB|Modo B|Режим Л|Mode B|モード左
+Mode S|Modus SB|Modo E|Режим П|Mode T|モード右
+Array channels · β gimbal / V / A|Solarkanäle · β-Kardan / V / A|Canales de paneles · cardán β / V / A|Каналы батарей · β-привод / В / А|Canaux des panneaux · cardan β / V / A|アレイチャンネル・β軸／V／A
+USOS array power|USOS-Solarleistung|Potencia de paneles USOS|Мощность батарей USOS|Puissance des panneaux USOS|USOSアレイ電力
+Model array Sun incidence|Modell: Sonneneinfall auf Solarflächen|Modelo: incidencia solar en paneles|Модель: падение Солнца на батареи|Modèle : incidence solaire des panneaux|モデル：アレイ太陽入射
+Mean cosine between the eight modeled solar faces and the computed Sun direction. Autotracking arrays read close to 1.|Mittlerer Kosinus zwischen den acht modellierten Solarflächen und der berechneten Sonnenrichtung. Nachgeführte Flügel liegen nahe 1.|Coseno medio entre las ocho caras solares modeladas y la dirección solar calculada. Los paneles en seguimiento marcan cerca de 1.|Средний косинус между восемью моделируемыми панелями и рассчитанным направлением на Солнце. При слежении близок к 1.|Cosinus moyen entre les huit faces solaires modélisées et la direction calculée du Soleil. Proche de 1 en suivi automatique.|8枚のモデル化された太陽面と計算した太陽方向の平均コサイン。自動追尾中は1に近い値。
+No reading|Kein Messwert|Sin lectura|Нет данных|Aucune mesure|測定値なし
+Below 151.5 V: battery discharge (eclipse)|Unter 151,5 V: Batterieentladung (Schatten)|Por debajo de 151,5 V: descarga de baterías (eclipse)|Ниже 151,5 В: разряд батарей (тень)|Sous 151,5 V : décharge des batteries (éclipse)|151.5 V未満：バッテリー放電（日陰）
+Above 160 V: batteries charged|Über 160 V: Batterien geladen|Por encima de 160 V: baterías cargadas|Выше 160 В: батареи заряжены|Au-dessus de 160 V : batteries chargées|160 V超：バッテリー満充電
+151.5-160 V: illuminated, charging|151,5-160 V: beleuchtet, lädt|151,5-160 V: iluminado, cargando|151,5-160 В: освещено, заряд|151,5-160 V : éclairé, en charge|151.5-160 V：日照・充電中
+Array current is not published in NASA’s public feed (always 0, never updated)|Der Solarstrom wird im öffentlichen NASA-Feed nicht veröffentlicht (immer 0, nie aktualisiert)|La corriente de los paneles no se publica en la fuente pública de la NASA (siempre 0, nunca se actualiza)|Ток батарей не публикуется в открытом потоке NASA (всегда 0, не обновляется)|Le courant des panneaux n'est pas publié dans le flux public de la NASA (toujours 0, jamais mis à jour)|アレイ電流はNASA公開フィードで配信されていません（常に0、更新なし）
+eclipse|Schatten|eclipse|тень|éclipse|日陰
+partial|teilweise|parcial|частично|partiel|一部
+Robotics|Robotik|Robótica|Робототехника|Robotique|ロボティクス
+MT position|MT-Position|Posición del MT|Положение МТ|Position du MT|MT位置
+MT worksite|MT-Arbeitsplatz|Puesto del MT|Рабочая точка МТ|Poste du MT|MT作業位置
+SSRMS base|SSRMS-Basis|Base del SSRMS|База SSRMS|Base du SSRMS|SSRMS基部
+Tip LEE|LEE am Ende|LEE de punta|Концевой LEE|LEE d'extrémité|先端LEE
+Thermal|Thermik|Térmico|Терморегулирование|Thermique|熱制御
+TRRJ port|TRRJ backbord|TRRJ babor|TRRJ левый|TRRJ bâbord|TRRJ左舷
+TRRJ stbd|TRRJ steuerbord|TRRJ estribor|TRRJ правый|TRRJ tribord|TRRJ右舷
+Radiator pointing awaits an orbit and pose.|Radiatorausrichtung wartet auf Orbit und Lage.|La orientación de radiadores espera una órbita y una pose.|Ориентация радиаторов ждёт орбиту и положение.|L'orientation des radiateurs attend une orbite et une pose.|ラジエーター向きは軌道と姿勢を待っています。
+External loops A (S1) / B (P1)|Externe Kreisläufe A (S1) / B (P1)|Circuitos externos A (S1) / B (P1)|Внешние контуры A (S1) / B (P1)|Boucles externes A (S1) / B (P1)|外部ループA (S1)／B (P1)
+Flow A|Durchfluss A|Caudal A|Расход A|Débit A|流量A
+Flow B|Durchfluss B|Caudal B|Расход B|Débit B|流量B
+Press A|Druck A|Presión A|Давление A|Pression A|圧力A
+Press B|Druck B|Presión B|Давление B|Pression B|圧力B
+Temp A|Temp. A|Temp. A|Темп. A|Temp. A|温度A
+Temp B|Temp. B|Temp. B|Темп. B|Temp. B|温度B
+Graphs|Graphen|Gráficos|Графики|Graphiques|グラフ
+Graph window|Graph-Zeitfenster|Ventana del gráfico|Окно графика|Fenêtre du graphique|グラフ期間
+Life support|Lebenserhaltung|Soporte vital|Жизнеобеспечение|Support vie|生命維持
+Urine tank (UPA WSTA)|Urintank (UPA WSTA)|Tanque de orina (UPA WSTA)|Бак мочи (UPA WSTA)|Réservoir d'urine (UPA WSTA)|尿タンク（UPA WSTA）
+Waste water tank|Abwassertank|Tanque de aguas residuales|Бак сточной воды|Réservoir d'eaux usées|排水タンク
+Water storage|Wasservorrat|Reserva de agua|Запас воды|Réserve d'eau|貯水量
+Atmosphere · Node 3 / Lab|Atmosphäre · Node 3 / Lab|Atmósfera · Node 3 / Lab|Атмосфера · Node 3 / Lab|Atmosphère · Node 3 / Lab|大気・Node 3／Lab
+Cabin pressure (Lab)|Kabinendruck (Lab)|Presión de cabina (Lab)|Давление в кабине (Lab)|Pression cabine (Lab)|キャビン圧（Lab）
+O2 generation|O2-Erzeugung|Generación de O2|Выработка O2|Production d'O2|O2生成
+UPA / WPA state|UPA / WPA-Zustand|Estado UPA / WPA|Состояние UPA / WPA|État UPA / WPA|UPA／WPA状態
+raw|roh|bruto|сырое|brut|生値
+Airlock & EVA|Luftschleuse & EVA|Esclusa y EVA|Шлюз и ВКД|Sas et EVA|エアロック・船外活動
+Crewlock pressure|Druck Crewlock|Presión del crewlock|Давление в шлюзе|Pression du sas équipage|クルーロック圧力
+Docking|Andocken|Atraque|Стыковка|Amarrage|ドッキング
+RS mode|RS-Modus|Modo RS|Режим РС|Mode RS|ロシア区画モード
+Kurs range / rate|Kurs Abstand / Rate|Kurs distancia / velocidad|Курс дальность / скорость|Kurs distance / vitesse|Kurs距離／速度
+SUDN attitude mode|SUDN-Lagemodus|Modo de actitud SUDN|Режим СУДН|Mode d'attitude SUDN|SUDN姿勢モード
+Visiting vehicles|Besuchsfahrzeuge|Naves visitantes|Прибывающие корабли|Véhicules en visite|訪問機
+Zvezda aft|Swesda hinten|Zvezdá popa|Звезда, корма|Zvezda arrière|ズヴェズダ後部
+MRM-1 Rassvet|MRM-1 Rasswet|MRM-1 Rassvet|МИМ-1 Рассвет|MRM-1 Rassvet|MRM-1 ラスベット
+MRM-2 Poisk|MRM-2 Poisk|MRM-2 Poisk|МИМ-2 Поиск|MRM-2 Poisk|MRM-2 ポイスク
+Prichal nadir|Pritschal Nadir|Prichal nadir|Причал, надир|Prichal nadir|プリチャル天底
+SM nadir (Nauka)|SM Nadir (Nauka)|SM nadir (Nauka)|СМ надир (Наука)|SM nadir (Nauka)|SM天底（ナウカ）
+Hooks closed|Haken geschlossen|Ganchos cerrados|Крюки закрыты|Crochets fermés|フック閉
+Harmony forward (IDA-2)|Harmony vorn (IDA-2)|Harmony proa (IDA-2)|Гармония, перед (IDA-2)|Harmony avant (IDA-2)|ハーモニー前方（IDA-2）
+Harmony zenith (IDA-3)|Harmony Zenit (IDA-3)|Harmony cénit (IDA-3)|Гармония, зенит (IDA-3)|Harmony zénith (IDA-3)|ハーモニー天頂（IDA-3）
+Unity nadir (CBM)|Unity Nadir (CBM)|Unity nadir (CBM)|Юнити, надир (CBM)|Unity nadir (CBM)|ユニティ天底（CBM）
+Harmony nadir (CBM)|Harmony Nadir (CBM)|Harmony nadir (CBM)|Гармония, надир (CBM)|Harmony nadir (CBM)|ハーモニー天底（CBM）
+Rassvet (MRM-1)|Rasswet (MRM-1)|Rassvet (MRM-1)|Рассвет (МИМ-1)|Rassvet (MRM-1)|ラスベット（MRM-1）
+Poisk (MRM-2) zenith|Poisk (MRM-2) Zenit|Poisk (MRM-2) cénit|Поиск (МИМ-2), зенит|Poisk (MRM-2) zénith|ポイスク（MRM-2）天頂
+No vehicle docked|Kein Fahrzeug angedockt|Ninguna nave atracada|Нет пристыкованных кораблей|Aucun véhicule amarré|ドッキング中の機体なし
+Arrivals and departures: Launch Library 2 (TheSpaceDevs), updated {0} ago. Russian ports: ISSLive port flags.|Ankünfte und Abflüge: Launch Library 2 (TheSpaceDevs), vor {0} aktualisiert. Russische Ports: ISSLive-Portflags.|Llegadas y salidas: Launch Library 2 (TheSpaceDevs), actualizado hace {0}. Puertos rusos: indicadores de ISSLive.|Прибытия и отлёты: Launch Library 2 (TheSpaceDevs), обновлено {0} назад. Российские узлы: флаги ISSLive.|Arrivées et départs : Launch Library 2 (TheSpaceDevs), mis à jour il y a {0}. Ports russes : indicateurs ISSLive.|到着・出発：Launch Library 2（TheSpaceDevs）、{0}前に更新。ロシア側ポート：ISSLiveのポートフラグ。
+Arrivals and departures: dated manifest (20 Oct 2026); Launch Library 2 {0}. Russian ports: ISSLive port flags.|Ankünfte und Abflüge: datierte Liste (20. Okt. 2026); Launch Library 2 {0}. Russische Ports: ISSLive-Portflags.|Llegadas y salidas: manifiesto fechado (20 oct 2026); Launch Library 2 {0}. Puertos rusos: indicadores de ISSLive.|Прибытия и отлёты: датированный список (20 окт. 2026); Launch Library 2 {0}. Российские узлы: флаги ISSLive.|Arrivées et départs : liste datée (20 oct. 2026) ; Launch Library 2 {0}. Ports russes : indicateurs ISSLive.|到着・出発：日付付きリスト（2026年10月20日）。Launch Library 2は{0}。ロシア側ポート：ISSLiveのポートフラグ。
+unavailable|nicht verfügbar|no disponible|недоступна|indisponible|利用不可
+not loaded yet|noch nicht geladen|aún no cargado|ещё не загружена|pas encore chargé|未取得
+dated manifest|datierte Liste|manifiesto fechado|датированный список|liste datée|日付付きリスト
+ISSLive port flag|ISSLive-Portflag|indicador de puerto ISSLive|флаг узла ISSLive|indicateur de port ISSLive|ISSLiveポートフラグ
+not identified|nicht identifiziert|sin identificar|не опознан|non identifié|未特定
+{0} no longer at {1}|{0} nicht mehr an {1}|{0} ya no está en {1}|{0} больше не у {1}|{0} n'est plus à {1}|{0}は{1}から離脱
+{0} at {1}|{0} an {1}|{0} en {1}|{0} у {1}|{0} à {1}|{0}：{1}
+Crew & schedule|Crew & Zeitplan|Tripulación y agenda|Экипаж и график|Équipage et calendrier|クルーと予定
+Waiting for Launch Library 2…|Warte auf Launch Library 2…|Esperando a Launch Library 2…|Ожидание Launch Library 2…|En attente de Launch Library 2…|Launch Library 2を待機中…
+Launch Library 2 unavailable|Launch Library 2 nicht verfügbar|Launch Library 2 no disponible|Launch Library 2 недоступна|Launch Library 2 indisponible|Launch Library 2 利用不可
+Expedition|Expedition|Expedición|Экспедиция|Expédition|長期滞在
+Since|Seit|Desde|С|Depuis|開始
+day {0}|Tag {0}|día {0}|день {0}|jour {0}|{0}日目
+Crew on board|Crew an Bord|Tripulación a bordo|Экипаж на борту|Équipage à bord|搭乗クルー
+Upcoming events|Nächste Ereignisse|Próximos eventos|Ближайшие события|Événements à venir|今後の予定
+Next launches to the ISS|Nächste Starts zur ISS|Próximos lanzamientos a la ISS|Ближайшие запуски к МКС|Prochains lancements vers l'ISS|ISSへの次の打ち上げ
+Source: Launch Library 2 (TheSpaceDevs); dates as precise as LL2 knows them.|Quelle: Launch Library 2 (TheSpaceDevs); Daten so genau, wie LL2 sie kennt.|Fuente: Launch Library 2 (TheSpaceDevs); fechas tan precisas como las conoce LL2.|Источник: Launch Library 2 (TheSpaceDevs); даты с той точностью, что известна LL2.|Source : Launch Library 2 (TheSpaceDevs) ; dates aussi précises que LL2 les connaît.|出典：Launch Library 2（TheSpaceDevs）。日時はLL2が把握する精度で表示。
+in {0} h|in {0} h|en {0} h|через {0} ч|dans {0} h|{0}時間後
+in {0} d|in {0} T.|en {0} d|через {0} дн.|dans {0} j|{0}日後
+today|heute|hoy|сегодня|aujourd'hui|今日
+{0} d ago|vor {0} T.|hace {0} d|{0} дн. назад|il y a {0} j|{0}日前
+LIVE|LIVE|EN DIRECTO|ПРЯМОЙ ЭФИР|EN DIRECT|ライブ
+Comms|Kommunikation|Comunicaciones|Связь|Communications|通信
+Ku SGANT elev / xel|Ku-SGANT Elev. / Quer-Elev.|Ku SGANT elev. / elev. cruzada|Ku SGANT угол места / поперечный|Ku SGANT élév. / élév. croisée|Ku SGANT仰角／交差仰角
+S-band SASA 1 az / el|S-Band SASA 1 Az / El|Banda S SASA 1 az / el|S-диапазон SASA 1 аз / ум|Bande S SASA 1 az / él|SバンドSASA 1 方位／仰角
+S-band SASA 2 az / el|S-Band SASA 2 Az / El|Banda S SASA 2 az / el|S-диапазон SASA 2 аз / ум|Bande S SASA 2 az / él|SバンドSASA 2 方位／仰角
+Active core laptops|Aktive Kern-Laptops|Portátiles principales activos|Активные основные ноутбуки|Portables principaux actifs|稼働中のコアラップトップ
+Computers & data|Rechner & Daten|Computadoras y datos|Компьютеры и данные|Ordinateurs et données|コンピューター・データ
+Events|Ereignisse|Eventos|События|Événements|イベント
+Command queue|Befehlswarteschlange|Cola de órdenes|Очередь команд|File de commandes|コマンド待ち行列
+No commands in flight|Keine Befehle unterwegs|Ninguna orden en curso|Нет команд в пути|Aucune commande en cours|処理中のコマンドなし
+Collapse / expand|Ein- / ausklappen|Plegar / desplegar|Свернуть / развернуть|Replier / déplier|折りたたみ／展開
+All channels|Alle Kanäle|Todos los canales|Все каналы|Tous les canaux|全チャンネル
+Show / hide the widgets|Widgets zeigen / verbergen|Mostrar / ocultar widgets|Показать / скрыть виджеты|Afficher / masquer les widgets|ウィジェットの表示／非表示
+Click for options|Klicken für Optionen|Clic para opciones|Щёлкните для действий|Cliquer pour les options|クリックで操作
+Orbit & time|Orbit & Zeit|Órbita y tiempo|Орбита и время|Orbite et temps|軌道・時刻
+Russian segment|Russisches Segment|Segmento ruso|Российский сегмент|Segment russe|ロシア区画
+Thermal control|Thermalkontrolle|Control térmico|Терморегулирование|Contrôle thermique|熱制御系
+Attitude & GNC|Lage & GNC|Actitud y GNC|Ориентация и СУД|Attitude et GNC|姿勢・GNC
+Atmosphere, water & waste|Atmosphäre, Wasser & Abfall|Atmósfera, agua y residuos|Атмосфера, вода и отходы|Atmosphère, eau et déchets|大気・水・廃棄物
+Communications & video|Kommunikation & Video|Comunicaciones y vídeo|Связь и видео|Communications et vidéo|通信・映像
+No graphs. Click any channel and choose “Graph”.|Keine Graphen. Einen Kanal anklicken und „Graph“ wählen.|Sin gráficos. Haz clic en un canal y elige «Gráfico».|Графиков нет. Щёлкните по каналу и выберите «График».|Aucun graphique. Cliquez sur un canal et choisissez « Graphique ».|グラフなし。チャンネルをクリックして「グラフ」を選択。
+Remove graph|Graph entfernen|Quitar gráfico|Удалить график|Retirer le graphique|グラフを削除
+not published by NASA|von der NASA nicht veröffentlicht|no publicado por la NASA|не публикуется NASA|non publié par la NASA|NASA非公開
+no reading yet|noch kein Messwert|aún sin lectura|данных пока нет|pas encore de mesure|まだ測定値なし
+now|jetzt|ahora|сейчас|maintenant|現在
+Remove from Graphs|Aus Graphen entfernen|Quitar de gráficos|Убрать из графиков|Retirer des graphiques|グラフから削除
+Graph it (Graphs panel)|Als Graph zeigen (Graphen)|Graficar (panel de gráficos)|Построить график (панель графиков)|Tracer (panneau Graphiques)|グラフ化（グラフパネル）
+Add to dashboard|Zum Dashboard hinzufügen|Añadir al panel|Добавить на панель|Ajouter au tableau de bord|ダッシュボードに追加
+New group…|Neue Gruppe…|Nuevo grupo…|Новая группа…|Nouveau groupe…|新しいグループ…
+Open in channel browser|Im Kanal-Browser öffnen|Abrir en el explorador|Открыть в обозревателе|Ouvrir dans l'explorateur|チャンネルブラウザーで開く
+Copy PUI|PUI kopieren|Copiar PUI|Копировать PUI|Copier le PUI|PUIをコピー
+Name of the new group|Name der neuen Gruppe|Nombre del nuevo grupo|Имя новой группы|Nom du nouveau groupe|新しいグループ名
+Group|Gruppe|Grupo|Группа|Groupe|グループ
+Group {0}|Gruppe {0}|Grupo {0}|Группа {0}|Groupe {0}|グループ{0}
+All subsystems|Alle Subsysteme|Todos los subsistemas|Все подсистемы|Tous les sous-systèmes|全サブシステム
+In Graphs|In Graphen|En gráficos|В графиках|Dans Graphiques|グラフ登録済み
+{0} of {1} channels|{0} von {1} Kanälen|{0} de {1} canales|{0} из {1} каналов|{0} sur {1} canaux|{1}中{0}チャンネル
+Unit|Einheit|Unidad|Единица|Unité|単位
+Raw value|Rohwert|Valor bruto|Сырое значение|Valeur brute|生値
+Received|Empfangen|Recibido|Получено|Reçu|受信
+Description|Beschreibung|Descripción|Описание|Description|説明
+Add|Hinzufügen|Añadir|Добавить|Ajouter|追加
+Added to “{0}”.|Zu „{0}“ hinzugefügt.|Añadido a «{0}».|Добавлено в «{0}».|Ajouté à « {0} ».|「{0}」に追加しました。
+not published|nicht veröffentlicht|no publicado|не публикуется|non publié|非公開
+not published by NASA (value 0, timestamp 0)|von der NASA nicht veröffentlicht (Wert 0, Zeitstempel 0)|no publicado por la NASA (valor 0, marca de tiempo 0)|не публикуется NASA (значение 0, метка времени 0)|non publié par la NASA (valeur 0, horodatage 0)|NASA非公開（値0、タイムスタンプ0）
+{0} ago|vor {0}|hace {0}|{0} назад|il y a {0}|{0}前
+3D station view|3D-Stationsansicht|Vista 3D de la estación|3D-вид станции|Vue 3D de la station|3Dステーション表示
+Panels|Panels|Paneles|Панели|Panneaux|パネル
+Shown in another widget of this dashboard.|Wird in einem anderen Widget dieses Dashboards gezeigt.|Se muestra en otro widget de este panel.|Показано в другом виджете этой панели.|Affiché dans un autre widget de ce tableau de bord.|このダッシュボードの別ウィジェットに表示中です。
+Display|Anzeige|Visualización|Вид|Affichage|表示
+Size|Größe|Tamaño|Размер|Taille|サイズ
+Remove|Entfernen|Quitar|Удалить|Retirer|削除
+Move group up|Gruppe nach oben|Subir grupo|Группу выше|Monter le groupe|グループを上へ
+Move group down|Gruppe nach unten|Bajar grupo|Группу ниже|Descendre le groupe|グループを下へ
+Delete group|Gruppe löschen|Eliminar grupo|Удалить группу|Supprimer le groupe|グループを削除
+Delete group “{0}” and its {1} widgets?|Gruppe „{0}“ mit {1} Widgets löschen?|¿Eliminar el grupo «{0}» y sus {1} widgets?|Удалить группу «{0}» и её виджеты ({1})?|Supprimer le groupe « {0} » et ses {1} widgets ?|グループ「{0}」と{1}個のウィジェットを削除しますか？
+Empty group. Use “+ Channel”, or click any channel in the side panels and choose this group.|Leere Gruppe. „+ Kanal“ verwenden oder einen Kanal in den Seitenpanels anklicken und diese Gruppe wählen.|Grupo vacío. Usa «+ Canal» o haz clic en un canal de los paneles laterales y elige este grupo.|Пустая группа. Нажмите «+ Канал» или щёлкните по каналу в боковых панелях и выберите эту группу.|Groupe vide. Utilisez « + Canal » ou cliquez sur un canal des panneaux latéraux et choisissez ce groupe.|空のグループです。「+ チャンネル」を使うか、サイドパネルのチャンネルをクリックしてこのグループを選択してください。
+Replace this dashboard with the default layout?|Dieses Dashboard durch das Standardlayout ersetzen?|¿Sustituir este panel por el diseño predeterminado?|Заменить эту панель макетом по умолчанию?|Remplacer ce tableau de bord par la disposition par défaut ?|このダッシュボードを既定のレイアウトに戻しますか？
+Value|Wert|Valor|Значение|Valeur|値
+Graph|Graph|Gráfico|График|Graphique|グラフ
+Bar|Balken|Barra|Шкала|Barre|バー
+Gauge|Anzeige|Indicador|Индикатор|Jauge|ゲージ
+Dial|Skala|Dial|Циферблат|Cadran|ダイヤル
+State|Zustand|Estado|Состояние|État|状態
+Small|Klein|Pequeño|Малый|Petit|小
+Wide|Breit|Ancho|Широкий|Large|横長
+Large|Groß|Grande|Большой|Grand|大
+Extra wide|Extrabreit|Extra ancho|Очень широкий|Très large|特大横長
+Huge|Riesig|Enorme|Огромный|Énorme|特大
+Language: {0}|Sprache: {0}|Idioma: {0}|Язык: {0}|Langue : {0}|言語：{0}
+Array channels · β gimbal / V / state|Solarflügel · β-Gelenk / V / Zustand|Canales de paneles · cardán β / V / estado|Каналы панелей · β-шарнир / В / состояние|Canaux des panneaux · cardan β / V / état|太陽電池チャンネル · βジンバル / V / 状態
+Arrays in sunlight|Flügel in der Sonne|Paneles al sol|Панели на солнце|Panneaux au soleil|日照中のパネル
+Arrays whose regulated voltage is at least 151.5 V. Below that the channel runs from its batteries.|Flügel mit geregelter Spannung von mindestens 151,5 V. Darunter läuft der Kanal aus seinen Batterien.|Paneles cuya tensión regulada es de al menos 151,5 V. Por debajo, el canal funciona con sus baterías.|Панели с регулируемым напряжением не ниже 151,5 В. Ниже канал питается от батарей.|Panneaux dont la tension régulée atteint au moins 151,5 V. En dessous, le canal fonctionne sur batteries.|調整電圧が151.5 V以上のパネル。それ未満ではチャンネルはバッテリーで動作します。
+Batteries (from array voltage)|Batterien (aus der Flügelspannung)|Baterías (según tensión de paneles)|Батареи (по напряжению панелей)|Batteries (d'après la tension des panneaux)|バッテリー(パネル電圧から)
+Below 151.5 V: batteries discharging (eclipse). 151.5-160 V: arrays lit, batteries charging. Above 160 V: batteries full, arrays partly shunted.|Unter 151,5 V: Batterien entladen (Schatten). 151,5-160 V: Flügel beleuchtet, Batterien laden. Über 160 V: Batterien voll, Flügel teilweise abgeschaltet.|Por debajo de 151,5 V: baterías descargándose (eclipse). 151,5-160 V: paneles iluminados, baterías cargando. Por encima de 160 V: baterías llenas, paneles parcialmente derivados.|Ниже 151,5 В: батареи разряжаются (тень). 151,5-160 В: панели освещены, батареи заряжаются. Выше 160 В: батареи заряжены, панели частично отключены.|Sous 151,5 V : batteries en décharge (éclipse). 151,5-160 V : panneaux éclairés, batteries en charge. Au-dessus de 160 V : batteries pleines, panneaux partiellement délestés.|151.5 V未満:バッテリー放電(日陰)。151.5〜160 V:パネル照射中、充電中。160 V超:満充電、パネル一部シャント。
+Mean array voltage|Mittlere Flügelspannung|Tensión media de paneles|Среднее напряжение панелей|Tension moyenne des panneaux|平均パネル電圧
+Voltage x current of the eight arrays. NASA does not publish the array currents in its public feed, so this is only available in the simulator and the virtual station.|Spannung × Strom der acht Flügel. NASA veröffentlicht die Flügelströme im öffentlichen Datenstrom nicht; den Wert gibt es daher nur im Simulator und in der virtuellen Station.|Tensión × corriente de los ocho paneles. La NASA no publica las corrientes en su flujo público, así que solo está disponible en el simulador y en la estación virtual.|Напряжение × ток восьми панелей. NASA не публикует токи в открытом потоке, поэтому значение есть только в симуляторе и виртуальной станции.|Tension × courant des huit panneaux. La NASA ne publie pas les courants dans son flux public ; la valeur n'existe donc que dans le simulateur et la station virtuelle.|8枚のパネルの電圧×電流。NASAは公開配信でパネル電流を公開していないため、シミュレーターと仮想ステーションでのみ表示されます。
+Cameras|Kameras|Cámaras|Камеры|Caméras|カメラ
+own link…|eigener Link…|enlace propio…|своя ссылка…|lien personnalisé…|独自リンク…
+YouTube link of the live stream|YouTube-Link des Livestreams|Enlace de YouTube de la transmisión|Ссылка YouTube на трансляцию|Lien YouTube du direct|ライブ配信のYouTubeリンク
+Load|Laden|Cargar|Загрузить|Charger|読み込み
+Overlay|Überlagern|Superponer|Наложение|Superposer|重ね合わせ
+Lay the twin over the live picture|Zwilling über das Livebild legen|Superponer el gemelo sobre la imagen en vivo|Наложить двойника на живое изображение|Superposer le jumeau à l'image en direct|ツインをライブ映像に重ねる
+Main view|Hauptansicht|Vista principal|Основной вид|Vue principale|メインビュー
+Move the main 3D view to this camera|Haupt-3D-Ansicht an diese Kamera setzen|Mover la vista 3D principal a esta cámara|Перенести основной 3D-вид на эту камеру|Placer la vue 3D principale sur cette caméra|メイン3Dビューをこのカメラへ移動
+LIVE|LIVE|EN VIVO|ПРЯМОЙ ЭФИР|DIRECT|ライブ
+TWIN|ZWILLING|GEMELO|ДВОЙНИК|JUMEAU|ツイン
+Pan|Schwenk|Paneo|Поворот|Panoramique|パン
+Tilt|Neigung|Inclinación|Наклон|Inclinaison|チルト
+Field of view|Sichtfeld|Campo de visión|Поле зрения|Champ de vision|視野
+Overlay opacity|Deckkraft|Opacidad|Непрозрачность|Opacité|不透明度
+Reset camera|Kamera zurücksetzen|Restablecer cámara|Сбросить камеру|Réinitialiser la caméra|カメラをリセット
+Pan, tilt and zoom are not in the telemetry: set them to match the live picture (saved per camera).|Schwenk, Neigung und Zoom stehen nicht in der Telemetrie: so einstellen, dass es zum Livebild passt (je Kamera gespeichert).|El paneo, la inclinación y el zoom no están en la telemetría: ajústelos a la imagen en vivo (se guardan por cámara).|Поворот, наклон и зум не передаются в телеметрии: подгоните их под живое изображение (сохраняется для каждой камеры).|Panoramique, inclinaison et zoom ne sont pas dans la télémesure : réglez-les sur l'image en direct (enregistré par caméra).|パン・チルト・ズームはテレメトリーにありません。ライブ映像に合わせて設定してください(カメラごとに保存)。
+Fixed camera.|Feste Kamera.|Cámara fija.|Неподвижная камера.|Caméra fixe.|固定カメラ。
+Sen SpaceTV-1 · docking port|Sen SpaceTV-1 · Andockport|Sen SpaceTV-1 · puerto de atraque|Sen SpaceTV-1 · стыковочный узел|Sen SpaceTV-1 · port d'amarrage|Sen SpaceTV-1・ドッキングポート
+Sen SpaceTV-1 · nadir|Sen SpaceTV-1 · Nadir|Sen SpaceTV-1 · nadir|Sen SpaceTV-1 · надир|Sen SpaceTV-1 · nadir|Sen SpaceTV-1・天底
+Sen SpaceTV-1 · horizon|Sen SpaceTV-1 · Horizont|Sen SpaceTV-1 · horizonte|Sen SpaceTV-1 · горизонт|Sen SpaceTV-1 · horizon|Sen SpaceTV-1・地平線
+Canadarm2 · free LEE camera|Canadarm2 · Kamera am freien LEE|Canadarm2 · cámara del LEE libre|Canadarm2 · камера свободного LEE|Canadarm2 · caméra du LEE libre|カナダアーム2・自由端LEEカメラ
+Canadarm2 · base LEE camera|Canadarm2 · Kamera am Basis-LEE|Canadarm2 · cámara del LEE base|Canadarm2 · камера базового LEE|Canadarm2 · caméra du LEE de base|カナダアーム2・基部LEEカメラ
+CP8 · P1 outboard, zenith|CP8 · P1 außen, Zenit|CP8 · P1 exterior, cenit|CP8 · P1 внешняя, зенит|CP8 · P1 extérieur, zénith|CP8・P1外側、天頂
+CP9 · P1 outboard, nadir|CP9 · P1 außen, Nadir|CP9 · P1 exterior, nadir|CP9 · P1 внешняя, надир|CP9 · P1 extérieur, nadir|CP9・P1外側、天底
+CP3 · S1 outboard, nadir|CP3 · S1 außen, Nadir|CP3 · S1 exterior, nadir|CP3 · S1 внешняя, надир|CP3 · S1 extérieur, nadir|CP3・S1外側、天底
+CP13 · Destiny, zenith starboard|CP13 · Destiny, Zenit Steuerbord|CP13 · Destiny, cenit estribor|CP13 · Destiny, зенит, правый борт|CP13 · Destiny, zénith tribord|CP13・デスティニー、天頂右舷
+Harmony forward HD camera|Harmony, HD-Kamera nach vorn|Cámara HD delantera de Harmony|HD-камера Harmony, вперёд|Caméra HD avant de Harmony|ハーモニー前方HDカメラ
+Dextre · body camera|Dextre · Rumpfkamera|Dextre · cámara del cuerpo|Dextre · камера корпуса|Dextre · caméra du corps|デクスター・本体カメラ
+MBS · camera|MBS · Kamera|MBS · cámara|MBS · камера|MBS · caméra|MBS・カメラ
+Looks starboard along the truss: Kibo, Harmony with Dragon, MBS, Z1|Blick nach Steuerbord den Träger entlang: Kibo, Harmony mit Dragon, MBS, Z1|Mira a estribor a lo largo de la armadura: Kibo, Harmony con Dragon, MBS, Z1|Вид на правый борт вдоль фермы: Кибо, Harmony с Dragon, MBS, Z1|Vue vers tribord le long de la poutre : Kibo, Harmony avec Dragon, MBS, Z1|トラスに沿って右舷方向：きぼう、ドラゴン付きハーモニー、MBS、Z1
+Position approximate: behind S0, the truss blocks the view forward|Lage angenähert: hinter S0, der Träger verdeckt den Blick nach vorn|Posición aproximada: detrás de S0, la armadura tapa la vista hacia delante|Положение приблизительное: за S0, ферма закрывает вид вперёд|Position approximative : derrière S0, la poutre masque la vue vers l'avant|位置は概略：S0の後方、トラスが前方視界を遮る
+Looks forward past IDA-2; source of the NASA high-definition views|Blick nach vorn an IDA-2 vorbei; Quelle der NASA-HD-Ansichten|Mira hacia delante junto a IDA-2; origen de las vistas en alta definición de la NASA|Вид вперёд мимо IDA-2; источник HD-видов NASA|Vue vers l'avant au-delà d'IDA-2 ; source des vues haute définition de la NASA|IDA-2越しに前方を見る。NASAの高精細映像の元
+Camera head|Kamerakopf|Cabezal de cámara|Головка камеры|Tête de caméra|カメラヘッド
+Live stream|Livestream|Transmisión en vivo|Прямая трансляция|Diffusion en direct|ライブ配信
+Open the stream on YouTube|Stream auf YouTube öffnen|Abrir la transmisión en YouTube|Открыть трансляцию на YouTube|Ouvrir le flux sur YouTube|YouTubeで配信を開く
+SD camera (ETVCG, 4:3)|SD-Kamera (ETVCG, 4:3)|Cámara SD (ETVCG, 4:3)|SD-камера (ETVCG, 4:3)|Caméra SD (ETVCG, 4:3)|SDカメラ（ETVCG、4:3）
+HD camera (EHDC, 16:9)|HD-Kamera (EHDC, 16:9)|Cámara HD (EHDC, 16:9)|HD-камера (EHDC, 16:9)|Caméra HD (EHDC, 16:9)|HDカメラ（EHDC、16:9）
+SD camera (MSS, 4:3)|SD-Kamera (MSS, 4:3)|Cámara SD (MSS, 4:3)|SD-камера (MSS, 4:3)|Caméra SD (MSS, 4:3)|SDカメラ（MSS、4:3）
+HD camera (16:9, field of view estimated)|HD-Kamera (16:9, Sichtfeld geschätzt)|Cámara HD (16:9, campo de visión estimado)|HD-камера (16:9, поле зрения оценено)|Caméra HD (16:9, champ estimé)|HDカメラ（16:9、視野は推定）
+Sen 4K (16:9, from the 240 km footprint)|Sen 4K (16:9, aus 240 km Bildbreite)|Sen 4K (16:9, a partir de la huella de 240 km)|Sen 4K (16:9, по полосе 240 км)|Sen 4K (16:9, d'après l'empreinte de 240 km)|Sen 4K（16:9、240 kmの撮影幅から）
+Sen 4K wide angle (16:9, estimated)|Sen 4K Weitwinkel (16:9, geschätzt)|Sen 4K gran angular (16:9, estimado)|Sen 4K широкоугольная (16:9, оценка)|Sen 4K grand angle (16:9, estimé)|Sen 4K広角（16:9、推定）
+Sen 4K (16:9, estimated)|Sen 4K (16:9, geschätzt)|Sen 4K (16:9, estimado)|Sen 4K (16:9, оценка)|Sen 4K (16:9, estimé)|Sen 4K（16:9、推定）
+Field of view not published: estimate.|Sichtfeld nicht veröffentlicht: Schätzung.|Campo de visión no publicado: estimación.|Поле зрения не опубликовано: оценка.|Champ de vision non publié : estimation.|視野は未公表：推定値。
+YouTube does not play in pages opened as a file. Start the launcher and open http://localhost:8137.|YouTube spielt nicht in Seiten, die als Datei geöffnet sind. Launcher starten und http://localhost:8137 öffnen.|YouTube no se reproduce en páginas abiertas como archivo. Inicie el lanzador y abra http://localhost:8137.|YouTube не воспроизводится на страницах, открытых как файл. Запустите лаунчер и откройте http://localhost:8137.|YouTube ne se lit pas dans une page ouverte comme fichier. Démarrez le lanceur et ouvrez http://localhost:8137.|ファイルとして開いたページではYouTubeは再生されません。ランチャーを起動してhttp://localhost:8137を開いてください。
+This video cannot be played here (private, removed or embedding disabled).|Dieses Video lässt sich hier nicht abspielen (privat, entfernt oder Einbetten gesperrt).|Este vídeo no se puede reproducir aquí (privado, eliminado o inserción desactivada).|Это видео нельзя воспроизвести здесь (закрытое, удалено или встраивание отключено).|Cette vidéo ne peut pas être lue ici (privée, supprimée ou intégration désactivée).|この動画はここでは再生できません（非公開、削除、または埋め込み無効）。
+Trying the next stream.|Der nächste Stream wird versucht.|Probando la siguiente transmisión.|Пробуем следующую трансляцию.|Essai du flux suivant.|次の配信を試します。
+Paste a current link or open YouTube.|Aktuellen Link einfügen oder YouTube öffnen.|Pegue un enlace actual o abra YouTube.|Вставьте актуальную ссылку или откройте YouTube.|Collez un lien actuel ou ouvrez YouTube.|最新のリンクを貼り付けるか、YouTubeを開いてください。
+{0} sense corrected from autotrack data: the radiator is edge-on to the Sun only with the opposite sign|{0}: Drehsinn aus Autotrack-Daten korrigiert: Der Radiator steht nur mit umgekehrtem Vorzeichen kantig zur Sonne|{0}: sentido corregido con datos de autotrack: el radiador solo queda de canto al Sol con el signo opuesto|{0}: направление исправлено по данным автослежения: радиатор стоит ребром к Солнцу только с обратным знаком|{0} : sens corrigé d'après les données d'autotrack : le radiateur n'est de chant face au Soleil qu'avec le signe opposé|{0}：自動追尾データにより回転方向を修正：符号を逆にしたときのみラジエーターが太陽に対して縁向きになります
+{0} sense confirmed by autotrack data (edge-on to the Sun)|{0}: Drehsinn durch Autotrack-Daten bestätigt (kantig zur Sonne)|{0}: sentido confirmado por datos de autotrack (de canto al Sol)|{0}: направление подтверждено данными автослежения (ребром к Солнцу)|{0} : sens confirmé par les données d'autotrack (de chant face au Soleil)|{0}：自動追尾データにより回転方向を確認（太陽に対して縁向き）

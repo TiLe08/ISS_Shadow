@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ISS Model Viewer v%VIEWER%</title>
+<!--
+  ISS Model Viewer: nur das 3D-Modell der Station aus ISS Shadow, ohne Telemetrie, Erde oder Panels.
+  Erzeugt von tools/export_viewer.mjs aus iss_twin.html; nicht von Hand bearbeiten, sondern neu erzeugen.
+  Die Geometrie steht unten in GEOMETRY_DATA (base64, Körpersystem der Station in Metern:
+  +X vorwärts, +Y Steuerbord, +Z Nadir), zusammengefasst je Bauteilart. Bedienung: Maus ziehen = drehen,
+  Rad = zoomen, rechte Taste = verschieben, Doppelklick = Ansicht zurücksetzen, H = Holo/Solid.
+  Braucht Internet nur für three.js vom CDN.
+-->
+<style>
+  :root{--bg:#04070b;--fg:#cfe6f2;--dim:#6a8899;--acc:#3fe0ff;--line:#1f4458}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:12px/1.4 ui-monospace,"Cascadia Mono",Consolas,monospace;overflow:hidden}
+  canvas{display:block;width:100%;height:100%;touch-action:none}
+  .ui{position:fixed;left:14px;top:12px;display:flex;gap:8px;align-items:center}
+  .ui b{letter-spacing:.12em;font-weight:600}
+  .seg{display:flex;border:1px solid var(--line)}
+  .seg button{background:transparent;color:var(--dim);border:0;padding:5px 12px;font:inherit;cursor:pointer;letter-spacing:.08em}
+  .seg button[aria-pressed="true"]{background:rgba(63,224,255,.14);color:var(--acc)}
+  .info{position:fixed;left:14px;bottom:10px;color:var(--dim);font-size:11px}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="ui"><b>ISS</b>
+  <div class="seg" id="mode"><button data-v="holo" aria-pressed="true">HOLO</button><button data-v="solid" aria-pressed="false">SOLID</button></div>
+</div>
+<div class="info" id="info"></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+// Exportierte Angaben: Modellversion, Zeitpunkt der Pose, Fahrzeuge, Zustand der neuen iROSAs.
+const INFO = %INFO%;
+// Bauteilarten, die in Holo bernsteinfarben statt cyan gezeichnet werden (wie in iss_twin.html).
+const AMBER = new Set(%AMBER%);
+// Geometrie: Liste von Gruppen {type: mesh|line|back, kind, only: ''|holo|solid, dim, pos, nrm, uv, idx} (base64).
+const GEOMETRY_DATA = %DATA%;
+// base64 -> typisiertes Array.
+const dec = (s, T) => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return new T(u.buffer); };
+
+// Materialien: Holo wie in iss-model.mjs; die Solid-Materialien und ihre Rastertexturen hat der Export
+// aus iss-model.mjs übernommen (Farbe, Rauheit, Metallanteil, Eigenleuchten, Seite, Textur).
+const TEXTURES = (%TEXTURES%).map(({ size, data }) => {
+  const t = new THREE.DataTexture(dec(data, Uint8Array), size, size, THREE.RGBAFormat);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; t.magFilter = THREE.LinearFilter;
+  t.minFilter = THREE.LinearMipmapLinearFilter; t.generateMipmaps = true; t.needsUpdate = true; return t;
+});
+const MAT = {
+  holoFill: new THREE.MeshBasicMaterial({ color: 0x3fe0ff, transparent: true, opacity: 0.05, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }),
+  holoFill2: new THREE.MeshBasicMaterial({ color: 0xffb54a, transparent: true, opacity: 0.09, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }),
+  holoLine: new THREE.LineBasicMaterial({ color: 0x3fe0ff, transparent: true, opacity: 0.75, depthWrite: false, blending: THREE.AdditiveBlending }),
+  holoLine2: new THREE.LineBasicMaterial({ color: 0xffb54a, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending }),
+  holoLineDim: new THREE.LineBasicMaterial({ color: 0x3fe0ff, transparent: true, opacity: 0.32, depthWrite: false, blending: THREE.AdditiveBlending }),
+  solid: Object.fromEntries(Object.entries(%MATERIALS%).map(([k, m]) => [k, new THREE.MeshStandardMaterial({ color: m.color, roughness: m.roughness, metalness: m.metalness,
+    emissive: m.emissive, side: m.side, map: m.map === null ? null : TEXTURES[m.map], emissiveMap: m.emissiveMap === null ? null : TEXTURES[m.emissiveMap] })])),
+};
+
+// Szene, Kamera, Steuerung. Das Modell steht im Körpersystem; rotation.x = +90° stellt Zenit nach oben.
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, logarithmicDepthBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x04070b);
+const camera = new THREE.PerspectiveCamera(40, 1, 0.5, 2000);
+const controls = new OrbitControls(camera, canvas); controls.enableDamping = true; controls.dampingFactor = 0.08;
+const station = new THREE.Group(); station.rotation.x = Math.PI / 2; scene.add(station);
+// Licht für Solid: Himmelslicht plus ein Hauptlicht, das mit der Kamera mitwandert (links oben).
+scene.add(new THREE.HemisphereLight(0xcfe0ff, 0x6a7078, 1.6));
+const key = new THREE.DirectionalLight(0xfff4e0, 2.4); camera.add(key); key.position.set(-1, 1.2, 0.6); key.target.position.set(0, 0, -1); camera.add(key.target);
+scene.add(camera);
+
+// Gruppen aufbauen: je Bauteilart ein Mesh bzw. ein LineSegments-Objekt.
+const objs = [];
+for (const g of GEOMETRY_DATA) {
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(dec(g.pos, Float32Array), 3));
+  if (g.nrm) geo.setAttribute('normal', new THREE.BufferAttribute(dec(g.nrm, Float32Array), 3));
+  if (g.uv) geo.setAttribute('uv', new THREE.BufferAttribute(dec(g.uv, Float32Array), 2));
+  geo.setIndex(new THREE.BufferAttribute(dec(g.idx, Uint32Array), 1));
+  const o = g.type === 'line' ? new THREE.LineSegments(geo) : new THREE.Mesh(geo);
+  o.userData = { type: g.type, kind: g.kind, only: g.only, dim: g.dim }; station.add(o); objs.push(o);
+}
+
+// Darstellung umschalten, wie setRenderStyle() in iss-model.mjs: Holo zeigt Füllung und Drahtgitter,
+// Solid nur beleuchtete Flächen (keine Linien auf Flächen, deshalb kein Flimmern).
+function setMode(m) {
+  const holo = m === 'holo';
+  for (const o of objs) {
+    const { type, kind, only, dim } = o.userData, amber = AMBER.has(kind);
+    o.visible = !only || only === m;
+    if (type === 'line') o.material = amber ? MAT.holoLine2 : (dim ? MAT.holoLineDim : MAT.holoLine);
+    else o.material = holo ? (amber ? MAT.holoFill2 : MAT.holoFill) : (MAT.solid[kind] || MAT.solid.module);
+  }
+  renderer.toneMappingExposure = holo ? 1.0 : 1.1;
+  for (const b of document.querySelectorAll('#mode button')) b.setAttribute('aria-pressed', String(b.dataset.v === m));
+  try { localStorage.setItem('issviewer.mode', m); } catch (e) {}
+}
+document.getElementById('mode').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setMode(b.dataset.v); });
+addEventListener('keydown', e => { if (e.key === 'h' || e.key === 'H') setMode(document.querySelector('#mode [aria-pressed="true"]').dataset.v === 'holo' ? 'solid' : 'holo'); });
+let start = 'holo'; try { start = localStorage.getItem('issviewer.mode') || 'holo'; } catch (e) {}
+setMode(start);
+
+// Ansicht: auf die Stationsmitte, schräg von vorn oben; Doppelklick setzt zurück.
+const box = new THREE.Box3().setFromObject(station), center = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3()).length();
+function resetView() { controls.target.copy(center); camera.position.copy(center).add(new THREE.Vector3(0.55, 0.42, 0.72).multiplyScalar(size * 0.95)); controls.update(); }
+resetView(); canvas.addEventListener('dblclick', resetView);
+controls.minDistance = 5; controls.maxDistance = size * 4;
+
+document.getElementById('info').textContent = `${INFO.model} · Pose ${INFO.at} · ${INFO.parts} Bauteile` +
+  (INFO.vehicles.length ? ' · ' + INFO.vehicles.join(', ') : '') + ' · ziehen = drehen, Rad = zoomen, rechts = verschieben, Doppelklick = zurücksetzen, H = Holo/Solid';
+
+function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize); resize();
+renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+</script>
+</body>
+</html>

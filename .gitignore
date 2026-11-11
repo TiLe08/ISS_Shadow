@@ -1,0 +1,8 @@
+# Abhängigkeiten, Laufzeitdaten und Zwischendateien
+node_modules/
+logs/
+__pycache__/
+*.pyc
+.venv/
+# Abgabedokumente (Doku, Demo, Poster) liegen nicht im Repository, sondern im Projektordner
+Dokumentation/

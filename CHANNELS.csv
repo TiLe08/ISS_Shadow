@@ -1,0 +1,338 @@
+PUI,Category,Native unit,Name,Description,Subscription,3D articulation,Virtual model
+AIRLOCK000001,EVA,CNT,EVAS AL AA Rack PS #1 Voltage,"Supplies power through the Umbilical Interface Assembly (UIA) to the spacesuits (EMU 1), Voltage",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000002,EVA,CNT,EVAS AL AA Rack PS #1 Current,"Supplies power through the Umbilical Interface Assembly (UIA) to the spacesuits (EMU 1), Current",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000003,EVA,CNT,EVAS AL AA Rack PS #2 Voltage,"Supplies power through the Umbilical Interface Assembly (UIA) to the spacesuits (EMU 2), Voltage",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000004,EVA,CNT,EVAS AL AA Rack PS #2 Current,"Supplies power through the Umbilical Interface Assembly (UIA) to the spacesuits (EMU 2), Current",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000005,EVA,CNT,EVAS AL AA Rack PS #5 Voltage,"In-flight Refill Unit (IRU), Voltage",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000006,EVA,CNT,EVAS AL AA Rack PS #5 Current,"In-flight Refill Unit (IRU), Current",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000007,EVA,CNT,EVAS AL EMU1 Voltage Monitor,"Supplies power to the spacesuits (EVA Mobility Unit, EMU 1), Voltage",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000008,EVA,CNT,EVAS AL EMU1 Current Monitor,"Supplies power to the spacesuits (EVA Mobility Unit, EMU 1), Current",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000009,EVA,CNT,EVAS AL EMU2 Voltage Monitor,"Supplies power to the spacesuits (EVA Mobility Unit, EMU 2), Voltage",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000010,EVA,CNT,EVAS AL EMU2 Current Monitor,"Supplies power to the spacesuits (EVA Mobility Unit, EMU 2), Current",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000011,EVA,CNT,EVAS AL AA Rack BC #1 Voltage Monitor,Battery Charger Assembly (BCA) 1 Voltage,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000012,EVA,CNT,EVAS AL AA Rack BC #1 Current Monitor,Battery Charger Assembly (BCA) 1 Current,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000013,EVA,CNT,EVAS AL AA Rack BC #2 Voltage Monitor,Battery Charger Assembly (BCA) 2 Voltage,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000014,EVA,CNT,EVAS AL AA Rack BC #2 Current Monitor,Battery Charger Assembly (BCA) 2 Current,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000015,EVA,CNT,EVAS AL AA Rack BC #3 Voltage Monitor,Battery Charger Assembly (BCA) 3 Voltage,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000016,EVA,CNT,EVAS AL AA Rack BC #3 Current Monitor,Battery Charger Assembly (BCA) 3 Current,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000017,EVA,CNT,EVAS AL AA Rack BC #4 Voltage Monitor,Battery Charger Assembly (BCA) 4 Voltage,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000018,EVA,CNT,EVAS AL AA Rack BC #4 Current Monitor,Battery Charger Assembly (BCA) 4 Current,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000019,EVA,N/A,BCA 1 Serial Data Status,Battery Charger Assembly (BCA) 1 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000020,EVA,N/A,BCA 2 Serial Data Status,Battery Charger Assembly (BCA) 2 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000021,EVA,N/A,BCA 3 Serial Data Status,Battery Charger Assembly (BCA) 3 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000022,EVA,N/A,BCA 4 Serial Data Status,Battery Charger Assembly (BCA) 4 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000023,EVA,N/A,BCA 1 Channel 1 Status,Battery Charger Assembly (BCA) 1 Channel 1 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000024,EVA,N/A,BCA 1 Channel 2 Status,Battery Charger Assembly (BCA) 1 Channel 2 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000025,EVA,N/A,BCA 1 Channel 3 Status,Battery Charger Assembly (BCA) 1 Channel 3 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000026,EVA,N/A,BCA 1 Channel 4 Status,Battery Charger Assembly (BCA) 1 Channel 4 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000027,EVA,N/A,BCA 1 Channel 5 Status,Battery Charger Assembly (BCA) 1 Channel 5 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000028,EVA,N/A,BCA 1 Channel 6 Status,Battery Charger Assembly (BCA) 1 Channel 6 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000029,EVA,N/A,BCA 2 Channel 1 Status,Battery Charger Assembly (BCA) 2 Channel 1 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000030,EVA,N/A,BCA 2 Channel 2 Status,Battery Charger Assembly (BCA) 2 Channel 2 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000031,EVA,N/A,BCA 2 Channel 3 Status,Battery Charger Assembly (BCA) 2 Channel 3 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000032,EVA,N/A,BCA 2 Channel 4 Status,Battery Charger Assembly (BCA) 2 Channel 4 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000033,EVA,N/A,BCA 2 Channel 5 Status,Battery Charger Assembly (BCA) 2 Channel 5 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000034,EVA,N/A,BCA 2 Channel 6 Status,Battery Charger Assembly (BCA) 2 Channel 6 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000035,EVA,N/A,BCA 3 Channel 1 Status,Battery Charger Assembly (BCA) 3 Channel 1 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000036,EVA,N/A,BCA 3 Channel 2 Status,Battery Charger Assembly (BCA) 3 Channel 2 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000037,EVA,N/A,BCA 3 Channel 3 Status,Battery Charger Assembly (BCA) 3 Channel 3 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000038,EVA,N/A,BCA 3 Channel 4 Status,Battery Charger Assembly (BCA) 3 Channel 4 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000039,EVA,N/A,BCA 3 Channel 5 Status,Battery Charger Assembly (BCA) 3 Channel 5 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000040,EVA,N/A,BCA 3 Channel 6 Status,Battery Charger Assembly (BCA) 3 Channel 6 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000041,EVA,N/A,BCA 4 Channel 1 Status,Battery Charger Assembly (BCA) 4 Channel 1 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000042,EVA,N/A,BCA 4 Channel 2 Status,Battery Charger Assembly (BCA) 4 Channel 2 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000043,EVA,N/A,BCA 4 Channel 3 Status,Battery Charger Assembly (BCA) 4 Channel 3 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000044,EVA,N/A,BCA 4 Channel 4 Status,Battery Charger Assembly (BCA) 4 Channel 4 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000045,EVA,N/A,BCA 4 Channel 5 Status,Battery Charger Assembly (BCA) 4 Channel 5 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000046,EVA,N/A,BCA 4 Channel 6 Status,Battery Charger Assembly (BCA) 4 Channel 6 Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000047,EVA,N/A,RPCM ALFR A57 SW01 Voltage Status,"Pumps atmosphere from Airlock into Node one during depress, voltage status.",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000048,EVA,N/A,EVAS AL DP Switch Status,"Pumps atmosphere from Airlock into Node one during depress, switch status.",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000049,ETHOS,CNT,EVAS AL CL Sensor Pressure,Crewlock Pressure,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+AIRLOCK000050,ETHOS,N/A,ACS AL High Pressure O2 Supply Valve Actual Position,Hi P O2 Supply valve position,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000051,ETHOS,N/A,ACS AL Low Pressure O2 Supply Valve Actual Position,Lo P O2 Supply Valve position,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000052,ETHOS,N/A,ACS AL Low Pressure N2 Supply Valve Actual Position,N2 Supply Valve position,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000053,ETHOS,N/A,CCAA State AL,Airlock Air Conditioner State,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000054,ETHOS,PSI,PCA Cabin Pressure,Airlock Pressure,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+AIRLOCK000055,ETHOS,CNT,ACS AL O2 #2 Line Pressure Sensor Data,Airlock Hi P O2 Tank Pressure,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000056,ETHOS,CNT,ACS AL O2 #3 Line Pressure Sensor Data,Airlock Lo P O2 Tank Pressure,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000057,ETHOS,CNT,ACS AL N2 #1 Line Pressure Sensor Data,Airlock N2 Tank Pressure,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+AIRLOCK000058,CDH,N/A,RPCM ALFR A56 SW02 Voltage Status,Airlock Multiplexer/Demultiplexer (MDM) on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE1000001,CDH,N/A,RPCM N1-RS1-A SW11 Voltage Status,Node 1 Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE1000002,CDH,N/A,RPCM N1-RS2-C SW13 Voltage Status,Node 1 Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE2000001,ETHOS,CNT,PUMP N2 MT Average Accumulator Quantity,"Coolant water quantity (Node 2), MT",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE2000002,ETHOS,CNT,PUMP N2 LT Average Accumulator Quantity,"Coolant water quantity (Node 2), LT",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE2000003,ETHOS,N/A,CCAA State N2S2,Node 2 Air Conditioner State,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE2000004,CDH,N/A,RPCM N2PRT 2A3A_B SW01 Voltage Status,Node 2 Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE2000005,CDH,N/A,RPCM N2STD 1B4A_A SW01 Voltage Status,Node 2 Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE2000006,ETHOS,CNT,HXB N2 LT CTB Temperature,Air Cooling Fluid Temp (Node 2),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE2000007,ETHOS,CNT,HXB N2S1 MT CTB Temperature,Avionics Cooling Fluid Temp (Node 2),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE3000001,ETHOS,PSIA,MCA O2 Partial Pres,Node 3 ppO2,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+NODE3000002,ETHOS,PSIA,MCA N2 Partial Pres,Node 3 ppN2,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+NODE3000003,ETHOS,PSIA,MCA CO2 Partial Pres,Node 3 ppCO2,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+NODE3000004,ETHOS,N/A,UPA TO MODE,Urine Processor State,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+NODE3000005,ETHOS,PCT,"WSTA_QUANTITY (VOTED Q11,Q12,Q13)",Urine Tank Qty,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+NODE3000006,ETHOS,N/A,PROCESS_COMMAND,Water Processor State,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+NODE3000007,ETHOS,N/A,PROCESS_STEP,Water Processor Step,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+NODE3000008,ETHOS,PCT,Q_7183_1_MUXED,Waste Water Tank Qty,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+NODE3000009,ETHOS,PCT,Q_7183_3_MUXED,Clean Water Tank Qty,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+NODE3000010,ETHOS,N/A,PROCESS_COMMAND,Oxygen Generator State,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+NODE3000011,ETHOS,LBM/D,PROD_O2_PPD,O2 Production rate,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+NODE3000012,ETHOS,CNT,HXB N3S1 MT 3WMV CTB Temperature Sensor,Avionics Cooling Fluid Temp (Node 3),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE3000013,ETHOS,CNT,HXB N3S2 LT 3WMV CTB Temperature Sensor,Air Cooling Fluid Temp (Node 3),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE3000014,CDH,N/A,RPCM N3O5-2A2B-1F SW01 Voltage Status,Hub Control Zone (HCZ) Multiplexer/Demultiplexer 2 (MDM) on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE3000015,CDH,N/A,N3-O5_2A2B-2_RPCM_E SW03 Voltage Status,Node 3 Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE3000016,CDH,N/A,RPCM N3O4-1B4A-1F SW01 Voltage Status,Hub Control Zone (HCZ) Multiplexer/Demultiplexer 1 (MDM) on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE3000017,ETHOS,CNT,PUMP N3S1 MT Average Accumulator Quantity,Coolant water quantity (Node 3),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE3000018,ETHOS,N/A,CCAA State N3S1,Node 3 Air Conditioner State,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE3000019,ETHOS,CNT,PUMP N3S2 LT Average Accumulator Quantity,Coolant water quantity (Node 3),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+NODE3000020,CDH,N/A,N3-O4_1B4A-2_RPCM_E SW03 Voltage Status,Node 3 Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+P1000001,SPARTAN,CNT,EATCS_PTC_ANALOG_DATA_PM-B_OUT_FL_MTR_MEAS,Loop B Pump Flowrate (kg/hr),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+P1000002,SPARTAN,CNT,EATCS_PTC_ANALOG_DATA_PM-B_OUT_PRESS_XDCR_MEAS,Loop B PM Out Press (kPa),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+P1000003,SPARTAN,CNT,EATCS_PTC_ANALOG_DATA_PM-B_OUT_RTD_MEAS,Loop B PM Out Temp (deg C),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+P1000004,CATO,DEG,ACRFG2 5M Estimated Azimuth Position,S-Band Radio Frequency Group (RFG 2) Azimuth Gimbal Position,Browser and bridge,S-band gimbal,Modeled
+P1000005,CATO,DEG,ACRFG2 5M Estimated Elevation Position,S-Band Radio Frequency Group (RFG 2) Elevation Gimbal Position,Browser and bridge,S-band gimbal,Modeled
+P1000006,CDH,N/A,RPCM P1_1A_B HYBRID SW05 VOLTAGE STATUS,P1 Truss Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+P1000007,CATO,N/A,RPCM P1_2B_B HYBRID SW16 VOLTAGE STATUS,"S-Band Radio Frequency Group (RFG 2), on-off status",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+P1000008,CDH,N/A,RPCM P1_2B_C HYBRID SW03 VOLTAGE STATUS,Port Thermal Radiator (STR) Multiplexer/Demultiplexer (MDM) on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+P1000009,CDH,N/A,RPCM P1_2B_C HYBRID SW16 VOLTAGE STATUS,P1 Truss Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+P3000001,CDH,N/A,RPCM P3_1A_A HYBRID SW01 VOLTAGE STATUS,P3 Truss Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+P3000002,CDH,N/A,RPCM P3_2B_A HYBRID SW01 VOLTAGE STATUS,P3 Truss Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+P4000001,SPARTAN,CNT,DCSU P4LWR-2A SCA SW06 Raw Voltage,Photovolatic Control Unit (PVCU) - Solar Array - 2A - Drive Voltage,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+P4000002,SPARTAN,CNT,DCSU P4LWR-2A SCA SW06 Intg Current,Photovolatic Control Unit (PVCU) - Solar Array - 2A - Drive Current,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+P4000003,CDH,N/A,DCSU P4LWR-2A SCA MDM 120V On/Off Status,Photovolatic Control Unit (PVCU) - Solar Array - 2A Multiplexer/Demultiplexer (MDM) 120 Volt On-Off Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+P4000004,SPARTAN,CNT,DCSU P4UPR-4A SCA SW06 Raw Voltage,Photovolatic Control Unit (PVCU) - Solar Array - 4A - Drive Voltage,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+P4000005,SPARTAN,CNT,DCSU P4UPR-4A SCA SW06 Intg Current,Photovolatic Control Unit (PVCU) - Solar Array - 4A - Drive Current,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+P4000006,CDH,N/A,DCSU P4UPR-4A SCA MDM 120V On/Off Status,Photovolatic Control Unit (PVCU) - Solar Array - 4A Multiplexer/Demultiplexer (MDM) 120 Volt On-Off Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+P4000007,SPARTAN,DEG,P4 PV_PSN_1_ECU_BGA_Resolver_Conv_Position,Photovolatic Control Unit (PVCU) - Solar Array - 2A - Beta Gimble Assembly (BGA) Position (degrees),Browser and bridge,Solar beta joint,Modeled
+P4000008,SPARTAN,DEG,P4 PV_PSN_2_ECU_BGA_Resolver_Conv_Position,Photovolatic Control Unit (PVCU) - Solar Array - 4A - Beta Gimble Assembly (BGA) Position (degrees),Browser and bridge,Solar beta joint,Modeled
+P6000001,SPARTAN,CNT,DCSU P6LWR-4B SCA SW06 Raw Voltage,Photovolatic Control Unit (PVCU) - Solar Array - 4B - Drive Voltage,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+P6000002,SPARTAN,CNT,DCSU P6LWR-4B SCA SW06 Intg Current,Photovolatic Control Unit (PVCU) - Solar Array - 4B - Drive Current,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+P6000003,CDH,N/A,DCSU P6LWR-4B SCA MDM 120V On/Off Status,Photovolatic Control Unit (PVCU) - Solar Array - 4B Multiplexer/Demultiplexer (MDM) 120 Volt On-Off Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+P6000004,SPARTAN,CNT,DCSU P6UPR-2B SCA SW06 Raw Voltage,Photovolatic Control Unit (PVCU) - Solar Array - 2B - Drive Voltage,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+P6000005,SPARTAN,CNT,DCSU P6UPR-2B SCA SW06 Intg Current,Photovolatic Control Unit (PVCU) - Solar Array - 2B - Drive Current,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+P6000006,CDH,N/A,DCSU P6UPR-2B SCA MDM 120V On/Off Status,Photovolatic Control Unit (PVCU) - Solar Array - 2B Multiplexer/Demultiplexer (MDM) 120 Volt On-Off Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+P6000007,SPARTAN,DEG,P6 PV_PSN_1_ECU_BGA_Resolver_Conv_Position,Photovolatic Control Unit (PVCU) - Solar Array - 4B - Beta Gimble Assembly (BGA) Position (degrees),Browser and bridge,Solar beta joint,Modeled
+P6000008,SPARTAN,DEG,P6 PV_PSN_2_ECU_BGA_Resolver_Conv_Position,Photovolatic Control Unit (PVCU) - Solar Array - 2B - Beta Gimble Assembly (BGA) Position (degrees),Browser and bridge,Solar beta joint,Modeled
+RUSSEG000001,VVO,N/A,RS Current Mode-RS,Russian Segment Station Mode - Service Module (SM),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000002,VVO,N/A,SM KURS Equipment Set1 Operating-RS,First Kurs Equipment Kit Operating,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000003,VVO,N/A,SM KURS Equipment Set2 Operating-RS,Second Kurs Equipment Kit Operating,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000004,VVO,N/A,"SM KURS P1, P2 Failure-RS","Service Module Kurs P1, P2 Failure - Russian Segment",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000005,VVO,M,SM Distance from KURS-RS,Distance from Service Module (SM) Kurs (Range),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000006,VVO,M/S,SM Rate from SM KURS-RS,Rate from Service Module (SM) Kurs (Range Rate),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000007,VVO,N/A,SM KURS-P Test Mode-RS,Service Module (SM) Kurs-P Test Mode - Russian Segment,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000008,VVO,N/A,SM KURS-P Capture Signal -RS,"Service Module (SM) Kurs-P ""Capture"" Signal Availability",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000009,VVO,N/A,SM KURS-P Target Acquisition Signal-RS,Service Module (SM) Kurs-P Target Acquisition Signal - Russian Segment,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000010,VVO,N/A,SM KURS-P Functional Mode Signal-RS,Service Module (SM) Kurs-P Functional Mode Signal - Russian Segment,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000011,VVO,N/A,SM KURS-P In Standby Mode-RS,Service Module (SM) Kurs-P Standby Mode - Russian Segment,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000012,VVO,N/A,SM Docking Flag-RS,Service Module Docking Flag,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000013,VVO,N/A,SM Docking Port Engaged from Xfer Side-RS,Service Module (SM) Forward Docking Port Engaged,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000014,VVO,N/A,SM Docking Port Engaged from Instr Compartment Side-RS,Service Module (SM) Aft Docking Port Engaged,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000015,VVO,N/A,SM Docking Port Engaged Below (along SM -Y Axis)-RS,Service Module (SM) Nadir (Down-looking) Docking Port Engaged - Along Y-Axis,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000016,VVO,N/A,FGB Bottom Docking Port Engaged (along SM -Y Axis)-RS,Functional Cargo Block (FGB) Nadir (Down-looking) Docking Port Engaged - Along Y-Axis,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000017,VVO,N/A,SM Bottom UDM Docking Port Engaged (along SM -Y Axis)-RS,Service Module (SM) Nadir (Down-looking) Universal Docking Module (UDM) Docking Port Engaged - Along Y-Axis,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000018,VVO,N/A,MRM1 Docking Port Engaged-RS,Mini Research Module (MRM) 1 Docking Port Engaged - Russian Segment,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000019,VVO,N/A,MRM2 Docking Port Engaged-RS,Mini Research Module (MRM) 2 Docking Port Engaged - Russian Segment,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000020,VVO,N/A,Docked Vehicle Hooks Closed-RS,Service Module - Docked Vehicle Hooks Closed - Russian Segment,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000021,VVO,N/A,SM SUDN Active Attitude Mode-RS,"Service Module - Russian Guidance, Navigation, and Control - Active Attitude Mode - Russian Segment",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000022,VVO,N/A,SM SUDN Controls the Motion (RS master)-RS,"Service Module - Russian Guidance, Navigation, and Control - Motion Control - Russian Segment",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000023,VVO,N/A,SM SUDN Prepared to Free Drift Mode Transition-RS,"Service Module - Russian Guidance, Navigation, and Control - Prepared to Free Drift Mode Transition - Russian Segment",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000024,VVO,N/A,SM Attitude Thruster Operation Mode Terminated-RS,"Service Module - Russian Guidance, Navigation, and Control - Thruster Operation Mode Terminated - Russian Segment",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+RUSSEG000025,ADCO/VVO,N/A,SM SUDN Current Dynamic Mode-RS,"Service Module - Russian Guidance, Navigation, and Control - Current Dynamic Mode - Russian Segment",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S0000001,SPARTAN/VVO,DEG,TRRJ_M_BAD_DATA_FLOAT_STBD_JOINT_ANGLE_READOUT,Starboard Thermal Radiator Rotating Joint (TRRJ) Position (degrees),Browser and bridge,TRRJ,Modeled
+S0000002,SPARTAN/VVO,DEG,TRRJ_M_BAD_DATA_FLOAT_PORT_JOINT_ANGLE_READOUT,Port Thermal Radiator Rotating Joint (TRRJ) Position (degrees),Browser and bridge,TRRJ,Modeled
+S0000003,SPARTAN/VVO,DEG,SARJ_M_BAD_DATA_FLOAT_STBD_JOINT_ANGLE_READOUT,Solar Alpha Rotary Joint (SARJ) Starboard Joint Angle Position (degrees),Browser and bridge,SARJ,Modeled
+S0000004,SPARTAN/VVO,DEG,SARJ_M_BAD_DATA_FLOAT_PORT_JOINT_ANGLE_READOUT,Solar Alpha Rotary Joint (SARJ) Port Joint Angle Position (degrees),Browser and bridge,SARJ,Modeled
+S0000005,VVO,DEG,SARJ_P3_C_DATA_FLOAT_COMMANDED_POSITION,Solar Alpha Rotary Joint (SARJ) Port Joint Angle Commanded Position (degrees),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S0000006,VVO,N/A,TRRJ_M_DATA_USB_PORT_TRRJ_M_MODE,External Thermal Control System (ETCS) - Thermal Radiator Rotating Joint (TRRJ) - Loop B - Software mode,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S0000007,VVO,N/A,TRRJ_M_DATA_USB_STBD_TRRJ_M_MODE,External Thermal Control System (ETCS) - Thermal Radiator Rotating Joint (TRRJ) - Loop A - Software mode,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S0000008,VVO,N/A,SARJ_M_PORT_DATA_USB_SARJ_M_MODE,External Primary Solar Alpha Rotary Joint (SARJ) Port Mode,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S0000009,VVO,N/A,SARJ_M_STBD_DATA_USB_SARJ_M_MODE,External Primary Solar Alpha Rotary Joint (SARJ) Starboard Mode,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S0000010,CDH,N/A,RPCM S0 1A-C SW01 Voltage Status,External Control Zone Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S0000011,CDH,N/A,RPCM S0 1A-C SW16 Voltage Status,S0 Truss Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S0000012,CDH,N/A,RPCM S0 2B-C SW01 Voltage Status,External Control Zone Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S0000013,CDH,N/A,RPCM S0 2B-C SW16 Voltage Status,S0 Truss Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S1000001,SPARTAN,CNT,EATCS_PTC_ANALOG_DATA_PM-A_OUT_FL_MTR_MEAS,Loop A Pump Flowrate (kg/hr),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S1000002,SPARTAN,CNT,EATCS_PTC_ANALOG_DATA_PM-A_OUT_PRESS_XDCR_MEAS,Loop A PM Out Press (kPa),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S1000003,SPARTAN,CNT,EATCS_PTC_ANALOG_DATA_PM-A_OUT_RTD_MEAS,Loop A PM Out Temp (deg C),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S1000004,CATO,DEG,ACRFG1 5M Estimated Azimuth Position,S-Band Radio Frequency Group (RFG 1) Azimuth Gimbal Position,Browser and bridge,S-band gimbal,Modeled
+S1000005,CATO/VVO,DEG,ACRFG1 5M Estimated Elevation Position,S-Band Radio Frequency Group (RFG 1) Elevation Gimbal Position,Browser and bridge,S-band gimbal,Modeled
+S1000006,CDH,N/A,RPCM S1_1A_C HYBRID SW03 VOLTAGE STATUS,Starboard Thermal Radiator (STR) Multiplexer/Demultiplexer (MDM) on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S1000007,CDH,N/A,RPCM S1_1A_C HYBRID SW16 VOLTAGE STATUS,S1 Truss Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S1000008,CDH,N/A,RPCM S1_2B_B HYBRID SW05 VOLTAGE STATUS,S1 Truss Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S1000009,CATO,N/A,RPCM S1_1A_B HYBRID SW16 VOLTAGE STATUS,"S-Band Radio Frequency Group (RFG 1), on-off status",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S3000001,CDH,N/A,RPCM S3_1A_A HYBRID SW01 VOLTAGE STATUS,S3 Truss Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S3000002,CDH,N/A,RPCM S3_2B_A HYBRID SW01 VOLTAGE STATUS,S3 Truss Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S4000001,SPARTAN,CNT,DCSU S4LWR-1A SCA SW06 Raw Voltage,Photovolatic Control Unit (PVCU) - Solar Array - 1A - Drive Voltage,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S4000002,SPARTAN,CNT,DCSU S4LWR-1A SCA SW06 Intg Current,Photovolatic Control Unit (PVCU) - Solar Array - 1A - Drive Current,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S4000003,CDH,N/A,DCSU S4LWR-1A SCA MDM 120V On/Off Status,Photovolatic Control Unit (PVCU) - Solar Array - 1A Multiplexer/Demultiplexer (MDM) 120 Volt On-Off Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S4000004,SPARTAN,CNT,DCSU S4UPR-3A SCA SW06 Raw Voltage,Photovolatic Control Unit (PVCU) - Solar Array - 3B - Drive Voltage,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S4000005,SPARTAN,CNT,DCSU S4UPR-3A SCA SW06 Intg Current,Photovolatic Control Unit (PVCU) - Solar Array - 3B - Drive Current,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S4000006,CDH,N/A,DCSU S4UPR-3A SCA MDM 120V On/Off Status,Photovolatic Control Unit (PVCU) - Solar Array - 3A Multiplexer/Demultiplexer (MDM) 120 Volt On-Off Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S4000007,SPARTAN,DEG,S4 PV_PSN_1_ECU_BGA_Resolver_Conv_Position,Photovolatic Control Unit (PVCU) - Solar Array - 1A - Beta Gimble Assembly (BGA) Position (degrees),Browser and bridge,Solar beta joint,Modeled
+S4000008,SPARTAN,DEG,S4 PV_PSN_2_ECU_BGA_Resolver_Conv_Position,Photovolatic Control Unit (PVCU) - Solar Array - 3A - Beta Gimble Assembly (BGA) Position (degrees),Browser and bridge,Solar beta joint,Modeled
+S6000001,SPARTAN,CNT,DCSU S6LWR-3B SCA SW06 Raw Voltage,Photovolatic Control Unit (PVCU) - Solar Array - 3B - Drive Voltage,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S6000002,SPARTAN,CNT,DCSU S6LWR-3B SCA SW06 Intg Current,Photovolatic Control Unit (PVCU) - Solar Array - 3B - Drive Current,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S6000003,CDH,N/A,DCSU S6LWR-3B SCA MDM 120V On/Off Status,Photovolatic Control Unit (PVCU) - Solar Array - 3B Multiplexer/Demultiplexer (MDM) 120 Volt On-Off Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S6000004,SPARTAN,CNT,DCSU S6UPR-1B SCA SW06 Raw Voltage,Photovolatic Control Unit (PVCU) - Solar Array - 1B - Drive Voltage,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S6000005,SPARTAN,CNT,DCSU S6UPR-1B SCA SW06 Intg Current,Photovolatic Control Unit (PVCU) - Solar Array - 1B - Drive Current,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+S6000006,CDH,N/A,DCSU S6UPR-1B SCA MDM 120V On/Off Status,Photovolatic Control Unit (PVCU) - Solar Array - 1B Multiplexer/Demultiplexer (MDM) 120 Volt On-Off Status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+S6000007,SPARTAN,DEG,S6 PV_PSN_1_ECU_BGA_Resolver_Conv_Position,Photovolatic Control Unit (PVCU) - Solar Array - 3B - Beta Gimble Assembly (BGA) Position (degrees),Browser and bridge,Solar beta joint,Modeled
+S6000008,SPARTAN,DEG,S6 PV_PSN_2_ECU_BGA_Resolver_Conv_Position,Photovolatic Control Unit (PVCU) - Solar Array - 1B - Beta Gimble Assembly (BGA) Position (degrees),Browser and bridge,Solar beta joint,Modeled
+TIME_000001,N/A,MS,Time of Occurrence,Greenwich Mean Time (GMT),Separate status subscription,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+TIME_000002,N/A,YR,Year of Occurrence,Year,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000001,ADCO,N/A,STS_SEQ_CMG1InUse,Control Moment Gyroscope (CMG)-1 On-Line,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000002,ADCO,N/A,STS_SEQ_CMG2InUse,Control Moment Gyroscope (CMG)-2 On-Line,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000003,ADCO,N/A,STS_SEQ_CMG3InUse,Control Moment Gyroscope (CMG)-3 On-Line,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000004,ADCO,N/A,STS_SEQ_CMG4InUse,Control Moment Gyroscope (CMG)-4 On-Line,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000005,ADCO,ND,CDT_CA_CMGSysNumrActCMGs,Number of Control Moment Gyroscope (CMG)s Online,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000006,ADCO,FT-LB,CDT_CA_UnlimTorqueCmdInBody_1,Control Moment Gyroscope (CMG) Control Torque - Roll (N-m),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000007,ADCO,FT-LB,CDT_CA_UnlimTorqueCmdInBody_2,Control Moment Gyroscope (CMG) Control Torque - Pitch (N-m),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000008,ADCO,FT-LB,CDT_CA_UnlimTorqueCmdInBody_3,Control Moment Gyroscope (CMG) Control Torque - Yaw (N-m),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000009,ADCO,FT-LB-S,CDT_CA_CMGSysActMomMag,Active Control Moment Gyroscope (CMG) Momentum (Nms),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000010,ADCO/VVO,PCT,STS_CA_CMGMomentumPercentCapc,Control Moment Gyroscope (CMG) Momentum Percentage (%),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000011,ADCO,N/A,STS_CA_InhibitThrusterFiring,Desaturation Request (Enabled/Inhibited),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000012,ADCO/VVO,N/A,STS_SEQ_CurrentModeStatusCC,"US Guidance, Navigation and Control (GNC) Mode",Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000013,ADCO,N/A,STS_AD_Selected_Attitude,US Attitude Source,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000014,ADCO,N/A,STS_AD_Selected_Rate,US Rate Source,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000015,ADCO,N/A,STS_SD_SelectedStateSource,US State Vector Source,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000016,ADCO,N/A,STS_CA_AttControllerType,Attitude Controller Type,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000017,ADCO,N/A,STS_CA_AttCntrlRefFrame,Attitude Control Reference Frame,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000018,ADCO,ND,CDT_PS_PDLVLHAttQ0,US Current Local Vertical Local Horizontal (LVLH) Attitude Quaternion Component 0,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000019,ADCO,ND,CDT_PS_PDLVLHAttQ1,US Current Local Vertical Local Horizontal (LVLH) Attitude Quaternion Component 1,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000020,ADCO,ND,CDT_PS_PDLVLHAttQ2,US Current Local Vertical Local Horizontal (LVLH) Attitude Quaternion Component 2,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000021,ADCO,ND,CDT_PS_PDLVLHAttQ3,US Current Local Vertical Local Horizontal (LVLH) Attitude Quaternion Component 3,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000022,ADCO,RAD,CDT_CA_ThetaErrorInRef_1,US Attitude Roll Error (deg),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000023,ADCO,RAD,CDT_CA_ThetaErrorInRef_2,US Attitude Pitch Error (deg),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000024,ADCO,RAD,CDT_CA_ThetaErrorInRef_3,US Attitude Yaw Error (deg),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000025,ADCO,RAD/S,CDT_PS_PDRateX,US Inertial Attitude Rate X (deg/s),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000026,ADCO,RAD/S,CDT_PS_PDRateY,US Inertial Attitude Rate Y (deg/s),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000027,ADCO,RAD/S,CDT_PS_PDRateZ,US Inertial Attitude Rate Z (deg/s),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000028,ADCO,ND,STS_CA_AttCmdQuat_0,US Commanded Attitude Quaternion Component 0,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000029,ADCO,ND,STS_CA_AttCmdQuat_1,US Commanded Attitude Quaternion Component 1,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000030,ADCO,ND,STS_CA_AttCmdQuat_2,US Commanded Attitude Quaternion Component 2,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000031,ADCO,ND,STS_CA_AttCmdQuat_3,US Commanded Attitude Quaternion Component 3,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000032,ADCO/TOPO,FT,STS_SD_Selected_J2000_PosX,"US Guidance, Navigation and Control (GNC) J2000 Propagated State Vector - X (km)",Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000033,ADCO/TOPO,FT,STS_SD_Selected_J2000_PosY,"US Guidance, Navigation and Control (GNC) J2000 Propagated State Vector - Y (km)",Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000034,ADCO/TOPO,FT,STS_SD_Selected_J2000_PosZ,"US Guidance, Navigation and Control (GNC) J2000 Propagated State Vector - Z (km)",Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000035,ADCO/TOPO,FT/S,STS_SD_Selected_J2000_VelX,"US Guidance, Navigation and Control (GNC) J2000 Propagated State Vector - X (m/s)",Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000036,ADCO/TOPO,FT/S,STS_SD_Selected_J2000_VelY,"US Guidance, Navigation and Control (GNC) J2000 Propagated State Vector - Y (m/s)",Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000037,ADCO/TOPO,FT/S,STS_SD_Selected_J2000_VelZ,"US Guidance, Navigation and Control (GNC) J2000 Propagated State Vector - Z (m/s)",Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000038,ADCO,FT-LB-S,CDT_CA_CMGSysActMomCapc,Active Control Moment Gyroscope (CMG) Momentum Capacity (Nms),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000039,ADCO,KG,CDT_PS_ISSAMass,ISS Total Mass (kg),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000040,ADCO,DEG,CDT_PS_PDSolarBeta,Solar Beta Angle (degrees),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000041,ADCO,N/A,CW_CA_LossOfAttCntrlLatched,Loss of CMG Attitude Control (LOAC) Caution Message In Alarm,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000042,ADCO,N/A,Table ewc list Station-Wide Loss of Attitude Control,Loss of ISS Attitude Control (LOAC) Caution Message In Alarm,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000043,ADCO,N/A,STS_GPS1_OpStatus,Global Positioning System (GPS-1) Ops Status,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000044,ADCO,N/A,STS_GPS2_OpStatus,Global Positioning System (GPS-2) Ops Status,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000045,ADCO,DEGF,CDT_CMG1_M01SpinBearingTemp1,Spin Motor Spin Bearing Temperature - Control Moment Gyroscope (CMG) 1 (deg C),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000046,ADCO,DEGF,CDT_CMG2_M01SpinBearingTemp1,Spin Motor Spin Bearing Temperature - Control Moment Gyroscope (CMG) 2 (deg C),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000047,ADCO,DEGF,CDT_CMG3_M01SpinBearingTemp1,Spin Motor Spin Bearing Temperature - Control Moment Gyroscope (CMG) 3 (deg C),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000048,ADCO,DEGF,CDT_CMG4_M01SpinBearingTemp1,Spin Motor Spin Bearing Temperature - Control Moment Gyroscope (CMG) 4 (deg C),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000049,ADCO,DEGF,CDT_CMG1_M01SpinBearingTemp2,Hall Resolver Spin Bearing Temperature - Control Moment Gyroscope (CMG) 1 (deg C),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000050,ADCO,DEGF,CDT_CMG2_M01SpinBearingTemp2,Hall Resolver Spin Bearing Temperature - Control Moment Gyroscope (CMG) 2 (deg C),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000051,ADCO,DEGF,CDT_CMG3_M01SpinBearingTemp2,Hall Resolver Spin Bearing Temperature - Control Moment Gyroscope (CMG) 3 (deg C),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000052,ADCO,DEGF,CDT_CMG4_M01SpinBearingTemp2,Hall Resolver Spin Bearing Temperature - Control Moment Gyroscope (CMG) 4 (deg C),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000053,ETHOS,PSIA,MCA O2 Partial Pres,Lab ppO2,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000054,ETHOS,PSIA,MCA N2 Partial Pres,Lab ppN2,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000055,ETHOS,PSIA,MCA CO2 Partial Pres,Lab ppCO2,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000056,ETHOS,CNT,PUMP LAB LT Average Accumulator Quantity,"Coolant water quantity, LT (Lab)",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000057,ETHOS,CNT,PUMP LAB MT Average Accumulator Quantity,"Coolant water quantity, MT (Lab)",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000058,ETHOS,PSI,PCA Cabin Pressure,Cabin pressure,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000059,ETHOS,CNT,CCAA Raw Inlet Temp 1 L1,Cabin temperature,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000060,ETHOS,CNT,HXB LAB MT REG Temperature Sensor,Avionics Cooling Fluid Temp (Lab),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000061,ETHOS,CNT,HXB LAB LT CTB Temperature Sensor,Air Cooling Fluid Temp (Lab),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000062,ETHOS,CNT,VRS Vent Valve Position Raw,Vacuum Resource System Valve Position,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000063,ETHOS,CNT,VES Vent Valve Position Raw,Vacuum Exhaust System Valve Position,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000064,ETHOS,N/A,CCAA State L1,Lab Port Air Conditioner State,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000065,ETHOS,N/A,CCAA State L2,Lab Starboard Air Conditioner State,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000066,CDH,N/A,RPCM LAF1 A53 SW07 Voltage Status,Command and Control (C&C) Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000067,CDH,N/A,RPCM LAF5 A57 SW03 Voltage Status,Command and Control (C&C) Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000068,CDH,N/A,RPCM LAP3 A36 SW01 Voltage Status,Command and Control (C&C) Multiplexer/Demultiplexer (MDM) 3 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000069,CDH,N/A,RPCM LAF1 A53 SW09 Voltage Status,Internal Control Zone Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000070,CDH,N/A,RPCM LAF5 A57 SW04 Voltage Status,Internal Control Zone Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000071,CDH,N/A,RPCM LAF1 A53 SW11 Voltage Status,Payload (PL) Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000072,CDH,N/A,RPCM LAF2-2B-A58 SW01 Voltage Status,Payload (PL) Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000073,CDH,N/A,RPCM LAFE A2 SW14 Voltage Status,"Guidance, Navigation and Control (GNC) Multiplexer/Demultiplexer 1 on-off status",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000074,CDH,N/A,RPCM LAAE A19 SW03 Voltage Status,"Guidance, Navigation and Control (GNC) Multiplexer/Demultiplexer 2 on-off status",Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000075,CDH,N/A,RPCM LAF1 A53 SW08 Voltage Status,Power Mangement Controller Unit (PMCU) 1 Multiplexer/Demultiplexer 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000076,CDH,N/A,RPCM LAF5 A57 SW01 Voltage Status,Power Mangement Controller Unit (PMCU) 2 Multiplexer/Demultiplexer 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000077,CDH,N/A,RPCM LAFE A2 SW09 Voltage Status,US Lab Multiplexer/Demultiplexer (MDM) 1 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000078,CDH,N/A,RPCM LAAE A19 SW04 Voltage Status,US Lab Multiplexer/Demultiplexer (MDM) 2 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000079,CDH,N/A,RPCM LAAE A19 SW13 Voltage Status,US Lab Multiplexer/Demultiplexer (MDM) 3 on-off status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000080,CDH,N/A,RPCM LAFE A5 SW01 Voltage Status,Permanent Multipurpose Module - System Power voltage status,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000081,VVO,N/A,STS_CA_ManeuverInProgress,Attitude Maneuver In Progress status,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000082,ODIN,INTEGR,CCCCPV packet command counter standard  received cmd count,Standard Command Counter - Count of standard commands received by the ISS Command and Control Computer,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000083,ODIN,INTEGR,CCCCPV packet cmd counter data load received command count,Data Load Command Counter - Count of data load commands received by the ISS Command and Control Computer,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000084,ODIN,S,Coarse,ISS Command and Control Multiplexer/Demultiplexer Onboard Time (course),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000085,ODIN,S,Fine Time,ISS Command and Control Multiplexer/Demultiplexer Onboard Time (fine),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000086,ODIN/VVO,N/A,Smc cvt commanded station mode,ISS Station Mode,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+USLAB000087,ODIN,INTEGR,*Total Number of Active Core Laptops,# Laptops active and connected to the Primary Command and Control (C&C) Multiplexer/Demultiplexer (MDM),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000088,CATO,N/A,HRFM VBSP 1 Activity Indicator,Ku-Band Video Downlink Channel 1 Activity,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000089,CATO,N/A,HRFM VBSP 2 Activity Indicator,Ku-Band Video Downlink Channel 2 Activity,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000090,CATO,N/A,HRFM VBSP 3 Activity Indicator,Ku-Band Video Downlink Channel 3 Activity,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000091,CATO,N/A,HRFM VBSP 4 Activity Indicator,Ku-Band Video Downlink Channel 4 Activity,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000092,CATO,INTEGR,String 1 Sband software status system status active string,Active String of S-Band,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000093,CATO,N/A,IAC-1 Active/Backup Indication,Internal Audio Controller (IAC) - IAC-1 Active/Backup Indication,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000094,CATO,N/A,IAC-2 Active/Backup Indication,Internal Audio Controller (IAC) - IAC-2 Active/Backup Indication,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000095,CATO,INTEGR,Cvt out destination usage table 9  source id,Video Source Routed to Downlink 1,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000096,CATO,INTEGR,Cvt out destination usage table 13  source id,Video Source Routed to Downlink 2,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000097,CATO,INTEGR,Cvt out destination usage table 14  source id,Video Source Routed to Downlink 3,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000098,CATO,INTEGR,Cvt out destination usage table 29  source id,Video Source Routed to Downlink 4,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000099,CATO,N/A,RPCM LAF5 A57 SW08 Voltage Status,Space-To-Space Radio (UHF) 1 Power,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000100,CATO,N/A,RPCM LAFE A12 SW04 Voltage Status,Space-To-Space Radio (UHF) 2 Power,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000101,CATO,N/A,SSSR_FrameSync,Space-To-Space Radio Frame Sync Lock,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+USLAB000102,TOPO,S,STS_SD_Selected_State_TimeTag,State vector time tag,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+Z1000001,ADCO,G,CDT_CMG1_M01WheelUnbalanceSensor,Control Moment Gyroscope (CMG)-1 Vibration (g),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+Z1000002,ADCO,G,CDT_CMG2_M01WheelUnbalanceSensor,Control Moment Gyroscope (CMG)-2 Vibration (g),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+Z1000003,ADCO,G,CDT_CMG3_M01WheelUnbalanceSensor,Control Moment Gyroscope (CMG)-3 Vibration (g),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+Z1000004,ADCO,G,CDT_CMG4_M01WheelUnbalanceSensor,Control Moment Gyroscope (CMG)-4 Vibration (g),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+Z1000005,ADCO,AMP,CDT_CMG1_M03SMCurrentCmd,Control Moment Gyroscope (CMG)-1 Spin Motor Current (amps),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+Z1000006,ADCO,AMP,CDT_CMG2_M03SMCurrentCmd,Control Moment Gyroscope (CMG)-2 Spin Motor Current (amps),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+Z1000007,ADCO,AMP,CDT_CMG3_M03SMCurrentCmd,Control Moment Gyroscope (CMG)-3 Spin Motor Current (amps),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+Z1000008,ADCO,AMP,CDT_CMG4_M03SMCurrentCmd,Control Moment Gyroscope (CMG)-4 Spin Motor Current (amps),Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+Z1000009,ADCO,RPM,CDT_CMG1_M01WheelSpeed,Control Moment Gyroscope (CMG) 1 Wheel Speed (rpm),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+Z1000010,ADCO,RPM,CDT_CMG2_M01WheelSpeed,Control Moment Gyroscope (CMG) 2 Wheel Speed (rpm),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+Z1000011,ADCO,RPM,CDT_CMG3_M01WheelSpeed,Control Moment Gyroscope (CMG) 3 Wheel Speed (rpm),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+Z1000012,ADCO,RPM,CDT_CMG4_M01WheelSpeed,Control Moment Gyroscope (CMG) 4 Wheel Speed (rpm),Browser and bridge,Raw telemetry / panels / derived use,Modeled
+Z1000013,CATO,N/A,TRC PLC Selection,Ku-Band Transmit,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+Z1000014,CATO,DEG,TRC Current SGANT EL Position,Ku-Band SGANT Elevation Position,Browser and bridge,Ku elevation,Modeled
+Z1000015,CATO,N/A,N/A,Ku-Band SGANT Cross-Elevation Position,Browser and bridge,Ku cross-elevation,Modeled
+CSAMT000001,CSA,cm,,MSS MT Position Float,Browser and bridge,Mobile transporter,Modeled
+CSASSRMS001,CSA,,,MSS EDCD SSRMS Base Location,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSASSRMS002,CSA,,,MSS EDCD SSRMS Base Location,Browser and bridge,Canadarm2 anchor,Modeled
+CSASSRMS003,CSA,n/a,,MSS EDCD SSRMS Operating Base (Which LEE is Base),Browser and bridge,Canadarm2 anchored end,Modeled
+CSASSRMS004,CSA,DEG,,SSRMS SR Measured Joint Position,Browser and bridge,Canadarm2 joint,Modeled
+CSASSRMS005,CSA,DEG,,SSRMS SY Measured Joint Position,Browser and bridge,Canadarm2 joint,Modeled
+CSASSRMS006,CSA,DEG,,SSRMS SP Measured Joint Position,Browser and bridge,Canadarm2 joint,Modeled
+CSASSRMS007,CSA,DEG,,SSRMS EP Measured Joint Position,Browser and bridge,Canadarm2 joint,Modeled
+CSASSRMS008,CSA,DEG,,SSRMS WP Measured Joint Position,Browser and bridge,Canadarm2 joint,Modeled
+CSASSRMS009,CSA,DEG,,SSRMS WY Measured Joint Position,Browser and bridge,Canadarm2 joint,Modeled
+CSASSRMS010,CSA,DEG,,SSRMS WR Measured Joint Position,Browser and bridge,Canadarm2 joint,Modeled
+CSASSRMS011,CSA,n/a,,MSS OCS Payload Status SSRMS Tip LEE,Browser and bridge,Raw telemetry / panels / derived use,Modeled
+CSASPDM0001,CSA,,,MSS OCS Base Location SPDM,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSASPDM0002,CSA,,,MSS OCS Base Location SPDM,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSASPDM0003,CSA,DEG,,MSS OCS SPDM 1 SR Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0004,CSA,DEG,,MSS OCS SPDM 1 SY Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0005,CSA,DEG,,MSS OCS SPDM 1 SP Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0006,CSA,DEG,,MSS OCS SPDM 1 EP Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0007,CSA,DEG,,MSS OCS SPDM 1 WP Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0008,CSA,DEG,,MSS OCS SPDM 1 WY Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0009,CSA,DEG,,MSS OCS SPDM 1 WR Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0010,CSA,n/a,,MSS Payload Status OCS SPDM Arm 1 OTCM,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSASPDM0011,CSA,DEG,,MSS OCS SPDM 2 SR Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0012,CSA,DEG,,MSS OCS SPDM 2 SY Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0013,CSA,DEG,,MSS OCS SPDM 2 SP Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0014,CSA,DEG,,MSS OCS SPDM 2 EP Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0015,CSA,DEG,,MSS OCS SPDM 2 WP Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0016,CSA,DEG,,MSS OCS SPDM 2 WY Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0017,CSA,DEG,,MSS OCS SPDM 2 WR Measured Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0018,CSA,,,MSS Payload Status OCS SPDM Arm 2 OTCM?,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSASPDM0019,CSA,n/a,,MSS Payload Status OCS SPDM Arm 2 OTCM,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSASPDM0020,CSA,DEG,,MSS OCS SPDM Body Roll Joint Position,Browser and bridge,Dextre joint,Modeled
+CSASPDM0021,CSA,,,MSS Payload Status OCS SPDM Body?,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSASPDM0022,CSA,n/a,,MSS Payload Status OCS SPDM Body,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSAMBS00001,CSA,,,MSS OCS Payload Status MBS MCAS?,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSAMBS00002,CSA,n/a,,MSS OCS Payload Status MBS MCAS,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSAMBA00003,CSA,,,MSS OCS Payload Status MBS POA?,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSAMBA00004,CSA,n/a,,MSS OCS Payload Status MBS POA,Browser and bridge,Raw telemetry / panels / derived use,Frozen reference or unmodeled
+CSAMT000002,CSA,N/A,Mobile Transporter worksite,MSS Mobile Transporter worksite identifier,Browser and bridge,Raw telemetry / panels / derived use,Modeled

@@ -1,0 +1,27 @@
+/* virtual-controls.css: Stile für die Gerätesteuerung der virtuellen Station im
+   Kommandofenster (virtual-controls.js): aufklappbare Abschnitte (.vc-section), Schalter
+   (.vc-toggle), Gerätezeilen (.vc-device) und Schaltergruppen. Farben und Schriften kommen
+   aus den CSS-Variablen des aktiven Farbschemas in iss_twin.html (--acc, --line2, --f-disp …). */
+.vc-section{border:1px solid var(--line2);margin:8px 0;background:var(--bg2)}
+.vc-section summary{padding:9px;cursor:pointer;font:600 13px var(--f-disp);color:var(--acc)}
+.vc-body{padding:4px 9px 10px}.vc-toggle{display:inline-flex;align-items:center;gap:5px;margin:5px 9px 5px 0;font-size:11px;cursor:pointer}
+.vc-toggle input{accent-color:var(--acc2)}.vc-device{padding:7px 0;border-bottom:1px solid var(--line)}
+.vc-device>b{display:block;color:var(--fg);font-size:11px}.vc-device>span{display:block;color:var(--dim);font-size:10px;margin-top:3px}
+.vc-switches{display:flex;align-items:center;flex-wrap:wrap;gap:3px}.vc-switches button{padding:3px 6px}
+.vc-range{display:block;font-size:11px;margin:8px 0}.vc-range input,.vc-range select{display:block;width:100%;margin-top:5px}.vc-range output{float:right;color:var(--acc2)}
+.vc-range select,.vc-range input[type=number]{background:var(--bg);border:1px solid var(--line2);padding:6px}
+.vc-status,#virtualLife{white-space:pre-line;font-size:11px;line-height:1.7;padding:7px 0}
+#virtualAlarms{font-size:11px;line-height:1.5;color:var(--warn)}#virtualFeedback{font-size:10px;color:var(--acc2);min-height:18px;margin-top:5px}
+.cmd-main-buttons{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}.cmd-sliders{border:1px solid var(--line2);margin:8px 0;background:var(--bg2)}
+.cmd-sliders>summary{padding:9px;cursor:pointer;font:600 13px var(--f-disp);color:var(--acc)}.cmd-sliders>.vc-body{padding:4px 9px 10px;display:flex;flex-direction:column;gap:5px}
+.cmd-sliders label{font-size:11px}
+#collisionWarning{max-width:100%;padding:4px 8px;background:rgba(7,23,35,.88);color:#b8d6d9;font:10.5px/1.4 var(--f-mono);border-left:2px solid #305b66;pointer-events:none}
+#collisionWarning.collision-hit{color:#ffc0a8;border-left-color:#ff593d;background:rgba(48,20,16,.93)}
+#earthCredit{font:9.5px/1.3 var(--f-mono);color:#85adbd;pointer-events:none;max-width:100%;padding:2px 6px;background:rgba(4,8,12,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmd-sliders select{max-width:240px;background:var(--bg2);color:var(--fg);padding:5px}
+#planetLabels{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
+.planet-label{position:absolute;left:0;top:0;transform:translate(-50%,-50%);will-change:transform;color:var(--fg);background:color-mix(in srgb,var(--bg) 75%,transparent);border:1px solid color-mix(in srgb,var(--acc) 40%,transparent);border-radius:3px;padding:3px 5px;font:10px var(--f-mono);text-shadow:0 1px 2px #000;white-space:nowrap}
+.planet-label[hidden]{display:none}
+#planetSeg{flex-wrap:wrap}
+
+.vc-range select,.vc-range input[type=number],.cmd-sliders select{color:var(--fg)}

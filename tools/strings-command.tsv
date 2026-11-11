@@ -1,0 +1,207 @@
+Hide|Ausblenden|Ocultar|Скрыть|Masquer|隠す
+Re-sync|Neu synchronisieren|Resincronizar|Пересинхронизировать|Resynchroniser|再同期
+Collapse / expand the command window|Befehlsfenster ein- / ausklappen|Plegar / desplegar la ventana de mando|Свернуть / развернуть окно команд|Replier / déplier la fenêtre de commande|コマンド窓の折りたたみ／展開
+Discard the virtual fork and return to telemetry|Virtuellen Zweig verwerfen und zur Telemetrie zurückkehren|Descartar la ISS virtual y volver a la telemetría|Отбросить виртуальную копию и вернуться к телеметрии|Abandonner la copie virtuelle et revenir à la télémétrie|仮想分岐を破棄してテレメトリに戻る
+Resize command window|Befehlsfenster in der Größe ändern|Cambiar tamaño de la ventana de mando|Изменить размер окна команд|Redimensionner la fenêtre de commande|コマンド窓のサイズ変更
+Simulation time step|Simulationszeitschritt|Paso de tiempo de simulación|Шаг времени моделирования|Pas de temps de simulation|シミュレーション時間ステップ
+Time|Zeit|Tiempo|Время|Temps|時間
+Pause|Pause|Pausa|Пауза|Pause|一時停止
+Pause / resume the virtual station|Virtuelle Station anhalten / fortsetzen|Pausar / reanudar la estación virtual|Пауза / продолжение виртуальной станции|Mettre en pause / reprendre la station virtuelle|仮想ステーションの一時停止／再開
+Time scale|Zeitraffer|Escala de tiempo|Масштаб времени|Échelle de temps|時間倍率
+Real time|Echtzeit|Tiempo real|Реальное время|Temps réel|実時間
+10× simulated time|10× Simulationszeit|10× tiempo simulado|10× модельное время|10× temps simulé|10倍速
+60× simulated time|60× Simulationszeit|60× tiempo simulado|60× модельное время|60× temps simulé|60倍速
+300× simulated time|300× Simulationszeit|300× tiempo simulado|300× модельное время|300× temps simulé|300倍速
+Advance 10 simulated seconds (while paused)|10 simulierte Sekunden weiter (in der Pause)|Avanzar 10 s simulados (en pausa)|Вперёд на 10 модельных секунд (на паузе)|Avancer de 10 s simulées (en pause)|一時停止中に10秒進める
+Stop thrust|Schub stoppen|Detener empuje|Остановить тягу|Arrêter la poussée|推力停止
+Damp rates|Raten dämpfen|Amortiguar velocidades|Погасить вращение|Amortir les vitesses|角速度減衰
+Reset motion (sim)|Bewegung zurücksetzen (Sim)|Restablecer movimiento (sim)|Сбросить движение (сим)|Réinitialiser le mouvement (sim)|運動リセット（シム）
+Export session|Sitzung exportieren|Exportar sesión|Экспорт сеанса|Exporter la session|セッションを書き出す
+Virtual station only. Coupled engineering approximation; idealized thrusters and aggregate systems.|Nur virtuelle Station. Gekoppeltes technisches Näherungsmodell; idealisierte Triebwerke und zusammengefasste Systeme.|Solo estación virtual. Aproximación de ingeniería acoplada; propulsores idealizados y sistemas agregados.|Только виртуальная станция. Связанная инженерная модель; идеализированные двигатели и обобщённые системы.|Station virtuelle uniquement. Approximation d'ingénierie couplée ; propulseurs idéalisés et systèmes agrégés.|仮想ステーションのみ。連成した工学的近似モデル。スラスターは理想化、システムは集約表現。
+Presets|Voreinstellungen|Preajustes|Предустановки|Préréglages|プリセット
+Autotrack sun|Sonne nachführen|Seguir al Sol|Слежение за Солнцем|Suivi du Soleil|太陽自動追尾
+SARJ, BGA and TRRJ follow the Sun|SARJ, BGA und TRRJ folgen der Sonne|SARJ, BGA y TRRJ siguen al Sol|SARJ, BGA и TRRJ следят за Солнцем|SARJ, BGA et TRRJ suivent le Soleil|SARJ・BGA・TRRJが太陽を追尾
+Feather arrays|Flügel in Segelstellung|Paneles en bandera|Батареи по потоку|Panneaux en drapeau|アレイをフェザリング
+Arrays edge-on to the velocity vector (drag reduction)|Flügel kantenparallel zum Geschwindigkeitsvektor (weniger Luftwiderstand)|Paneles de canto al vector velocidad (menos resistencia)|Батареи ребром к вектору скорости (меньше сопротивления)|Panneaux de profil par rapport à la vitesse (moins de traînée)|アレイを速度方向に対し真横に（抗力低減）
+Park joints|Gelenke parken|Estacionar articulaciones|Зафиксировать приводы|Garer les articulations|関節を固定位置へ
++XVV|+XVV|+XVV|+XVV|+XVV|+XVV
+Standard +XVV torque-equilibrium attitude|Standard-Fluglage +XVV im Momentengleichgewicht|Actitud estándar +XVV de equilibrio de par|Стандартная ориентация +XVV равновесия моментов|Attitude standard +XVV d'équilibre des couples|標準の+XVVトルク平衡姿勢
+−XVV flip|−XVV-Drehung|Giro −XVV|Разворот −XVV|Retournement −XVV|−XVV反転
+Yaw 180° (−XVV), used for some dockings and reboosts|Gieren um 180° (−XVV), für manche Andockungen und Bahnanhebungen|Guiñada de 180° (−XVV), para algunos atraques y reimpulsos|Рыскание 180° (−XVV), для некоторых стыковок и коррекций|Lacet de 180° (−XVV), pour certains amarrages et rehausses|ヨー180°（−XVV）、一部のドッキングやリブーストで使用
+Reboost 0.5 m/s|Bahnanhebung 0,5 m/s|Reimpulso 0,5 m/s|Коррекция 0,5 м/с|Rehausse 0,5 m/s|リブースト 0.5 m/s
+Guided attitude sliders (direct, stable motion)|Geführte Lageregler (direkte, stabile Bewegung)|Deslizadores de actitud guiados (movimiento directo y estable)|Управляемые ползунки ориентации (прямое устойчивое движение)|Curseurs d'attitude guidés (mouvement direct et stable)|姿勢スライダー誘導（直接・安定）
+Radiators: automatic sun avoidance|Radiatoren: automatische Sonnenvermeidung|Radiadores: evitación solar automática|Радиаторы: автоматический уход от Солнца|Radiateurs : évitement automatique du Soleil|ラジエーター：太陽自動回避
+Attitude target (LVLH)|Lage-Sollwert (LVLH)|Actitud objetivo (LVLH)|Целевая ориентация (LVLH)|Attitude cible (LVLH)|目標姿勢（LVLH）
+Yaw · Z|Gieren · Z|Guiñada · Z|Рыскание · Z|Lacet · Z|ヨー・Z
+Pitch · Y|Nicken · Y|Cabeceo · Y|Тангаж · Y|Tangage · Y|ピッチ・Y
+Roll · X|Rollen · X|Alabeo · X|Крен · X|Roulis · X|ロール・X
+Absolute LVLH targets, yaw-pitch-roll (3-2-1). +X forward, +Y starboard, +Z nadir. Guided motion follows the shortest rotation at 0.1°/s; the sliders retain your target. Changing a target selects hold and cancels manual thrust. Near ±90° pitch, yaw and roll describe the same rotation axis.|Absolute LVLH-Sollwerte, Gieren-Nicken-Rollen (3-2-1). +X vorn, +Y Steuerbord, +Z Nadir. Die geführte Bewegung folgt der kürzesten Drehung mit 0,1°/s; die Regler behalten den Sollwert. Ein neuer Sollwert wählt Halten und bricht manuellen Schub ab. Nahe ±90° Nicken beschreiben Gieren und Rollen dieselbe Drehachse.|Objetivos LVLH absolutos, guiñada-cabeceo-alabeo (3-2-1). +X adelante, +Y estribor, +Z nadir. El movimiento guiado sigue la rotación más corta a 0,1°/s; los deslizadores conservan el objetivo. Cambiar un objetivo selecciona mantener y cancela el empuje manual. Cerca de ±90° de cabeceo, guiñada y alabeo describen el mismo eje.|Абсолютные цели LVLH, рыскание-тангаж-крен (3-2-1). +X вперёд, +Y правый борт, +Z надир. Управляемое движение идёт по кратчайшему повороту со скоростью 0,1°/с; ползунки сохраняют цель. Смена цели включает удержание и отменяет ручную тягу. Около ±90° тангажа рыскание и крен описывают одну ось.|Cibles LVLH absolues, lacet-tangage-roulis (3-2-1). +X avant, +Y tribord, +Z nadir. Le mouvement guidé suit la rotation la plus courte à 0,1°/s ; les curseurs conservent la cible. Changer de cible sélectionne le maintien et annule la poussée manuelle. Près de ±90° de tangage, lacet et roulis décrivent le même axe.|LVLH基準の絶対目標、ヨー・ピッチ・ロール（3-2-1）。+X前方、+Y右舷、+Z天底。誘導運動は最短回転を0.1°/sでたどり、スライダーは目標を保持します。目標を変えると保持モードになり手動噴射は取り消されます。ピッチ±90°付近ではヨーとロールが同じ回転軸になります。
+Joint & mechanism targets|Gelenk- & Mechanismus-Sollwerte|Objetivos de articulaciones y mecanismos|Цели приводов и механизмов|Cibles des articulations et mécanismes|関節・機構の目標
+Rotary joints|Drehgelenke|Articulaciones rotativas|Поворотные приводы|Articulations rotatives|回転関節
+Joint sliders use NASA telemetry readings (the same numbers as the Power and Thermal panels).|Gelenkregler verwenden NASA-Telemetriewerte (dieselben Zahlen wie in den Panels Energie und Thermik).|Los deslizadores usan lecturas de telemetría de la NASA (los mismos números que los paneles Energía y Térmico).|Ползунки приводов используют показания телеметрии NASA (те же числа, что в панелях Электропитание и Терморегулирование).|Les curseurs utilisent les valeurs de télémétrie NASA (les mêmes que les panneaux Énergie et Thermique).|関節スライダーはNASAテレメトリの値を使います（電力・熱制御パネルと同じ数値）。
+β gimbals|β-Kardane|Cardanes β|β-приводы|Cardans β|βジンバル
+Mobile transporter / Canadarm2|Mobiler Transporter / Canadarm2|Transportador móvil / Canadarm2|Мобильный транспортёр / Canadarm2|Transporteur mobile / Canadarm2|モービルトランスポーター／カナダアーム2
+Canadarm2 relocation (walk-off)|Canadarm2 umsetzen (Walk-off)|Reubicación del Canadarm2 (walk-off)|Перестановка Canadarm2 (шагание)|Déplacement du Canadarm2 (walk-off)|カナダアーム2の移動（ウォークオフ）
+Like the real arm: move the free LEE onto another grapple fixture, capture it, then release the old base. The planner solves the joint angles, checks the whole path against the modeled station and moves all seven joints together.|Wie beim echten Arm: den freien LEE an einen anderen Greifpunkt führen, ihn greifen und dann die alte Basis lösen. Der Planer berechnet die Gelenkwinkel, prüft den ganzen Weg gegen die modellierte Station und bewegt alle sieben Gelenke gemeinsam.|Como el brazo real: lleva el LEE libre a otro punto de agarre, captúralo y suelta la base anterior. El planificador calcula los ángulos, comprueba toda la trayectoria contra la estación modelada y mueve las siete articulaciones a la vez.|Как у настоящего манипулятора: подведите свободный LEE к другому захвату, захватите его и отпустите старую базу. Планировщик рассчитывает углы, проверяет весь путь по модели станции и двигает все семь приводов вместе.|Comme le vrai bras : amener le LEE libre sur un autre point de préhension, le capturer, puis libérer l'ancienne base. Le planificateur calcule les angles, vérifie tout le trajet contre la station modélisée et déplace les sept articulations ensemble.|実際のアームと同様に、自由端LEEを別のグラップル固定具へ移し、把持してから元の基部を解放します。プランナーが関節角を解き、経路全体をモデルのステーションと照合し、7関節を同時に動かします。
+Target fixture|Ziel-Greifpunkt|Punto de agarre objetivo|Целевой захват|Point de préhension cible|目標固定具
+Plan & move|Planen & bewegen|Planificar y mover|Спланировать и выполнить|Planifier et déplacer|計画して移動
+Capture|Greifen|Capturar|Захватить|Capturer|把持
+Release old base|Alte Basis lösen|Soltar base anterior|Отпустить старую базу|Libérer l'ancienne base|元の基部を解放
+Release free LEE|Freien LEE lösen|Soltar LEE libre|Отпустить свободный LEE|Libérer le LEE libre|自由端LEEを解放
+Stop arm|Arm stoppen|Detener brazo|Остановить манипулятор|Arrêter le bras|アーム停止
+Free LEE released.|Freier LEE gelöst.|LEE libre suelto.|Свободный LEE отпущен.|LEE libre relâché.|自由端LEEは解放済み。
+Scenario teleport · instant|Szenario-Teleport · sofort|Teletransporte de escenario · instantáneo|Сценарный перенос · мгновенно|Téléportation de scénario · instantanée|シナリオ瞬間移動
+Canadarm2 anchor|Canadarm2-Anker|Anclaje del Canadarm2|Опора Canadarm2|Ancrage du Canadarm2|カナダアーム2の基点
+Anchored end|Verankertes Ende|Extremo anclado|Закреплённый конец|Extrémité ancrée|固定端
+Relocation resets attachment instantaneously for a scenario. It does not simulate walking, capture or certified fixture placement.|Das Umsetzen setzt die Befestigung für ein Szenario sofort neu. Schreiten, Greifen und zertifizierte Greifpunktlagen werden nicht simuliert.|La reubicación cambia la sujeción al instante para un escenario. No simula el desplazamiento, la captura ni la posición certificada de los puntos de agarre.|Перестановка мгновенно меняет крепление для сценария. Шагание, захват и сертифицированное размещение захватов не моделируются.|Le déplacement réinitialise instantanément l'ancrage pour un scénario. Il ne simule ni la marche, ni la capture, ni la position certifiée des points.|基点変更はシナリオ用に即時で付け替えます。移動・把持・認定された固定具位置は模擬しません。
+Dextre · 15 joint targets|Dextre · 15 Gelenk-Sollwerte|Dextre · 15 objetivos articulares|Dextre · 15 целей приводов|Dextre · 15 cibles articulaires|デクスター・15関節の目標
+Body roll|Körperrollen|Alabeo del cuerpo|Поворот корпуса|Roulis du corps|胴体ロール
+Antenna gimbals|Antennenkardane|Cardanes de antenas|Приводы антенн|Cardans d'antenne|アンテナジンバル
+Ku elevation|Ku-Elevation|Elevación Ku|Ku угол места|Élévation Ku|Ku仰角
+Ku cross-elev.|Ku-Quer-Elev.|Elevación cruzada Ku|Ku поперечный угол|Élév. croisée Ku|Ku交差仰角
+S azimuth|S Azimut|Azimut S|S азимут|Azimut S|S方位
+S elevation|S Elevation|Elevación S|S угол места|Élévation S|S仰角
+P azimuth|P Azimut|Azimut P|P азимут|Azimut P|P方位
+P elevation|P Elevation|Elevación P|P угол места|Élévation P|P仰角
+Radiator deployment · scenario only|Radiatorentfaltung · nur Szenario|Despliegue de radiadores · solo escenario|Раскрытие радиаторов · только сценарий|Déploiement des radiateurs · scénario uniquement|ラジエーター展開・シナリオ専用
+Eight linked folding panels per radiator. No public deployment-position channels; deployment geometry and rate are illustrative.|Acht verbundene Faltpaneele je Radiator. Es gibt keine öffentlichen Kanäle für die Entfaltungsstellung; Geometrie und Geschwindigkeit sind illustrativ.|Ocho paneles plegables unidos por radiador. No hay canales públicos de posición de despliegue; la geometría y la velocidad son ilustrativas.|Восемь связанных складных панелей на радиатор. Открытых каналов положения нет; геометрия и скорость раскрытия условны.|Huit panneaux pliants liés par radiateur. Aucun canal public de position ; géométrie et vitesse de déploiement indicatives.|ラジエーター1基あたり連結した折りたたみパネル8枚。展開位置の公開チャンネルはなく、形状と速度は説明用です。
+PV radiators: seven linked panels each; these move with the SARJ assembly and do not have TRRJ sun-tracking joints.|PV-Radiatoren: je sieben verbundene Paneele; sie drehen sich mit der SARJ-Baugruppe und haben keine TRRJ-Nachführgelenke.|Radiadores PV: siete paneles unidos cada uno; giran con el conjunto SARJ y no tienen articulaciones TRRJ de seguimiento.|Радиаторы PV: по семь связанных панелей; вращаются вместе с SARJ и не имеют приводов TRRJ.|Radiateurs PV : sept panneaux liés chacun ; ils tournent avec l'ensemble SARJ et n'ont pas d'articulation TRRJ.|PVラジエーター：各7枚の連結パネル。SARJ組立と共に回転し、TRRJの太陽追尾関節はありません。
+Channel and mechanism coverage / limitations|Abdeckung von Kanälen und Mechanismen / Grenzen|Cobertura de canales y mecanismos / limitaciones|Охват каналов и механизмов / ограничения|Couverture des canaux et mécanismes / limites|チャンネルと機構の対応範囲／制限
+Attitude controller & four gyros|Lageregler & vier Kreisel|Control de actitud y cuatro giróscopos|Регулятор ориентации и четыре гироскопа|Contrôleur d'attitude et quatre gyroscopes|姿勢制御器と4基のジャイロ
+Control mode|Regelmodus|Modo de control|Режим управления|Mode de contrôle|制御モード
+Hold target · CMGs + RCS assist|Sollwert halten · CMGs + RCS-Unterstützung|Mantener objetivo · CMG + asistencia RCS|Удержание цели · СГК + помощь РСУ|Maintien de cible · CMG + assistance RCS|目標保持・CMG＋RCSアシスト
+CMGs only|Nur CMGs|Solo CMG|Только СГК|CMG uniquement|CMGのみ
+RCS only|Nur RCS|Solo RCS|Только РСУ|RCS uniquement|RCSのみ
+Free drift|Freier Drift|Deriva libre|Свободный дрейф|Dérive libre|フリードリフト
+Damp rates · RCS assist|Raten dämpfen · RCS-Unterstützung|Amortiguar velocidades · asistencia RCS|Гашение вращения · помощь РСУ|Amortir les vitesses · assistance RCS|角速度減衰・RCSアシスト
+The attitude sliders below set the target. With all control disabled, rotation continues. RCS assistance requires propulsion armed.|Die Lageregler unten setzen den Sollwert. Ohne jede Regelung dreht sich die Station weiter. RCS-Unterstützung erfordert scharfgeschaltete Triebwerke.|Los deslizadores de actitud de abajo fijan el objetivo. Sin ningún control, la rotación continúa. La asistencia RCS requiere la propulsión armada.|Ползунки ниже задают цель. Без управления вращение продолжается. Помощь РСУ требует взведённой двигательной установки.|Les curseurs d'attitude ci-dessous fixent la cible. Sans aucun contrôle, la rotation continue. L'assistance RCS exige la propulsion armée.|下の姿勢スライダーで目標を設定します。制御をすべて切ると回転は続きます。RCSアシストには推進系のアームが必要です。
+Attitude sensor|Lagesensor|Sensor de actitud|Датчик ориентации|Capteur d'attitude|姿勢センサー
+Gravity-gradient disturbance|Gravitationsgradienten-Störung|Perturbación por gradiente de gravedad|Гравитационно-градиентное возмущение|Perturbation du gradient de gravité|重力傾斜外乱
+Unload CMG momentum using RCS|CMG-Drehimpuls mit RCS abbauen|Descargar el momento de los CMG con RCS|Разгрузка СГК с помощью РСУ|Décharger le moment des CMG par RCS|RCSでCMG角運動量をアンロード
+Hold current attitude|Aktuelle Lage halten|Mantener actitud actual|Удерживать текущую ориентацию|Maintenir l'attitude actuelle|現在の姿勢を保持
+Damp rates · arms RCS|Raten dämpfen · schaltet RCS scharf|Amortiguar velocidades · arma RCS|Гашение вращения · взводит РСУ|Amortir les vitesses · arme le RCS|角速度減衰・RCSをアーム
+Reset motion · simulation|Bewegung zurücksetzen · Simulation|Restablecer movimiento · simulación|Сбросить движение · моделирование|Réinitialiser le mouvement · simulation|運動リセット・シミュレーション
+Physical maneuvers take simulated minutes. Damping uses available actuators; Reset motion instantly clears rates and stored gyro momentum as a training reset.|Physikalische Manöver dauern simulierte Minuten. Dämpfen nutzt die verfügbaren Stellglieder; „Bewegung zurücksetzen“ löscht Raten und gespeicherten Kreiseldrehimpuls sofort (Trainings-Reset).|Las maniobras físicas tardan minutos simulados. Amortiguar usa los actuadores disponibles; Restablecer movimiento borra al instante velocidades y momento de los giróscopos (reinicio de entrenamiento).|Физические манёвры занимают модельные минуты. Гашение использует доступные исполнительные органы; «Сбросить движение» мгновенно обнуляет скорости и накопленный момент (учебный сброс).|Les manœuvres physiques prennent des minutes simulées. L'amortissement utilise les actionneurs disponibles ; « Réinitialiser le mouvement » efface instantanément vitesses et moment des gyroscopes (remise à zéro d'entraînement).|物理的な機動にはシミュレーション上で数分かかります。減衰は利用可能なアクチュエーターを使い、運動リセットは角速度と蓄積ジャイロ角運動量を即時に消去します（訓練用）。
+Spin motor|Spinmotor|Motor de giro|Двигатель ротора|Moteur de rotation|スピンモーター
+Gimbal control|Kardansteuerung|Control del cardán|Управление подвесом|Contrôle du cardan|ジンバル制御
+Fault|Fehler|Fallo|Неисправность|Panne|故障
+6600 rpm · 4760 N·m·s · 258 N·m per CMG. Spin-down is gradual; disabling gimbal control stops commanded torque, not rotation.|6600 U/min · 4760 N·m·s · 258 N·m je CMG. Das Auslaufen erfolgt allmählich; ohne Kardansteuerung endet das kommandierte Moment, nicht die Drehung.|6600 rpm · 4760 N·m·s · 258 N·m por CMG. La parada es gradual; desactivar el cardán detiene el par ordenado, no la rotación.|6600 об/мин · 4760 Н·м·с · 258 Н·м на СГК. Остановка постепенная; отключение подвеса снимает командный момент, а не вращение.|6600 tr/min · 4760 N·m·s · 258 N·m par CMG. Le ralentissement est progressif ; couper le cardan arrête le couple commandé, pas la rotation.|CMG1基あたり6600 rpm・4760 N·m·s・258 N·m。減速は徐々に進み、ジンバル制御を切ると指令トルクは止まりますが回転は止まりません。
+Propulsion · individual jets|Antrieb · einzelne Düsen|Propulsión · propulsores individuales|Двигательная установка · отдельные двигатели|Propulsion · propulseurs individuels|推進系・個別ジェット
+ARM virtual propulsion|Virtuellen Antrieb SCHARF|ARMAR propulsión virtual|ВЗВЕСТИ виртуальную ДУ|ARMER la propulsion virtuelle|仮想推進系をアーム
+STOP ALL THRUST|SCHUB AUS|DETENER TODO EMPUJE|ОСТАНОВИТЬ ВСЮ ТЯГУ|ARRÊT DE TOUTE POUSSÉE|全推力停止
+Abort main burn|Hauptzündung abbrechen|Abortar encendido principal|Прервать основной импульс|Interrompre la poussée principale|主噴射を中止
+Attitude jets on Zvezda's aft section, where the station's real thrusters are (approximate positions, not real valve identifiers). Fire is latched; Pulse runs for one simulated second. Each jet applies force AND moment about the center of mass.|Lagedüsen am Heck von Swesda, wo die echten Triebwerke der Station sitzen (ungefähre Positionen, keine echten Ventilbezeichnungen). „Zünden“ rastet ein; „Puls“ läuft eine simulierte Sekunde. Jede Düse erzeugt Kraft UND Moment um den Schwerpunkt.|Propulsores de actitud en la popa del Zvezdá, donde están los reales (posiciones aproximadas, no identificadores reales de válvulas). Disparar se mantiene; Pulso dura un segundo simulado. Cada propulsor aplica fuerza Y momento respecto al centro de masas.|Двигатели ориентации на кормовой части «Звезды», где стоят настоящие (приблизительные положения, не реальные обозначения клапанов). «Огонь» фиксируется; «Импульс» длится одну модельную секунду. Каждый двигатель создаёт силу И момент относительно центра масс.|Propulseurs d'attitude à l'arrière de Zvezda, là où sont les vrais (positions approximatives, pas de vrais identifiants de vannes). « Tir » reste enclenché ; « Impulsion » dure une seconde simulée. Chaque propulseur applique force ET moment autour du centre de masse.|姿勢制御ジェットは実機と同じくズヴェズダ後部にあります（位置は概略、実際のバルブ名ではありません）。噴射はラッチ式、パルスは1秒間。各ジェットは重心まわりに力とモーメントを与えます。
+Enabled|Aktiv|Habilitado|Включён|Activé|有効
+Fire|Zünden|Disparar|Огонь|Tir|噴射
+Failed off|Ausgefallen|Fallo apagado|Отказ (выкл.)|En panne (arrêt)|故障停止
+Pulse 1 s|Puls 1 s|Pulso 1 s|Импульс 1 с|Impulsion 1 s|パルス1秒
+Target burn Δv (m/s)|Ziel-Δv (m/s)|Δv objetivo (m/s)|Целевое Δv (м/с)|Δv cible (m/s)|目標Δv（m/s）
+Start target burn|Zielzündung starten|Iniciar encendido|Начать импульс|Démarrer la poussée|目標噴射を開始
+Main engines thrust along body +X. Aim the station first; a reversed attitude can lower the orbit. Fuel is finite.|Die Haupttriebwerke schieben entlang +X. Zuerst die Station ausrichten; eine umgekehrte Lage kann die Bahn senken. Der Treibstoff ist begrenzt.|Los motores principales empujan según +X. Orienta primero la estación; una actitud invertida puede bajar la órbita. El combustible es limitado.|Основные двигатели толкают вдоль +X. Сначала сориентируйте станцию: обратная ориентация может понизить орбиту. Топливо ограничено.|Les moteurs principaux poussent selon +X. Orientez d'abord la station ; une attitude inversée peut abaisser l'orbite. Le carburant est limité.|主エンジンは機体+X方向に推力を出します。先に姿勢を合わせてください。逆向きでは軌道が下がります。燃料は有限です。
+Power · eight channels & batteries|Energie · acht Kanäle & Batterien|Energía · ocho canales y baterías|Электропитание · восемь каналов и батареи|Énergie · huit canaux et batteries|電力・8チャンネルとバッテリー
+Payload loads connected|Nutzlasten angeschlossen|Cargas útiles conectadas|Нагрузки подключены|Charges utiles connectées|ペイロード負荷接続
+Payload demand (kW)|Nutzlastbedarf (kW)|Demanda de carga útil (kW)|Потребление нагрузки (кВт)|Demande des charges utiles (kW)|ペイロード需要（kW）
+Array online|Solarflügel aktiv|Panel conectado|Батарея подключена|Panneau en ligne|アレイ稼働
+Battery online|Batterie aktiv|Batería conectada|Аккумулятор подключён|Batterie en ligne|バッテリー稼働
+Channel fault|Kanalfehler|Fallo de canal|Неисправность канала|Panne de canal|チャンネル故障
+Array output depends on incidence and eclipse. Batteries bridge deficits. Low bus power inhibits control, pumps and drives.|Die Solarleistung hängt von Einfallswinkel und Schatten ab. Batterien überbrücken Defizite. Zu wenig Busleistung sperrt Regelung, Pumpen und Antriebe.|La salida de los paneles depende de la incidencia y el eclipse. Las baterías cubren los déficits. Poca potencia en el bus inhibe control, bombas y accionamientos.|Мощность батарей зависит от угла падения и тени. Аккумуляторы покрывают дефицит. Низкая мощность шины блокирует управление, насосы и приводы.|La production dépend de l'incidence et de l'éclipse. Les batteries comblent les déficits. Un bus trop faible inhibe contrôle, pompes et entraînements.|アレイ出力は入射角と日陰に依存します。不足分はバッテリーが補います。バス電力が低いと制御・ポンプ・駆動が停止します。
+Thermal · loops A/B & radiators|Thermik · Kreisläufe A/B & Radiatoren|Térmico · circuitos A/B y radiadores|Терморегулирование · контуры A/B и радиаторы|Thermique · boucles A/B et radiateurs|熱制御・ループA/Bとラジエーター
+Cabin setpoint (°C)|Kabinen-Sollwert (°C)|Consigna de cabina (°C)|Уставка кабины (°C)|Consigne cabine (°C)|キャビン設定温度（°C）
+Loop A · starboard|Kreislauf A · Steuerbord|Circuito A · estribor|Контур A · правый борт|Boucle A · tribord|ループA・右舷
+Loop B · port|Kreislauf B · Backbord|Circuito B · babor|Контур B · левый борт|Boucle B · bâbord|ループB・左舷
+Pump running|Pumpe läuft|Bomba en marcha|Насос работает|Pompe en marche|ポンプ運転中
+Flow valve|Durchflussventil|Válvula de caudal|Клапан расхода|Vanne de débit|流量弁
+Radiator sun exposure reduces heat rejection. Use automatic radiator pointing or the manual TRRJ sliders below. The model uses two lumped cooling loops.|Sonne auf den Radiatoren verringert die Wärmeabgabe. Automatische Radiatorausrichtung oder die TRRJ-Regler unten verwenden. Das Modell nutzt zwei zusammengefasste Kühlkreisläufe.|La exposición solar de los radiadores reduce el rechazo de calor. Usa la orientación automática o los deslizadores TRRJ de abajo. El modelo usa dos circuitos de refrigeración agregados.|Солнце на радиаторах снижает теплоотвод. Используйте автоматическую ориентацию или ползунки TRRJ ниже. Модель использует два обобщённых контура охлаждения.|L'exposition des radiateurs au Soleil réduit l'évacuation de chaleur. Utilisez l'orientation automatique ou les curseurs TRRJ ci-dessous. Le modèle utilise deux boucles de refroidissement agrégées.|ラジエーターに日が当たると放熱が減ります。自動ラジエーター制御か下のTRRJスライダーを使ってください。モデルは2系統の集約冷却ループです。
+Life support & airlock|Lebenserhaltung & Luftschleuse|Soporte vital y esclusa|Жизнеобеспечение и шлюз|Support vie et sas|生命維持とエアロック
+Virtual crew count|Virtuelle Crewgröße|Tripulación virtual|Виртуальный экипаж|Équipage virtuel|仮想クルー数
+Oxygen generation|Sauerstofferzeugung|Generación de oxígeno|Выработка кислорода|Production d'oxygène|酸素生成
+O₂ production setpoint (kg/day)|O₂-Erzeugung Sollwert (kg/Tag)|Consigna de producción de O₂ (kg/día)|Уставка выработки O₂ (кг/сут)|Consigne de production d'O₂ (kg/jour)|O₂生成設定値（kg/日）
+CO₂ scrubber|CO₂-Wäscher|Depurador de CO₂|Очиститель CO₂|Épurateur de CO₂|CO₂除去装置
+Cabin ventilation|Kabinenlüftung|Ventilación de cabina|Вентиляция кабины|Ventilation cabine|キャビン換気
+Urine processor|Urinaufbereitung|Procesador de orina|Переработка мочи|Traitement de l'urine|尿処理装置
+Water processor|Wasseraufbereitung|Procesador de agua|Переработка воды|Traitement de l'eau|水処理装置
+Reserve O₂ regulator|Reserve-O₂-Regler|Regulador de O₂ de reserva|Резервный регулятор O₂|Régulateur d'O₂ de réserve|予備O₂レギュレーター
+Scenario: cabin leak fraction/hour|Szenario: Kabinenleck Anteil/Stunde|Escenario: fuga de cabina fracción/hora|Сценарий: утечка доля/час|Scénario : fuite cabine fraction/heure|シナリオ：キャビン漏れ（割合/時）
+Airlock pressure interlocks|Druckverriegelungen der Luftschleuse|Enclavamientos de presión de la esclusa|Блокировки давления шлюза|Verrouillages de pression du sas|エアロック圧力インターロック
+Inner hatch open|Innenluke offen|Escotilla interior abierta|Внутренний люк открыт|Écoutille intérieure ouverte|内側ハッチ開
+Outer hatch open|Außenluke offen|Escotilla exterior abierta|Наружный люк открыт|Écoutille extérieure ouverte|外側ハッチ開
+Depressurize|Druck ablassen|Despresurizar|Сбросить давление|Dépressuriser|減圧
+Repressurize from cabin|Aus der Kabine wieder befüllen|Represurizar desde la cabina|Наддув из кабины|Repressuriser depuis la cabine|キャビンから再加圧
+Crew consumes O₂ and water and adds CO₂ and waste. OGA uses potable water. Hatch interlocks prevent opening across a large pressure difference.|Die Crew verbraucht O₂ und Wasser und erzeugt CO₂ und Abfall. Die OGA nutzt Trinkwasser. Lukenverriegelungen verhindern das Öffnen bei großem Druckunterschied.|La tripulación consume O₂ y agua y produce CO₂ y residuos. El OGA usa agua potable. Los enclavamientos impiden abrir escotillas con gran diferencia de presión.|Экипаж потребляет O₂ и воду, выделяет CO₂ и отходы. OGA использует питьевую воду. Блокировки не дают открыть люк при большом перепаде давления.|L'équipage consomme O₂ et eau et produit CO₂ et déchets. L'OGA utilise l'eau potable. Les verrouillages empêchent d'ouvrir une écoutille sous forte différence de pression.|クルーはO₂と水を消費しCO₂と廃棄物を出します。OGAは飲料水を使います。大きな圧力差ではハッチが開かないようインターロックされます。
+Joint drives & robotics|Gelenkantriebe & Robotik|Accionamientos y robótica|Приводы и робототехника|Entraînements et robotique|関節駆動とロボティクス
+The existing joint sliders remain rate-limited targets. Disabled or unpowered drives hold position. Grappled payload halves arm slew rate; collision envelopes warn about overlap; contact dynamics are not modeled.|Die Gelenkregler bleiben ratenbegrenzte Sollwerte. Abgeschaltete oder stromlose Antriebe halten ihre Stellung. Eine gegriffene Nutzlast halbiert die Armgeschwindigkeit; Kollisionshüllen warnen vor Überschneidungen; Kontaktdynamik wird nicht modelliert.|Los deslizadores siguen siendo objetivos con velocidad limitada. Los accionamientos desactivados o sin energía mantienen la posición. Una carga agarrada reduce a la mitad la velocidad del brazo; las envolventes avisan de solapes; no se modela la dinámica de contacto.|Ползунки приводов остаются целями с ограничением скорости. Выключенные или обесточенные приводы держат положение. Захваченный груз вдвое снижает скорость руки; оболочки предупреждают о пересечении; контактная динамика не моделируется.|Les curseurs restent des cibles à vitesse limitée. Les entraînements désactivés ou sans courant gardent leur position. Une charge saisie divise par deux la vitesse du bras ; les enveloppes signalent les chevauchements ; la dynamique de contact n'est pas modélisée.|関節スライダーは速度制限付きの目標です。無効化・無電力の駆動は位置を保持します。把持中はアーム速度が半分になり、衝突包絡で重なりを警告します。接触力学はモデル化していません。
+Virtual payload grappled|Virtuelle Nutzlast gegriffen|Carga virtual agarrada|Виртуальный груз захвачен|Charge virtuelle saisie|仮想ペイロード把持
+Communications & navigation|Kommunikation & Navigation|Comunicaciones y navegación|Связь и навигация|Communications et navigation|通信と航法
+Ku-band equipment|Ku-Band-Ausrüstung|Equipos de banda Ku|Аппаратура Ku-диапазона|Équipement bande Ku|Kuバンド機器
+S-band equipment|S-Band-Ausrüstung|Equipos de banda S|Аппаратура S-диапазона|Équipement bande S|Sバンド機器
+GPS receiver 1|GPS-Empfänger 1|Receptor GPS 1|Приёмник GPS 1|Récepteur GPS 1|GPS受信機1
+GPS receiver 2|GPS-Empfänger 2|Receptor GPS 2|Приёмник GPS 2|Récepteur GPS 2|GPS受信機2
+Virtual equipment states only. These switches do not disconnect your real MQTT or NASA connections. GPS loss does not erase the simulated orbit.|Nur virtuelle Gerätezustände. Diese Schalter trennen keine echten MQTT- oder NASA-Verbindungen. GPS-Verlust löscht die simulierte Bahn nicht.|Solo estados de equipos virtuales. Estos interruptores no cortan tus conexiones reales MQTT ni de la NASA. Perder el GPS no borra la órbita simulada.|Только состояния виртуального оборудования. Эти переключатели не разрывают реальные подключения MQTT и NASA. Потеря GPS не стирает модельную орбиту.|États d'équipement virtuels uniquement. Ces interrupteurs ne coupent pas vos vraies connexions MQTT ou NASA. La perte du GPS n'efface pas l'orbite simulée.|仮想機器の状態のみです。これらのスイッチは実際のMQTTやNASA接続を切りません。GPSを失っても模擬軌道は消えません。
+Training scenarios|Trainingsszenarien|Escenarios de entrenamiento|Учебные сценарии|Scénarios d'entraînement|訓練シナリオ
+Lighting environment|Beleuchtung|Entorno de iluminación|Условия освещения|Éclairage|照明環境
+From simulated orbit|Aus simulierter Bahn|Según la órbita simulada|По модельной орбите|Selon l'orbite simulée|模擬軌道から
+Force sunlight|Sonne erzwingen|Forzar sol|Принудительно солнце|Forcer le soleil|日照に固定
+Force eclipse|Schatten erzwingen|Forzar eclipse|Принудительно тень|Forcer l'éclipse|日陰に固定
+Power loss|Stromausfall|Pérdida de energía|Потеря питания|Perte d'énergie|電力喪失
+Lose all CMGs|Alle CMGs verlieren|Perder todos los CMG|Потеря всех СГК|Perdre tous les CMG|全CMG喪失
+Cooling loss|Kühlungsausfall|Pérdida de refrigeración|Потеря охлаждения|Perte de refroidissement|冷却喪失
+Cabin leak|Kabinenleck|Fuga en cabina|Утечка в кабине|Fuite cabine|キャビン漏れ
+CMG saturation|CMG-Sättigung|Saturación de CMG|Насыщение СГК|Saturation des CMG|CMG飽和
+Restore equipment|Ausrüstung wiederherstellen|Restaurar equipos|Восстановить оборудование|Restaurer l'équipement|機器を復旧
+Virtual resupply|Virtuelle Versorgung|Reabastecimiento virtual|Виртуальное снабжение|Ravitaillement virtuel|仮想補給
+Hold & shed payload|Halten & Nutzlast abwerfen|Mantener y desconectar cargas|Удержание и сброс нагрузки|Maintien et délestage|保持して負荷遮断
+Restore repairs switches/faults; it does not reset motion or replenish resources. Resupply is an explicit training action.|„Wiederherstellen“ behebt Schalter und Fehler; es setzt weder Bewegung zurück noch füllt es Vorräte auf. Versorgung ist eine eigene Trainingsaktion.|Restaurar repara interruptores y fallos; no reinicia el movimiento ni repone recursos. El reabastecimiento es una acción de entrenamiento aparte.|Восстановление чинит переключатели и отказы, но не сбрасывает движение и не пополняет ресурсы. Снабжение: отдельное учебное действие.|Restaurer répare interrupteurs et pannes ; cela ne réinitialise pas le mouvement et ne réapprovisionne pas. Le ravitaillement est une action d'entraînement distincte.|復旧はスイッチと故障を直しますが、運動のリセットや資源の補充はしません。補給は別の訓練操作です。
+Applied: {0}|Angewendet: {0}|Aplicado: {0}|Применено: {0}|Appliqué : {0}|適用：{0}
+Command unavailable|Befehl nicht verfügbar|Orden no disponible|Команда недоступна|Commande indisponible|コマンド利用不可
+No model alarms|Keine Modellalarme|Sin alarmas del modelo|Нет тревог модели|Aucune alarme du modèle|モデル警報なし
+{0}% firing|{0} % Schub|{0} % disparando|{0} % тяги|{0} % en poussée|{0}%噴射中
+OFF|AUS|APAGADO|ВЫКЛ|ARRÊT|オフ
+No available CMGs|Keine verfügbaren CMGs|No hay CMG disponibles|Нет доступных СГК|Aucun CMG disponible|使用可能なCMGなし
+CMG momentum saturation: unload with armed RCS|CMG-Drehimpulssättigung: mit scharfem RCS abbauen|Saturación del momento de los CMG: descargar con RCS armado|Насыщение СГК: разгрузить взведённой РСУ|Saturation du moment des CMG: décharger avec le RCS armé|CMG角運動量飽和: RCSをアームしてアンロード
+High attitude rate|Hohe Drehrate|Velocidad angular alta|Высокая угловая скорость|Vitesse angulaire élevée|姿勢角速度が大きい
+Attitude sensor unavailable: automatic control inhibited|Lagesensor nicht verfügbar: automatische Regelung gesperrt|Sensor de actitud no disponible: control automático inhibido|Датчик ориентации недоступен: автоматика заблокирована|Capteur d'attitude indisponible: contrôle automatique inhibé|姿勢センサー利用不可: 自動制御停止
+Power shortage: pumps, drives and control inhibited|Strommangel: Pumpen, Antriebe und Regelung gesperrt|Falta de energía: bombas, accionamientos y control inhibidos|Нехватка питания: насосы, приводы и управление заблокированы|Manque d'énergie: pompes, entraînements et contrôle inhibés|電力不足: ポンプ・駆動・制御停止
+Battery charge low|Batterieladung niedrig|Carga de batería baja|Низкий заряд батарей|Charge batterie faible|バッテリー残量低下
+Propellant low|Treibstoff knapp|Propelente bajo|Мало топлива|Ergols bas|推進剤残量低下
+Burn stalled: no main engines|Zündung steht: keine Haupttriebwerke|Encendido detenido: sin motores principales|Импульс остановлен: нет основных двигателей|Poussée bloquée: aucun moteur principal|噴射停止: 主エンジンなし
+No active cooling flow|Kein aktiver Kühlfluss|Sin flujo de refrigeración activo|Нет активного потока охлаждения|Aucun débit de refroidissement|冷却流なし
+Cabin temperature high|Kabinentemperatur hoch|Temperatura de cabina alta|Высокая температура в кабине|Température cabine élevée|キャビン温度高
+CO₂ rising|CO₂ steigt|CO₂ en aumento|CO₂ растёт|CO₂ en hausse|CO₂上昇
+O₂ low|O₂ niedrig|O₂ bajo|Мало O₂|O₂ bas|O₂低下
+Cabin pressure low|Kabinendruck niedrig|Presión de cabina baja|Низкое давление в кабине|Pression cabine faible|キャビン圧低下
+Potable water low|Trinkwasser knapp|Agua potable baja|Мало питьевой воды|Eau potable basse|飲料水残量低下
+Waste tank nearly full|Abfalltank fast voll|Tanque de residuos casi lleno|Бак отходов почти полон|Réservoir de déchets presque plein|廃棄物タンクほぼ満杯
+Expected an on/off value|Ein-/Aus-Wert erwartet|Se esperaba un valor sí/no|Ожидалось значение вкл/выкл|Valeur marche/arrêt attendue|オン/オフの値が必要です
+Unknown control mode|Unbekannter Regelmodus|Modo de control desconocido|Неизвестный режим управления|Mode de contrôle inconnu|不明な制御モード
+Unknown environment|Unbekannte Umgebung|Entorno desconocido|Неизвестные условия|Environnement inconnu|不明な環境
+Target must be 0.01-10 m/s|Sollwert muss 0,01-10 m/s sein|El objetivo debe estar entre 0,01 y 10 m/s|Цель должна быть 0,01-10 м/с|La cible doit être entre 0,01 et 10 m/s|目標は0.01〜10 m/sにしてください
+Arm propulsion first|Zuerst Antrieb scharfschalten|Arma primero la propulsión|Сначала взведите ДУ|Armez d'abord la propulsion|先に推進系をアームしてください
+No virtual propellant|Kein virtueller Treibstoff|Sin propelente virtual|Нет виртуального топлива|Aucun ergol virtuel|仮想推進剤なし
+No available main engine|Kein verfügbares Haupttriebwerk|No hay motor principal disponible|Нет доступного основного двигателя|Aucun moteur principal disponible|使用可能な主エンジンなし
+Unknown CMG command|Unbekannter CMG-Befehl|Orden de CMG desconocida|Неизвестная команда СГК|Commande CMG inconnue|不明なCMGコマンド
+Unknown thruster command|Unbekannter Triebwerksbefehl|Orden de propulsor desconocida|Неизвестная команда двигателя|Commande de propulseur inconnue|不明なスラスターコマンド
+Arm propulsion and check fuel first|Zuerst Antrieb scharfschalten und Treibstoff prüfen|Arma la propulsión y comprueba el combustible|Сначала взведите ДУ и проверьте топливо|Armez la propulsion et vérifiez le carburant|推進系をアームし燃料を確認してください
+Pulse must be 0.1-30 simulated seconds|Puls muss 0,1-30 simulierte Sekunden lang sein|El pulso debe durar 0,1-30 s simulados|Импульс должен быть 0,1-30 модельных секунд|L'impulsion doit durer 0,1 à 30 s simulées|パルスは0.1〜30秒にしてください
+Unknown power channel|Unbekannter Energiekanal|Canal de energía desconocido|Неизвестный канал питания|Canal d'énergie inconnu|不明な電力チャンネル
+Payload load must be 0-60 kW|Nutzlast muss 0-60 kW sein|La carga útil debe estar entre 0 y 60 kW|Нагрузка должна быть 0-60 кВт|La charge utile doit être entre 0 et 60 kW|ペイロード負荷は0〜60 kWにしてください
+Unknown loop|Unbekannter Kreislauf|Circuito desconocido|Неизвестный контур|Boucle inconnue|不明なループ
+Invalid loop command|Ungültiger Kreislaufbefehl|Orden de circuito no válida|Недопустимая команда контура|Commande de boucle invalide|無効なループコマンド
+Cabin setpoint must be 16-28 °C|Kabinen-Sollwert muss 16-28 °C sein|La consigna de cabina debe estar entre 16 y 28 °C|Уставка кабины должна быть 16-28 °C|La consigne cabine doit être entre 16 et 28 °C|キャビン設定は16〜28 °Cにしてください
+Invalid life-support setting|Ungültige Lebenserhaltungseinstellung|Ajuste de soporte vital no válido|Недопустимая настройка жизнеобеспечения|Réglage du support vie invalide|無効な生命維持設定
+Invalid airlock control|Ungültige Schleusensteuerung|Control de esclusa no válido|Недопустимая команда шлюза|Commande de sas invalide|無効なエアロック操作
+Close outer hatch/vent and equalize pressure first|Zuerst Außenluke/Entlüftung schließen und Druck ausgleichen|Cierra primero la escotilla exterior o el venteo e iguala la presión|Сначала закройте наружный люк/сброс и выровняйте давление|Fermez d'abord l'écoutille extérieure ou la purge et égalisez la pression|先に外側ハッチ／ベントを閉じて圧力を均等にしてください
+Close inner hatch and depressurize below 5 kPa first|Zuerst Innenluke schließen und unter 5 kPa entlüften|Cierra la escotilla interior y despresuriza por debajo de 5 kPa|Сначала закройте внутренний люк и снизьте давление ниже 5 кПа|Fermez l'écoutille intérieure et dépressurisez sous 5 kPa|先に内側ハッチを閉じ5 kPa未満まで減圧してください
+Close inner hatch and stop repressurization first|Zuerst Innenluke schließen und Befüllen stoppen|Cierra la escotilla interior y detén la represurización|Сначала закройте внутренний люк и остановите наддув|Fermez l'écoutille intérieure et arrêtez la repressurisation|先に内側ハッチを閉じ再加圧を止めてください
+Close outer hatch and vent first|Zuerst Außenluke und Entlüftung schließen|Cierra la escotilla exterior y el venteo|Сначала закройте наружный люк и сброс|Fermez l'écoutille extérieure et la purge|先に外側ハッチとベントを閉じてください
+Invalid beta drive|Ungültiger Beta-Antrieb|Accionamiento beta no válido|Недопустимый β-привод|Entraînement bêta invalide|無効なβ駆動
+Unknown drive|Unbekannter Antrieb|Accionamiento desconocido|Неизвестный привод|Entraînement inconnu|不明な駆動
+Unknown scenario|Unbekanntes Szenario|Escenario desconocido|Неизвестный сценарий|Scénario inconnu|不明なシナリオ
+Unknown virtual command|Unbekannter virtueller Befehl|Orden virtual desconocida|Неизвестная виртуальная команда|Commande virtuelle inconnue|不明な仮想コマンド
+Invalid simulation step|Ungültiger Simulationsschritt|Paso de simulación no válido|Недопустимый шаг моделирования|Pas de simulation invalide|無効なシミュレーション刻み
+COMMAND MODE: virtual ISS forked from current state|BEFEHLSMODUS: virtuelle ISS aus dem aktuellen Zustand abgezweigt|MODO DE MANDO: ISS virtual creada a partir del estado actual|РЕЖИМ КОМАНД: виртуальная МКС создана из текущего состояния|MODE COMMANDE : ISS virtuelle créée depuis l'état actuel|コマンドモード：現在状態から仮想ISSを分岐
+MIRROR MODE: returning to available telemetry / NASA orbit prediction|SPIEGELMODUS: zurück zur verfügbaren Telemetrie / NASA-Bahnvorhersage|MODO ESPEJO: volviendo a la telemetría disponible / predicción orbital de la NASA|РЕЖИМ ЗЕРКАЛА: возврат к доступной телеметрии / прогнозу орбиты NASA|MODE MIROIR : retour à la télémétrie disponible / prévision d'orbite NASA|ミラーモード：利用可能なテレメトリ／NASA軌道予測に戻ります
+Paused|Angehalten|En pausa|Пауза|En pause|一時停止中
+Guided|Geführt|Guiado|Управляемое|Guidé|誘導
+{0}° to target|{0}° bis zum Ziel|{0}° hasta el objetivo|{0}° до цели|{0}° jusqu'à la cible|目標まで{0}°
+{0} sim s remaining|noch {0} sim. s|quedan {0} s simulados|осталось {0} мод. с|{0} s simulées restantes|残り{0}秒（シム）
+physical actuator limits apply|physikalische Stellgrenzen gelten|se aplican los límites físicos de los actuadores|действуют физические ограничения приводов|limites physiques des actionneurs|物理的なアクチュエーター制限あり

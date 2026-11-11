@@ -1,0 +1,308 @@
+{
+"_note": "Aufbau der LL2-Antworten /spacestation/4/?mode=detailed, /event/upcoming/?program=17 und /launch/upcoming/?program=17 (lldev-Spiegel, 20.10.2026), gekürzt.",
+"station": {
+"id": 4,
+"name": "International Space Station",
+"status": {
+"id": 1,
+"name": "Active"
+},
+"orbit": "Low Earth Orbit",
+"onboard_crew": 7,
+"docked_vehicles": 5,
+"active_expeditions": [
+{
+"id": 1,
+"name": "Expedition 75",
+"start": "2026-07-26T07:02:00Z",
+"end": null,
+"crew": [
+{
+"id": 0,
+"role": {
+"id": 1,
+"role": "Commander",
+"priority": 0
+},
+"astronaut": {
+"id": 100,
+"name": "Pyotr Dubrov",
+"status": {
+"id": 1,
+"name": "Active"
+},
+"agency": {
+"id": 63,
+"name": "Russian Federal Space Agency (ROSCOSMOS)",
+"type": "Government"
+},
+"profile_image_thumbnail": null
+}
+},
+{
+"id": 1,
+"role": {
+"id": 3,
+"role": "Flight Engineer",
+"priority": 2
+},
+"astronaut": {
+"id": 101,
+"name": "Anil Menon",
+"status": {
+"id": 1,
+"name": "Active"
+},
+"agency": {
+"id": 44,
+"name": "National Aeronautics and Space Administration",
+"type": "Government"
+},
+"profile_image_thumbnail": null
+}
+},
+{
+"id": 2,
+"role": {
+"id": 3,
+"role": "Flight Engineer",
+"priority": 2
+},
+"astronaut": {
+"id": 102,
+"name": "Joshua Kutryk",
+"status": {
+"id": 1,
+"name": "Active"
+},
+"agency": {
+"id": 16,
+"name": "Canadian Space Agency",
+"type": "Government"
+},
+"profile_image_thumbnail": null
+}
+},
+{
+"id": 3,
+"role": {
+"id": 3,
+"role": "Flight Engineer",
+"priority": 2
+},
+"astronaut": {
+"id": 103,
+"name": "Luke Delaney",
+"status": {
+"id": 1,
+"name": "Active"
+},
+"agency": {
+"id": 44,
+"name": "National Aeronautics and Space Administration",
+"type": "Government"
+},
+"profile_image_thumbnail": null
+}
+},
+{
+"id": 4,
+"role": {
+"id": 3,
+"role": "Flight Engineer",
+"priority": 2
+},
+"astronaut": {
+"id": 104,
+"name": "Sergey Teteryatnikov",
+"status": {
+"id": 1,
+"name": "Active"
+},
+"agency": {
+"id": 63,
+"name": "Russian Federal Space Agency (ROSCOSMOS)",
+"type": "Government"
+},
+"profile_image_thumbnail": null
+}
+},
+{
+"id": 5,
+"role": {
+"id": 3,
+"role": "Flight Engineer",
+"priority": 2
+},
+"astronaut": {
+"id": 105,
+"name": "Anna Kikina",
+"status": {
+"id": 1,
+"name": "Active"
+},
+"agency": {
+"id": 63,
+"name": "Russian Federal Space Agency (ROSCOSMOS)",
+"type": "Government"
+},
+"profile_image_thumbnail": null
+}
+},
+{
+"id": 6,
+"role": {
+"id": 3,
+"role": "Flight Engineer",
+"priority": 2
+},
+"astronaut": {
+"id": 106,
+"name": "Jessica Watkins",
+"status": {
+"id": 1,
+"name": "Active"
+},
+"agency": {
+"id": 44,
+"name": "National Aeronautics and Space Administration",
+"type": "Government"
+},
+"profile_image_thumbnail": null
+}
+}
+]
+}
+],
+"docking_location": [
+{
+"id": 19,
+"name": "Harmony forward",
+"docked": {
+"id": 644,
+"docking": "2026-10-01T23:05:00Z",
+"departure": null,
+"flight_vehicle": {
+"spacecraft": {
+"name": "Crew Dragon Grace",
+"serial_number": "C213",
+"flights_count": 2,
+"description": "Crew Dragon spacecraft first used for Axiom-4.",
+"spacecraft_config": {
+"id": 6,
+"name": "Crew Dragon 2"
+}
+}
+}
+}
+},
+{
+"id": 1,
+"name": "Unity nadir",
+"docked": null
+}
+]
+},
+"events": {
+"count": 4,
+"results": [
+{
+"name": "US EVA-100/101 Preview News Conference",
+"type": {
+"name": "Press Event"
+},
+"date": "2026-10-20T18:00:00Z",
+"date_precision": {
+"name": "Minute"
+},
+"location": "Johnson Space Center, Houston, TX, USA",
+"description": "NASA will preview two upcoming spacewalks.",
+"video_url": "https://example.invalid/v",
+"webcast_live": false
+},
+{
+"name": "US EVA-100",
+"type": {
+"name": "EVA"
+},
+"date": "2026-10-29T12:00:00Z",
+"date_precision": {
+"name": "Day"
+},
+"location": "International Space Station",
+"description": "NASA astronaut Anil Menon and CSA astronaut Joshua Kutryk.",
+"video_url": null,
+"webcast_live": false
+},
+{
+"name": "US EVA-101",
+"type": {
+"name": "EVA"
+},
+"date": "2026-11-05T12:00:00Z",
+"date_precision": {
+"name": "Day"
+},
+"location": "International Space Station",
+"description": "",
+"video_url": null,
+"webcast_live": false
+},
+{
+"name": "Boeing Starliner-1 Docking",
+"type": {
+"name": "Docking"
+},
+"date": "2026-12-31T00:00:00Z",
+"date_precision": {
+"name": "Year"
+},
+"location": "International Space Station",
+"description": "",
+"video_url": null,
+"webcast_live": false
+}
+]
+},
+"launches": {
+"count": 2,
+"results": [
+{
+"name": "Soyuz 2.1b | Progress MS-36 (97P)",
+"net": "2026-11-24T05:03:00Z",
+"net_precision": {
+"name": "Minute"
+},
+"status": {
+"id": 8,
+"name": "To Be Confirmed",
+"abbrev": "TBC"
+},
+"lsp_name": "Russian Federal Space Agency (ROSCOSMOS)",
+"mission": "Progress MS-36 (97P)",
+"mission_type": "Resupply",
+"pad": "31/6",
+"location": "Baikonur Cosmodrome, Republic of Kazakhstan",
+"window_start": "2026-11-24T05:03:00Z"
+},
+{
+"name": "Falcon 9 Block 5 | Cygnus CRS-2 NG-25",
+"net": "2026-11-30T00:00:00Z",
+"net_precision": {
+"name": "Month"
+},
+"status": {
+"id": 2,
+"name": "To Be Determined",
+"abbrev": "TBD"
+},
+"lsp_name": "SpaceX",
+"mission": "Cygnus CRS-2 NG-25",
+"mission_type": "Resupply",
+"pad": "Space Launch Complex 40",
+"location": "Cape Canaveral SFS, FL, USA",
+"window_start": "2026-11-30T00:00:00Z"
+}
+]
+}
+}

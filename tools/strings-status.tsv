@@ -1,0 +1,264 @@
+link|Verbindung|enlace|связь|liaison|リンク
+connected|verbunden|conectado|подключено|connecté|接続済み
+connecting|verbinde|conectando|подключение|connexion|接続中
+error|Fehler|error|ошибка|erreur|エラー
+stalled|blockiert|detenido|зависло|bloqué|停滞
+idle|untätig|inactivo|простой|inactif|待機
+{0} s ago|vor {0} s|hace {0} s|{0} с назад|il y a {0} s|{0}秒前
+Command · virtual ISS|Befehl · virtuelle ISS|Mando · ISS virtual|Команды · виртуальная МКС|Commande · ISS virtuelle|コマンド・仮想ISS
+Mirroring simulator|Spiegelt Simulator|Reflejando simulador|Зеркало симулятора|Miroir du simulateur|シミュレーターをミラー中
+Mirroring telemetry|Spiegelt Telemetrie|Reflejando telemetría|Зеркало телеметрии|Miroir de la télémétrie|テレメトリをミラー中
+VIRTUAL ORBIT|VIRTUELLE BAHN|ÓRBITA VIRTUAL|ВИРТУАЛЬНАЯ ОРБИТА|ORBITE VIRTUELLE|仮想軌道
+ORBIT UNAVAILABLE|BAHN NICHT VERFÜGBAR|ÓRBITA NO DISPONIBLE|ОРБИТА НЕДОСТУПНА|ORBITE INDISPONIBLE|軌道利用不可
+SIMULATED ORBIT|SIMULIERTE BAHN|ÓRBITA SIMULADA|МОДЕЛЬНАЯ ОРБИТА|ORBITE SIMULÉE|模擬軌道
+RECORDED ORBIT|AUFGEZEICHNETE BAHN|ÓRBITA GRABADA|ЗАПИСАННАЯ ОРБИТА|ORBITE ENREGISTRÉE|記録軌道
+NASA PREDICTED ORBIT|NASA-BAHNVORHERSAGE|ÓRBITA PREDICHA POR LA NASA|ПРОГНОЗ ОРБИТЫ NASA|ORBITE PRÉVUE PAR LA NASA|NASA予測軌道
+PROPAGATED · STALE TLM|FORTGESCHRIEBEN · ALTE TLM|PROPAGADA · TLM ANTIGUA|ЭКСТРАПОЛЯЦИЯ · УСТАРЕВШАЯ ТМ|PROPAGÉE · TLM ANCIENNE|伝播中・古いTLM
+LIVE TELEMETRY ORBIT|LIVE-TELEMETRIEBAHN|ÓRBITA DE TELEMETRÍA EN VIVO|ОРБИТА ПО ТЕЛЕМЕТРИИ|ORBITE TÉLÉMÉTRIE DIRECTE|ライブテレメトリ軌道
+Orbit follows NASA predictions.|Die Bahn folgt NASA-Vorhersagen.|La órbita sigue las predicciones de la NASA.|Орбита по прогнозу NASA.|L'orbite suit les prévisions de la NASA.|軌道はNASA予測に従っています。
+Orbit source|Bahnquelle|Fuente de la órbita|Источник орбиты|Source d'orbite|軌道ソース
+predicted|vorhergesagt|predicha|прогноз|prévue|予測
+VIRTUAL SYSTEMS|VIRTUELLE SYSTEME|SISTEMAS VIRTUALES|ВИРТУАЛЬНЫЕ СИСТЕМЫ|SYSTÈMES VIRTUELS|仮想システム
+kinematic attitude assist|kinematische Lageführung|asistencia cinemática de actitud|кинематическое управление ориентацией|assistance cinématique d'attitude|運動学的姿勢アシスト
+physical attitude control|physikalische Lageregelung|control físico de actitud|физическое управление ориентацией|contrôle physique d'attitude|物理的姿勢制御
+unmodeled channels are frozen references|nicht modellierte Kanäle sind eingefrorene Referenzen|los canales no modelados son referencias congeladas|немоделируемые каналы: замороженные значения|les canaux non modélisés sont des références figées|未モデル化チャンネルは固定参照値
+SIMULATED SYSTEMS · synthetic telemetry|SIMULIERTE SYSTEME · synthetische Telemetrie|SISTEMAS SIMULADOS · telemetría sintética|МОДЕЛЬНЫЕ СИСТЕМЫ · синтетическая телеметрия|SYSTÈMES SIMULÉS · télémétrie synthétique|模擬システム・合成テレメトリ
+SYSTEMS UNAVAILABLE · 3D joints and attitude are placeholders|SYSTEME NICHT VERFÜGBAR · 3D-Gelenke und Lage sind Platzhalter|SISTEMAS NO DISPONIBLES · articulaciones y actitud 3D son provisionales|СИСТЕМЫ НЕДОСТУПНЫ · приводы и ориентация в 3D условные|SYSTÈMES INDISPONIBLES · articulations et attitude 3D provisoires|システム利用不可・3Dの関節と姿勢は仮表示
+RECORDED SYSTEMS · historical replay|AUFGEZEICHNETE SYSTEME · historische Wiedergabe|SISTEMAS GRABADOS · reproducción histórica|ЗАПИСАННЫЕ СИСТЕМЫ · воспроизведение|SYSTÈMES ENREGISTRÉS · relecture historique|記録システム・履歴再生
+SYSTEMS STALE · displaying last-known readings and pose|SYSTEME VERALTET · letzte bekannte Werte und Lage|SISTEMAS DESACTUALIZADOS · últimas lecturas y pose conocidas|ДАННЫЕ УСТАРЕЛИ · последние известные значения и положение|SYSTÈMES PÉRIMÉS · dernières valeurs et pose connues|システム古い・最後の既知値と姿勢を表示
+SYSTEMS · {0} recent, {1} unchanged since last update (ISSLive only sends changes)|SYSTEME · {0} aktuell, {1} seit der letzten Meldung unverändert (ISSLive sendet nur Änderungen)|SISTEMAS · {0} recientes, {1} sin cambios desde la última actualización (ISSLive solo envía cambios)|СИСТЕМЫ · {0} свежих, {1} без изменений (ISSLive передаёт только изменения)|SYSTÈMES · {0} récents, {1} inchangés depuis la dernière mise à jour (ISSLive n'envoie que les changements)|システム・最新{0}件、前回から変化なし{1}件（ISSLiveは変化のみ送信）
+SYSTEMS · recent telemetry|SYSTEME · aktuelle Telemetrie|SISTEMAS · telemetría reciente|СИСТЕМЫ · свежая телеметрия|SYSTÈMES · télémétrie récente|システム・最新テレメトリ
+PREDICTED POSE · {0} following the Sun · no data for {1}|VORHERGESAGTE LAGE · {0} folgen der Sonne · seit {1} keine Daten|POSE PREDICHA · {0} siguiendo al Sol · sin datos desde hace {1}|ПРОГНОЗ ПОЛОЖЕНИЯ · {0} следят за Солнцем · нет данных {1}|POSE PRÉVUE · {0} suivent le Soleil · aucune donnée depuis {1}|予測姿勢・{0}が太陽を追尾・{1}データなし
+PLACEHOLDER POSE · no joint telemetry|PLATZHALTER-LAGE · keine Gelenktelemetrie|POSE PROVISIONAL · sin telemetría de articulaciones|УСЛОВНОЕ ПОЛОЖЕНИЕ · нет телеметрии приводов|POSE PROVISOIRE · aucune télémétrie d'articulation|仮姿勢・関節テレメトリなし
+RECORDED POSE|AUFGEZEICHNETE LAGE|POSE GRABADA|ЗАПИСАННОЕ ПОЛОЖЕНИЕ|POSE ENREGISTRÉE|記録姿勢
+LIVE POSE|LIVE-LAGE|POSE EN VIVO|ТЕКУЩЕЕ ПОЛОЖЕНИЕ|POSE EN DIRECT|ライブ姿勢
+LAST KNOWN POSE|LETZTE BEKANNTE LAGE|ÚLTIMA POSE CONOCIDA|ПОСЛЕДНЕЕ ИЗВЕСТНОЕ ПОЛОЖЕНИЕ|DERNIÈRE POSE CONNUE|最後の既知姿勢
+placeholder|Platzhalter|provisional|условно|provisoire|仮
+VIRTUAL ATT|VIRTUELLE LAGE|ACTITUD VIRTUAL|ВИРТ. ОРИЕНТАЦИЯ|ATT. VIRTUELLE|仮想姿勢
+SIM ATT LVLH|SIM-LAGE LVLH|ACTITUD SIM LVLH|СИМ. ОРИЕНТАЦИЯ LVLH|ATT. SIM LVLH|シム姿勢 LVLH
+PLACEHOLDER ATT|PLATZHALTER-LAGE|ACTITUD PROVISIONAL|УСЛОВНАЯ ОРИЕНТАЦИЯ|ATT. PROVISOIRE|仮姿勢
+RECORDED ATT LVLH|AUFGEZ. LAGE LVLH|ACTITUD GRABADA LVLH|ЗАПИСАННАЯ ОРИЕНТАЦИЯ LVLH|ATT. ENREGISTRÉE LVLH|記録姿勢 LVLH
+LIVE ATT LVLH|LIVE-LAGE LVLH|ACTITUD EN VIVO LVLH|ОРИЕНТАЦИЯ LVLH|ATT. DIRECTE LVLH|ライブ姿勢 LVLH
+ATT LVLH (last known)|LAGE LVLH (zuletzt bekannt)|ACTITUD LVLH (última conocida)|ОРИЕНТАЦИЯ LVLH (последняя)|ATT. LVLH (dernière connue)|姿勢 LVLH（最終既知）
+awaiting state vector|warte auf Zustandsvektor|esperando vector de estado|ожидание вектора состояния|en attente du vecteur d'état|状態ベクトル待ち
+Lighting unknown|Beleuchtung unbekannt|Iluminación desconocida|Освещение неизвестно|Éclairage inconnu|照明不明
+Sunlit · arrays|Sonne · Solarflügel|Iluminado · paneles|Солнце · батареи|Éclairé · panneaux|日照・アレイ
+Eclipse · arrays|Schatten · Solarflügel|Eclipse · paneles|Тень · батареи|Éclipse · panneaux|日陰・アレイ
+orbit|Bahn|órbita|орбита|orbite|軌道
+orbit + arrays|Bahn + Solarflügel|órbita + paneles|орбита + батареи|orbite + panneaux|軌道＋アレイ
+arrays lit|Flügel beleuchtet|paneles iluminados|батареи освещены|panneaux éclairés|アレイ日照
+arrays dark|Flügel dunkel|paneles a oscuras|батареи в тени|panneaux à l'ombre|アレイ日陰
+Click to save an overlap report (joint telemetry and colliding parts) for diagnosis|Klicken, um einen Überschneidungsbericht (Gelenktelemetrie und betroffene Teile) zur Diagnose zu speichern|Haz clic para guardar un informe de solape (telemetría y piezas en colisión) para diagnóstico|Щёлкните, чтобы сохранить отчёт о пересечении (телеметрия и детали) для диагностики|Cliquez pour enregistrer un rapport de chevauchement (télémétrie et pièces en conflit) pour diagnostic|クリックで重なりレポート（関節テレメトリと衝突部品）を保存
+Possible collision:|Mögliche Kollision:|Posible colisión:|Возможное столкновение:|Collision possible :|衝突の可能性：
+Model overlap in displayed pose:|Modellüberschneidung in der gezeigten Lage:|Solape del modelo en la pose mostrada:|Пересечение модели в показанном положении:|Chevauchement du modèle dans la pose affichée :|表示姿勢でのモデル重なり：
+Clearance monitor: no modeled overlaps|Abstandsüberwachung: keine modellierten Überschneidungen|Monitor de holgura: sin solapes modelados|Контроль зазоров: пересечений нет|Surveillance des dégagements : aucun chevauchement|クリアランス監視：重なりなし
+Yes|Ja|Sí|Да|Oui|はい
+No|Nein|No|Нет|Non|いいえ
+On|Ein|Encendido|Вкл|Marche|オン
+Off|Aus|Apagado|Выкл|Arrêt|オフ
+OK|OK|OK|Норма|OK|正常
+ALARM|ALARM|ALARMA|ТРЕВОГА|ALARME|警報
+Open|Offen|Abierto|Открыто|Ouvert|開
+Closed|Geschlossen|Cerrado|Закрыто|Fermé|閉
+Free|Frei|Libre|Свободен|Libre|空き
+Engaged|Belegt|Acoplado|Занят|Engagé|結合
+Enabled|Aktiv|Habilitado|Включён|Activé|有効
+Inhibited|Gesperrt|Inhibido|Запрещён|Inhibé|禁止
+Idle|Ruhend|Inactivo|Простой|Au repos|待機
+In use|In Betrieb|En uso|Используется|En service|使用中
+Backup|Reserve|Respaldo|Резерв|Secours|予備
+Active|Aktiv|Activo|Активен|Actif|稼働
+Inactive|Inaktiv|Inactivo|Неактивен|Inactif|非稼働
+No sync|Keine Synchronisation|Sin sincronía|Нет синхронизации|Pas de synchro|同期なし
+Sync|Synchron|Sincronizado|Синхронизировано|Synchro|同期
+STANDBY|BEREITSCHAFT|EN ESPERA|ОЖИДАНИЕ|VEILLE|待機
+RESTART|NEUSTART|REINICIO|ПЕРЕЗАПУСК|REDÉMARRAGE|再起動
+CHECKOUT|PRÜFUNG|COMPROBACIÓN|ПРОВЕРКА|VÉRIFICATION|点検
+DIR POS|GEZIELTE POS.|POS. DIRIGIDA|ЗАДАННОЕ ПОЛ.|POS. DIRIGÉE|指定位置
+AUTOTRACK|AUTOM. NACHFÜHRUNG|SEGUIMIENTO AUTO|АВТОСЛЕЖЕНИЕ|SUIVI AUTO|自動追尾
+BLIND|BLIND|CIEGO|ВСЛЕПУЮ|AVEUGLE|ブラインド
+SHUTDOWN|ABGESCHALTET|APAGADO|ОТКЛЮЧЕНО|ARRÊT|停止
+SWITCHOVER|UMSCHALTUNG|CONMUTACIÓN|ПЕРЕКЛЮЧЕНИЕ|BASCULEMENT|切替
+STANDARD|STANDARD|ESTÁNDAR|СТАНДАРТНЫЙ|STANDARD|標準
+MICROGRAVITY|MIKROGRAVITATION|MICROGRAVEDAD|МИКРОГРАВИТАЦИЯ|MICROGRAVITÉ|微小重力
+REBOOST|BAHNANHEBUNG|REIMPULSO|КОРРЕКЦИЯ ОРБИТЫ|REHAUSSE|リブースト
+PROX OPS|NAHBEREICH|OPS. PROXIMIDAD|СБЛИЖЕНИЕ|OPS. PROXIMITÉ|近傍運用
+EXTERNAL OPS|AUSSENEINSATZ|OPS. EXTERNAS|ВНЕШНИЕ ОПЕРАЦИИ|OPS. EXTERNES|船外運用
+SURVIVAL|ÜBERLEBEN|SUPERVIVENCIA|ВЫЖИВАНИЕ|SURVIE|サバイバル
+ASCR|ASCR|ASCR|ASCR|ASCR|ASCR
+DEFAULT|STANDARD|PREDETERMINADO|ПО УМОЛЧАНИЮ|DÉFAUT|既定
+WAIT|WARTEN|ESPERA|ОЖИДАНИЕ|ATTENTE|待ち
+RESERVED|RESERVIERT|RESERVADO|РЕЗЕРВ|RÉSERVÉ|予約
+CMG ATT CTRL|CMG-LAGEREGELUNG|CONTROL ACT. CMG|ОРИЕНТАЦИЯ СГК|CONTRÔLE ATT. CMG|CMG姿勢制御
+CMG + THR ASSIST|CMG + TRIEBWERKSHILFE|CMG + ASIST. PROPULSORES|СГК + ПОМОЩЬ ДВИГАТЕЛЕЙ|CMG + ASSIST. PROPULSEURS|CMG＋スラスター補助
+USER DATA GEN|NUTZERDATEN|GEN. DATOS USUARIO|ДАННЫЕ ПОЛЬЗОВАТЕЛЯ|GÉN. DONNÉES UTIL.|ユーザーデータ生成
+FREE DRIFT|FREIER DRIFT|DERIVA LIBRE|СВОБОДНЫЙ ДРЕЙФ|DÉRIVE LIBRE|フリードリフト
+RELEASED|GELÖST|SUELTO|ОТПУЩЕН|RELÂCHÉ|解放
+CAPTIVE|FIXIERT|CAUTIVO|УДЕРЖАН|CAPTIF|保持
+CAPTURED|GEGRIFFEN|CAPTURADO|ЗАХВАЧЕН|CAPTURÉ|把持
+Doing position fixes|Positionsbestimmung läuft|Calculando posición|Определение положения|Calcul de position|測位中
+SV timing|SV-Zeitbezug|Sincronización SV|Синхронизация по КА|Synchronisation SV|衛星タイミング
+Approximate timing|Ungefähre Zeit|Tiempo aproximado|Приблизительное время|Temps approximatif|概略時刻
+GPS time|GPS-Zeit|Tiempo GPS|Время GPS|Temps GPS|GPS時刻
+Need initialization|Initialisierung nötig|Requiere inicialización|Нужна инициализация|Initialisation requise|初期化が必要
+GDOP needed|GDOP nötig|Se necesita GDOP|Нужен GDOP|GDOP requis|GDOPが必要
+Bad timing|Zeitfehler|Tiempo erróneo|Ошибка времени|Temps erroné|時刻不良
+No usable satellite|Kein nutzbarer Satellit|Sin satélite utilizable|Нет пригодных спутников|Aucun satellite utilisable|使用可能衛星なし
+Track 1 satellite|1 Satellit verfolgt|Siguiendo 1 satélite|Сопровождение 1 спутника|Suivi de 1 satellite|1衛星追尾
+Track 2 satellite|2 Satelliten verfolgt|Siguiendo 2 satélites|Сопровождение 2 спутников|Suivi de 2 satellites|2衛星追尾
+Track 3 satellite|3 Satelliten verfolgt|Siguiendo 3 satélites|Сопровождение 3 спутников|Suivi de 3 satellites|3衛星追尾
+Bad integrity|Integrität schlecht|Integridad deficiente|Плохая целостность|Intégrité médiocre|完全性不良
+No vel available|Keine Geschwindigkeit|Sin velocidad|Нет скорости|Vitesse indisponible|速度なし
+Unusable fix|Unbrauchbare Position|Posición inutilizable|Непригодное решение|Position inutilisable|測位使用不可
+Drain|Entleeren|Drenaje|Слив|Vidange|排水
+Dryout|Trocknen|Secado|Осушка|Séchage|乾燥
+EIB Off|EIB aus|EIB apagado|EIB выкл|EIB arrêt|EIBオフ
+Startup|Anlauf|Arranque|Запуск|Démarrage|起動中
+Test|Test|Prueba|Тест|Test|試験
+Stop|Stopp|Parada|Стоп|Arrêt|停止
+Shutdown|Abschaltung|Apagado|Выключение|Arrêt|停止
+Maintenance|Wartung|Mantenimiento|Обслуживание|Maintenance|保守
+Normal|Normal|Normal|Норма|Normal|通常
+Standby|Bereitschaft|En espera|Ожидание|Veille|待機
+System Initialized|System initialisiert|Sistema inicializado|Система инициализирована|Système initialisé|システム初期化済
+Process|Verarbeitung|Proceso|Обработка|Traitement|処理中
+Hot Service|Heißbetrieb|Servicio en caliente|Горячее обслуживание|Service à chaud|ホットサービス
+Flush|Spülen|Purga|Промывка|Rinçage|フラッシュ
+Warm Shutdown|Warmes Abschalten|Apagado en caliente|Тёплое отключение|Arrêt à chaud|ウォーム停止
+None|Keine|Ninguno|Нет|Aucun|なし
+Vent|Entlüften|Venteo|Сброс|Purge|ベント
+Heatup|Aufheizen|Calentamiento|Нагрев|Chauffe|加熱
+Purge|Spülen|Purga|Продувка|Purge|パージ
+Flow|Durchfluss|Flujo|Поток|Débit|流量
+Test SV 1|Test SV 1|Prueba SV 1|Тест SV 1|Test SV 1|試験 SV 1
+Test SV 2|Test SV 2|Prueba SV 2|Тест SV 2|Test SV 2|試験 SV 2
+Service|Wartung|Servicio|Обслуживание|Service|サービス
+Vent Dome|Kuppel entlüften|Ventear domo|Сброс из купола|Purge du dôme|ドームベント
+Inert Dome|Kuppel inertisieren|Inertizar domo|Инертизация купола|Inertage du dôme|ドーム不活性化
+Fast Shutdown|Schnellabschaltung|Apagado rápido|Быстрое отключение|Arrêt rapide|高速停止
+N2 Purge Shutdown|Abschaltung mit N2-Spülung|Apagado con purga de N2|Отключение с продувкой N2|Arrêt avec purge N2|N2パージ停止
+Failed|Ausgefallen|Averiado|Отказ|En panne|故障
+Default|Standard|Predeterminado|По умолчанию|Défaut|既定
+Wait|Warten|Espera|Ожидание|Attente|待ち
+Reserved|Reserviert|Reservado|Резерв|Réservé|予約
+CMG attitude control|CMG-Lageregelung|Control de actitud por CMG|Ориентация с помощью СГК|Contrôle d'attitude par CMG|CMG姿勢制御
+CMG thruster assist|CMG mit Triebwerkshilfe|CMG con asistencia de propulsores|СГК с помощью двигателей|CMG avec assistance propulseurs|CMG＋スラスター補助
+User data generation|Nutzerdaten-Erzeugung|Generación de datos de usuario|Формирование данных пользователя|Génération de données utilisateur|ユーザーデータ生成
+GPS 1|GPS 1|GPS 1|GPS 1|GPS 1|GPS 1
+GPS 2|GPS 2|GPS 2|GPS 2|GPS 2|GPS 2
+Russian|Russisch|Ruso|Российский|Russe|ロシア
+Ku band|Ku-Band|Banda Ku|Ku-диапазон|Bande Ku|Kuバンド
+Attitude hold|Lage halten|Mantener actitud|Удержание ориентации|Maintien d'attitude|姿勢保持
+Momentum management|Drehimpulsmanagement|Gestión del momento|Управление моментом|Gestion du moment|角運動量管理
+Standard|Standard|Estándar|Стандартный|Standard|標準
+Microgravity|Mikrogravitation|Microgravedad|Микрогравитация|Microgravité|微小重力
+Reboost|Bahnanhebung|Reimpulso|Коррекция орбиты|Rehausse|リブースト
+Proximity Ops|Nahbereichsbetrieb|Operaciones de proximidad|Операции сближения|Opérations de proximité|近傍運用
+External Ops|Außeneinsatz|Operaciones externas|Внешние операции|Opérations externes|船外運用
+Survival|Überleben|Supervivencia|Выживание|Survie|サバイバル
+Assured Safe Crew Return|Gesicherte Crew-Rückkehr|Regreso seguro de la tripulación|Гарантированное возвращение экипажа|Retour sûr de l'équipage|クルー安全帰還
+Commander|Kommandant|Comandante|Командир|Commandant|船長
+Flight Engineer|Bordingenieur|Ingeniero de vuelo|Бортинженер|Ingénieur de vol|フライトエンジニア
+Pilot|Pilot|Piloto|Пилот|Pilote|パイロット
+Mission Specialist|Missionsspezialist|Especialista de misión|Специалист миссии|Spécialiste de mission|ミッションスペシャリスト
+Spaceflight Participant|Raumflugteilnehmer|Participante de vuelo espacial|Участник космического полёта|Participant au vol spatial|宇宙飛行参加者
+Payload Specialist|Nutzlastspezialist|Especialista de carga útil|Специалист по полезной нагрузке|Spécialiste de charge utile|ペイロードスペシャリスト
+EVA|Außenbordeinsatz|EVA|Выход в космос|Sortie extravéhiculaire|船外活動
+Spacewalk|Weltraumspaziergang|Caminata espacial|Выход в открытый космос|Sortie dans l'espace|宇宙遊泳
+Press Event|Pressetermin|Evento de prensa|Пресс-мероприятие|Événement presse|記者会見
+Briefing|Briefing|Sesión informativa|Брифинг|Briefing|ブリーフィング
+Docking|Andocken|Atraque|Стыковка|Amarrage|ドッキング
+Spacecraft Docking|Raumschiff-Andocken|Atraque de nave|Стыковка корабля|Amarrage du vaisseau|宇宙機ドッキング
+Spacecraft Undocking|Raumschiff-Abdocken|Desatraque de nave|Расстыковка корабля|Désamarrage du vaisseau|宇宙機分離
+Spacecraft Berthing|Raumschiff-Anlegen|Acoplamiento de nave|Причаливание корабля|Accostage du vaisseau|宇宙機結合
+Spacecraft Release|Raumschiff-Freigabe|Liberación de nave|Отпуск корабля|Libération du vaisseau|宇宙機放出
+Spacecraft Capture|Raumschiff-Einfang|Captura de nave|Захват корабля|Capture du vaisseau|宇宙機把持
+Spacecraft Landing|Raumschiff-Landung|Aterrizaje de nave|Посадка корабля|Atterrissage du vaisseau|宇宙機着陸
+Launch|Start|Lanzamiento|Запуск|Lancement|打ち上げ
+Reentry|Wiedereintritt|Reentrada|Вход в атмосферу|Rentrée|再突入
+Go for Launch|Startfreigabe|Listo para lanzamiento|Готов к запуску|Feu vert au lancement|打ち上げ可
+To Be Confirmed|Noch zu bestätigen|Por confirmar|Требует подтверждения|À confirmer|確認待ち
+To Be Determined|Noch offen|Por determinar|Не определено|À déterminer|未定
+Launch Successful|Start erfolgreich|Lanzamiento exitoso|Успешный запуск|Lancement réussi|打ち上げ成功
+Launch Failure|Fehlstart|Lanzamiento fallido|Авария при запуске|Échec du lancement|打ち上げ失敗
+On Hold|Angehalten|En espera|Отложено|En attente|保留
+Launch in Flight|Im Flug|En vuelo|В полёте|En vol|飛行中
+Partial Failure|Teilerfolg|Fallo parcial|Частичный отказ|Échec partiel|一部失敗
+Resupply|Versorgung|Reabastecimiento|Снабжение|Ravitaillement|補給
+Human Exploration|Bemannte Erkundung|Exploración humana|Пилотируемая экспедиция|Exploration humaine|有人探査
+Tourism|Tourismus|Turismo|Туризм|Tourisme|観光
+Test Flight|Testflug|Vuelo de prueba|Испытательный полёт|Vol d'essai|試験飛行
+Astrophysics|Astrophysik|Astrofísica|Астрофизика|Astrophysique|天体物理
+Communications|Kommunikation|Comunicaciones|Связь|Communications|通信
+Sunlit|Sonnenlicht|Iluminado|Освещено|Éclairé|日照
+Attitude|Lage|Actitud|Ориентация|Attitude|姿勢
+Orbit source → ISSLIVE|Bahnquelle → ISSLIVE|Fuente de la órbita → ISSLIVE|Источник орбиты → ISSLIVE|Source d'orbite → ISSLIVE|軌道ソース → ISSLIVE
+Esc|Esc|Esc|Esc|Échap|Esc
+Resume|Fortsetzen|Reanudar|Продолжить|Reprendre|再開
+PAUSED|ANGEHALTEN|EN PAUSA|ПАУЗА|EN PAUSE|一時停止中
+REAL TIME|ECHTZEIT|TIEMPO REAL|РЕАЛЬНОЕ ВРЕМЯ|TEMPS RÉEL|実時間
+VIRTUAL POSE|VIRTUELLE LAGE|POSE VIRTUAL|ВИРТУАЛЬНОЕ ПОЛОЖЕНИЕ|POSE VIRTUELLE|仮想姿勢
+SIMULATED POSE|SIMULIERTE LAGE|POSE SIMULADA|МОДЕЛЬНОЕ ПОЛОЖЕНИЕ|POSE SIMULÉE|模擬姿勢
+CREW RESCUE|BESATZUNGSRETTUNG|RESCATE DE TRIPULACIÓN|СПАСЕНИЕ ЭКИПАЖА|SAUVETAGE ÉQUIPAGE|乗員救助
+INERTIAL|INERTIAL|INERCIAL|ИНЕРЦИАЛЬНАЯ|INERTIELLE|慣性
+LVLH SM|LVLH SM|LVLH SM|ОСК СМ|LVLH SM|LVLH SM
+SOLAR ORIENTATION|SONNENAUSRICHTUNG|ORIENTACIÓN SOLAR|СОЛНЕЧНАЯ ОРИЕНТАЦИЯ|ORIENTATION SOLAIRE|太陽指向
+CURRENT LVLH|AKTUELLE LVLH|LVLH ACTUAL|ТЕКУЩАЯ ОСК|LVLH ACTUELLE|現在のLVLH
+CURRENT INERTIAL|AKTUELL INERTIAL|INERCIAL ACTUAL|ТЕКУЩАЯ ИНЕРЦИАЛЬНАЯ|INERTIELLE ACTUELLE|現在の慣性
+DAMPING|DÄMPFUNG|AMORTIGUACIÓN|ДЕМПФИРОВАНИЕ|AMORTISSEMENT|減衰
+TEA|TEA|TEA|ТЕА|TEA|TEA
+X-POP|X-POP|X-POP|X-POP|X-POP|X-POP
+RESERVE|RESERVE|RESERVA|РЕЗЕРВ|RÉSERVE|予備
+THRUSTERS|TRIEBWERKE|PROPULSORES|ДВИГАТЕЛИ|PROPULSEURS|スラスター
+GYRODINES|GYRODYNE|GIRODINOS|ГИРОДИНЫ|GYRODYNES|ジャイロダイン
+GYRODINE DESAT (US)|GYRODYNE-ENTSÄTTIGUNG (US)|DESATURACIÓN GIRODINOS (EE. UU.)|РАЗГРУЗКА ГИРОДИНОВ (США)|DÉSATURATION GYRODYNES (US)|ジャイロダイン除飽和(米)
+GYRODINE DESAT (RS)|GYRODYNE-ENTSÄTTIGUNG (RS)|DESATURACIÓN GIRODINOS (RS)|РАЗГРУЗКА ГИРОДИНОВ (РС)|DÉSATURATION GYRODYNES (RS)|ジャイロダイン除飽和(露)
+TRANSLATION THRUSTERS|TRANSLATIONSTRIEBWERKE|PROPULSORES DE TRASLACIÓN|ДВИГАТЕЛИ ПОСТУПАТЕЛЬНОГО ДВИЖЕНИЯ|PROPULSEURS DE TRANSLATION|並進スラスター
+THRUSTERS HELP CMG|TRIEBWERKE UNTERSTÜTZEN CMG|PROPULSORES AYUDAN A CMG|ДВИГАТЕЛИ ПОМОГАЮТ ГИРОДИНАМ|PROPULSEURS AIDENT LES CMG|スラスターがCMGを補助
+UNDETERMINED|UNBESTIMMT|INDETERMINADO|НЕ ОПРЕДЕЛЕНО|INDÉTERMINÉ|未確定
+RS MASTER|RS FÜHREND|RS MAESTRO|РС ВЕДУЩИЙ|RS MAÎTRE|露区画主導
+PREPARED|VORBEREITET|PREPARADO|ПОДГОТОВЛЕНО|PRÉPARÉ|準備完了
+PRE-START|VORSTART|PREARRANQUE|ПРЕДПУСК|PRÉ-DÉMARRAGE|始動前
+TERMINATED|BEENDET|TERMINADO|ЗАВЕРШЕНО|TERMINÉ|終了
+SSRMS TIP LEE|SSRMS-SPITZEN-LEE|LEE DE PUNTA SSRMS|КОНЦЕВОЙ LEE SSRMS|LEE D'EXTRÉMITÉ SSRMS|SSRMS先端LEE
+UNDEFINED|UNDEFINIERT|INDEFINIDO|НЕОПРЕДЕЛЁН|INDÉFINI|未定義
+DISCHARGE|ENTLADUNG|DESCARGA|РАЗРЯД|DÉCHARGE|放電
+CHARGING|LÄDT|CARGANDO|ЗАРЯД|CHARGE|充電中
+CHARGED|GELADEN|CARGADO|ЗАРЯЖЕНО|CHARGÉ|充電完了
+Discharging (eclipse)|Entladung (Schatten)|Descargando (eclipse)|Разряд (тень)|Décharge (éclipse)|放電中(日陰)
+Charged|Geladen|Cargadas|Заряжены|Chargées|充電完了
+Charging|Ladend|Cargando|Заряжаются|En charge|充電中
+Mixed|Gemischt|Mixto|Смешанно|Mixte|混在
+frozen at NASA · {0}|bei NASA eingefroren · {0}|congelado en la NASA · {0}|заморожен у NASA · {0}|figé côté NASA · {0}|NASA側で停止中 · {0}
+NASA’s ISSLive clock is stopped at {0} UTC ({1} ago): the feed is frozen on NASA’s side|Die ISSLive-Uhr der NASA steht bei {0} UTC (vor {1}): der Datenstrom ist auf NASA-Seite eingefroren|El reloj de ISSLive de la NASA está detenido en {0} UTC (hace {1}): el flujo está congelado en el lado de la NASA|Часы ISSLive NASA остановлены на {0} UTC ({1} назад): поток заморожен на стороне NASA|L'horloge ISSLive de la NASA est arrêtée à {0} UTC (il y a {1}) : le flux est figé côté NASA|NASAのISSLive時計は{0} UTCで停止({1}前):配信はNASA側で停止しています
+installed|installiert|instalado|установлен|installé|設置済み
+planned|geplant|planificado|запланирован|prévu|予定
+estimate|Schätzung|estimación|оценка|estimation|推定
+unrolled|ausgerollt|desplegado|развёрнут|déroulé|展開
+deployed|ausgefahren|desplegado|развёрнут|déployé|展開済み
+not yet installed|noch nicht angebracht|aún no instalado|ещё не установлен|pas encore installé|未設置
+mounted, rolled up|angebracht, aufgerollt|montado, enrollado|установлен, свёрнут|monté, enroulé|取付済み・巻き取り状態
+unrolling|rollt aus|desplegándose|разворачивается|en déroulement|展開中
+Camera view: {0}|Kameraansicht: {0}|Vista de cámara: {0}|Вид с камеры: {0}|Vue caméra : {0}|カメラビュー: {0}
+Canadarm2 captured: {0}|Canadarm2 hat gegriffen: {0}|Canadarm2 capturó: {0}|Canadarm2 захватил: {0}|Canadarm2 a saisi : {0}|カナダアーム2が把持: {0}
+identity not in telemetry|Identität nicht in der Telemetrie|identidad no incluida en la telemetría|объект не указан в телеметрии|identité absente de la télémesure|識別情報はテレメトリーにない
+Canadarm2 released: {0}|Canadarm2 hat losgelassen: {0}|Canadarm2 soltó: {0}|Canadarm2 отпустил: {0}|Canadarm2 a relâché : {0}|カナダアーム2が解放: {0}
+Bishop airlock|Bishop-Luftschleuse|esclusa Bishop|шлюз Bishop|sas Bishop|ビショップ・エアロック
+payload|Nutzlast|carga útil|полезный груз|charge utile|ペイロード
+ISSLive reports only grasp states, not which object is held|ISSLive meldet nur Greifzustände, nicht welches Objekt gehalten wird|ISSLive solo informa estados de agarre, no qué objeto se sujeta|ISSLive сообщает только состояние захвата, а не какой объект удерживается|ISSLive ne donne que l'état de saisie, pas l'objet tenu|ISSLiveは把持状態のみを通知し、対象物は通知しない
+held by Canadarm2|von Canadarm2 gehalten|sujeta por Canadarm2|удерживается Canadarm2|tenu par Canadarm2|カナダアーム2が把持中
+released away from its port|abseits seines Ports abgesetzt|soltada fuera de su puerto|отпущен вне своего узла|relâché hors de son port|ポート外で解放
+at Tranquility port|am Tranquility-Port|en el puerto de Tranquility|на порту Tranquility|au port de Tranquility|トランクウィリティのポート
+predicted: Sun tracking (no telemetry)|vorhergesagt: Sonnennachführung (keine Telemetrie)|previsto: seguimiento solar (sin telemetría)|прогноз: слежение за Солнцем (нет телеметрии)|prédit : suivi du Soleil (pas de télémesure)|予測: 太陽追尾(テレメトリーなし)
+open (crewlock at vacuum)|offen (Crewlock drucklos)|abierta (esclusa en vacío)|открыт (шлюз в вакууме)|ouverte (sas au vide)|開(クルーロック真空)
+closed|geschlossen|cerrada|закрыт|fermée|閉
+derived|abgeleitet|derivado|выведено|dérivé|推定
+Tip LEE|Spitzen-LEE|LEE del extremo|концевой LEE|LEE d'extrémité|先端LEE
+MBS POA|MBS-POA|POA del MBS|POA на MBS|POA du MBS|MBS POA
+OTCM 1 / 2|OTCM 1 / 2|OTCM 1 / 2|OTCM 1 / 2|OTCM 1 / 2|OTCM 1 / 2
+Note|Hinweis|Nota|Примечание|Remarque|注記
+State|Zustand|Estado|Состояние|État|状態
+Pointing|Ausrichtung|Orientación|Ориентация|Orientation|指向
+EV hatch|EV-Luke|escotilla EV|выходной люк|écoutille EV|船外ハッチ
+Payload on POA (identity not in telemetry)|Nutzlast am POA (Identität nicht in der Telemetrie)|Carga en el POA (identidad no incluida en la telemetría)|Груз на POA (объект не указан в телеметрии)|Charge sur le POA (identité absente de la télémesure)|POA上のペイロード(識別情報はテレメトリーにない)
+Payload on Canadarm2 (identity not in telemetry)|Nutzlast an Canadarm2 (Identität nicht in der Telemetrie)|Carga en Canadarm2 (identidad no incluida en la telemetría)|Груз на Canadarm2 (объект не указан в телеметрии)|Charge sur Canadarm2 (identité absente de la télémesure)|カナダアーム2上のペイロード(識別情報はテレメトリーにない)

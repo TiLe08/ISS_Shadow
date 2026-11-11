@@ -1,0 +1,7 @@
+# Python-Pakete des Launchers und der Bridge (Installation: pip install -r requirements.txt)
+# paho-mqtt: MQTT-Client der Bridge
+paho-mqtt>=2.0
+# lightstreamer-client-lib: Verbindung zu NASA ISSLive
+lightstreamer-client-lib>=2.0
+# amqtt: eingebetteter MQTT-Broker des Launchers
+amqtt>=0.11
