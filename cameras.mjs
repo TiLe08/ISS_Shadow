@@ -20,12 +20,14 @@
 // Was nicht in der Telemetrie steht: Schwenk, Neigung, Zoom und welche Kamera der Stream gerade zeigt.
 // Das stellt der Nutzer im Fenster ein (gespeichert unter localStorage iss.cams). Das Fenster lässt sich
 // verschieben und in der Größe ändern (window-frame.mjs, gespeichert unter localStorage iss.camwin).
+// Markierungen und Namen aller Kameras in der Hauptansicht lassen sich über Display/Overlays „Cameras“
+// ein- und ausschalten (localStorage iss.camMarks); dazu gehört auch der Sichtkegel.
 //
 // Schnittstelle: setupCameras({ THREE, S, MODEL, t, onOpen }) baut die Modelle und gibt
 // { open(id), close(), tick(now), list } zurück. Die Kameramodelle sind Bauteile des Stationsmodells
 // (MODEL.parts) und folgen damit der gewählten Darstellung.
 import { makeFrame } from './window-frame.mjs';
-import { box, cyl } from './iss-model.mjs';
+import { box, cyl, addLabel } from './iss-model.mjs';
 
 // Optiken: Bildformat und senkrechtes Sichtfeld (Grad) am kurzen und langen Zoomende.
 const vfov = (hfov, aspect) => 2 * Math.atan(Math.tan(hfov * Math.PI / 360) / aspect) * 180 / Math.PI;
@@ -128,6 +130,10 @@ const CSS = `
 #camWin .ctl input[type=range]{width:110px}
 #camWin .ctl output{min-width:3.2em}
 #camWin .note{color:var(--dim,#6a8899)}
+.lbl3d.cam{color:var(--warn,#ffb54a);border-left:0;padding-left:12px;pointer-events:auto;cursor:pointer;transform:translate(-5px,-50%)}
+.lbl3d.cam::before{content:'';position:absolute;left:0;top:50%;width:6px;height:6px;margin-top:-4px;border:1px solid var(--warn,#ffb54a);border-radius:50%;background:rgba(4,8,12,.8)}
+.lbl3d.cam:hover{background:rgba(40,24,4,.85)}
+.lbl3d.cam.lbl-off{visibility:visible;background:none;font-size:0;padding:6px 0 6px 12px}
 `;
 
 export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
@@ -164,6 +170,25 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     // Unsichtbare Kugel als Klickfläche: Die Kameras sind im Maßstab der Station sehr klein.
     const pick = new THREE.Mesh(new THREE.SphereGeometry(0.55, 10, 8), pickMat); pick.userData.camId = c.id; g.add(pick); pickers.push(pick);
     g.userData.cam = c; byId[c.id] = { g, head };
+  }
+  /* Markierung und Beschriftung jeder Kamera (Punkt an der Einbaustelle, Name daneben), schaltbar über
+     „Cameras“ unter Display/Overlays. Klick auf die Markierung öffnet das Kamerafenster. Die Beschriftungen
+     stehen nicht in MODEL.labels, damit „ISS labels“ sie nicht mitschaltet. Verdeckt eine Beschriftung eine
+     andere (declutterLabels in iss_twin.html), bleibt der Punkt stehen und nur der Name verschwindet. */
+  const marks = [];
+  let marksOn = (() => { try { return localStorage.getItem('iss.camMarks') !== '0'; } catch (e) { return true; } })();
+  for (const c of CAMERAS) {
+    if (!byId[c.id]) continue;
+    const head = c.name.split(' · ')[0], text = /^CP\d+$/.test(head) ? head : t(c.name);
+    const o = addLabel(byId[c.id].g, text, 'cam'); if (!o) continue;
+    const i = MODEL.labels.indexOf(o); if (i >= 0) MODEL.labels.splice(i, 1);
+    o.element.title = t(c.name); o.element.addEventListener('click', () => open(c.id));
+    o.visible = marksOn; marks.push(o);
+  }
+  function showMarks(on) {
+    marksOn = !!on; for (const o of marks) o.visible = marksOn;
+    if (!marksOn) frustum.visible = false;
+    try { localStorage.setItem('iss.camMarks', marksOn ? '1' : '0'); } catch (e) {}
   }
   // Sichtkegel der gewählten Kamera in der Hauptansicht (vier Kanten und ein Rahmen in 12 m Abstand).
   const frustum = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xffb54a, transparent: true, opacity: 0.7, depthWrite: false }));
@@ -295,7 +320,7 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     const c = [[-w, -h], [w, -h], [w, h], [-w, h]].map(([x, y]) => new THREE.Vector3(x, y, -d).applyMatrix4(cam.matrixWorld));
     let i = 0; const seg = (a, b) => { p.setXYZ(i++, a.x, a.y, a.z); p.setXYZ(i++, b.x, b.y, b.z); };
     for (let k = 0; k < 4; k++) { seg(o, c[k]); seg(c[k], c[(k + 1) % 4]); }
-    p.needsUpdate = true; frustum.visible = true;
+    p.needsUpdate = true; frustum.visible = marksOn;
   }
   function tick(nowP) {
     if (win.hidden || !cur || nowP - last < 66) return; last = nowP;
@@ -313,5 +338,5 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     updateFrustum();
     $('#camCap').textContent = t('TWIN') + ' · ' + t(camOf(cur).name);
   }
-  return { open, close, tick, list: CAMERAS, pose, state: st, refreshStreams };
+  return { open, close, tick, list: CAMERAS, pose, state: st, refreshStreams, labels: marks, showMarks, get marksOn() { return marksOn; } };
 }

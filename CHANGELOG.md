@@ -2,7 +2,13 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
-# v1.17: Kamerafenster verschiebbar und in der Größe änderbar (11.11.)
+# v1.17: Kamerafenster verschiebbar und in der Größe änderbar, Kameramarkierungen (11.11./12.11.)
+
+- **Kameramarkierungen:** Jede Außenkamera hat in der Hauptansicht einen Punkt an der Einbaustelle und
+  ihren Namen (CP-Ports kurz, z. B. „CP8“). Schalter „Cameras“ unter Display/Overlays neben „ISS labels“
+  blendet Punkte, Namen und den Sichtkegel aus und ein (`localStorage iss.camMarks`, Voreinstellung an).
+  Klick auf eine Markierung öffnet das Kamerafenster für diese Kamera. Überdecken sich Beschriftungen,
+  verschwindet nur der Name, der Punkt bleibt.
 
 - Das Kamerafenster lässt sich an der Kopfleiste verschieben und an allen vier Kanten und Ecken in der
   Größe ändern (Mindestgröße 420 × 240 px). Bisher stand es fest unten rechts; die Größenänderung des

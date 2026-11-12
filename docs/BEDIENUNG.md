@@ -41,7 +41,9 @@ Tastenkürzel: **D** Dashboard, **C** Kanal-Browser, **?** Hilfe, **Esc** Menüs
   Zwilling aus derselben Kamera rechts, *Overlay* legt beide übereinander. Kamera, Kamerakopf (SD 4:3
   oder HD 16:9), Stream, Schwenk, Neigung und Sichtfeld sind einstellbar. Das Fenster lässt sich an
   der Kopfleiste verschieben und an jeder Kante und Ecke in der Größe ändern; Lage und Größe bleiben
-  gespeichert, ein Doppelklick auf eine freie Stelle der Kopfleiste stellt beides zurück. Einzelheiten in
+  gespeichert, ein Doppelklick auf eine freie Stelle der Kopfleiste stellt beides zurück. Unter
+  *Display* schaltet *Cameras* die Markierungen und Namen aller Kameras in der Hauptansicht (und den
+  Sichtkegel der gewählten Kamera); ein Klick auf eine Markierung öffnet die Kamera. Einzelheiten in
   [KAMERAS.md](KAMERAS.md).
 - **Display:** Darstellung *Holo* (Drahtgitter) oder *Solid* (beleuchtete Flächen); Erde *Earth photo* (NASA Blue Marble)
   oder *Earth radar* (Küsten und Grenzen); Einblendungen *ISS labels*, *Axes* (Körperachsen), *Sun*

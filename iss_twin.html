@@ -445,6 +445,7 @@ tr.fresh td.v{color:var(--ok)}
             <div class="ddl">Overlays</div>
             <div class="seg" id="optSeg" role="group" aria-label="Overlays">
               <button data-v="labels" aria-pressed="true" title="Module and vehicle names">ISS labels</button>
+              <button id="camMarksToggle" aria-pressed="true" title="Markers and names of all external cameras">Cameras</button>
               <button data-v="axes" aria-pressed="false" title="Body axes: +X velocity, +Y starboard, +Z nadir">Axes</button>
               <button data-v="sunvec" aria-pressed="true" title="Direction to the Sun">Sun</button>
             </div>
@@ -3648,7 +3649,8 @@ function declutterLabels(nowP) {
     .map(e => e.getBoundingClientRect()).filter(r => r.width && r.height);
   const hit = (a, b, pad = 2) => a.left < b.right + pad && a.right > b.left - pad && a.top < b.bottom + pad && a.bottom > b.top - pad;
   const placed = [];
-  for (const o of MODEL.labels.concat(S.axes ? S.axes.children.filter(c => c.isCSS2DObject) : [])) {
+  for (const o of MODEL.labels.concat(EXTCAM?.labels || [], S.axes ? S.axes.children.filter(c => c.isCSS2DObject) : [])) {
+    if (!o.visible) continue;
     const el = o.element; if (!el || el.style.display === 'none') continue;
     el.classList.remove('lbl-off');
     const r = el.getBoundingClientRect(); if (!r.width) continue;
@@ -3685,7 +3687,7 @@ function init() {
   segBind('#camSeg', v => { setCam(v); setPressed('#camSeg', v); setTimeout(() => setPressed('#camSeg', ''), 1200); });
   segBind('#planetSeg',(v,b)=>{if(!v)return;S.earthTiles?.setMode(v);S.planetMode=v;$('#planetSeg').querySelectorAll('[data-v]').forEach(e=>e.setAttribute('aria-pressed',String(e.dataset.v===v)));});
   $('#planetLabelsToggle').onclick=()=>{S.planetLabels=!S.planetLabels;$('#planetLabelsToggle').setAttribute('aria-pressed',String(S.planetLabels));};
-  segBind('#optSeg', (v, b) => { OPTS[v] = !OPTS[v]; b.setAttribute('aria-pressed', String(OPTS[v])); if(v==='labels')MODEL.labels.forEach(o=>o.visible=OPTS.labels); });
+  segBind('#optSeg', (v, b) => { if (!v) return; OPTS[v] = !OPTS[v]; b.setAttribute('aria-pressed', String(OPTS[v])); if(v==='labels')MODEL.labels.forEach(o=>o.visible=OPTS.labels); });
   $('#bSet').onclick = () => $('#mSet').hidden = false; $('#setClose').onclick = () => $('#mSet').hidden = true;
   $('#bCsv').onclick = exportCsv;
   $('#sSkin').addEventListener('change', e => { const v = e.target.value; if (v) document.documentElement.dataset.skin = v; else delete document.documentElement.dataset.skin; try { localStorage.setItem('iss.skin', v); } catch (er) {} applySkinColors(); ISSW.refreshColors(); MAP.base = null; for (const w of TILES) w.update(Date.now(), true); });
@@ -3712,7 +3714,8 @@ function init() {
   // auf den Simulator ausweichen, wenn der Live-Feed nie etwas liefert
   if (src === 'live') setTimeout(() => { if (LINK.src === 'live' && !TM.size) { logEvent('No onboard telemetry after 20 s; NASA orbit prediction is independent', 'warn'); } }, 20000);
   setInterval(() => { try { linkWatchdog(); } catch (e) { console.error(e); } }, 2000);
-  try { EXTCAM = setupCameras({ THREE, S, MODEL, t, onOpen: id => logEvent(t('Camera view: {0}', t(EXTCAM.list.find(c => c.id === id).name))) }); $('#camBtn').onclick = () => EXTCAM.open(); applyRender(); }
+  try { EXTCAM = setupCameras({ THREE, S, MODEL, t, onOpen: id => logEvent(t('Camera view: {0}', t(EXTCAM.list.find(c => c.id === id).name))) }); $('#camBtn').onclick = () => EXTCAM.open(); applyRender();
+    const mt = $('#camMarksToggle'); mt.setAttribute('aria-pressed', String(EXTCAM.marksOn)); mt.onclick = () => { EXTCAM.showMarks(!EXTCAM.marksOn); mt.setAttribute('aria-pressed', String(EXTCAM.marksOn)); }; }
   catch (e) { console.error(e); logEvent('Cameras unavailable: ' + e.message, 'warn'); }
   requestAnimationFrame(frame);
 }
