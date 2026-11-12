@@ -539,6 +539,7 @@ function buildSSRMS(base) {
   MODEL.armTip = new THREE.Group(); MODEL.armTip.position.set(-41.8901 * IN, 0, 0);
   MODEL.armTip.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI).multiply(new THREE.Quaternion().setFromRotationMatrix(C)); wr.add(MODEL.armTip);
   MODEL.ssrms = J;
+  MODEL.armBooms = { b1: sp, b2: ep };   // Ausleger 1 (Schulterseite) und 2 (Handgelenkseite), Träger der Auslegerkameras
 }
 
 /* ---------- Station ---------- */

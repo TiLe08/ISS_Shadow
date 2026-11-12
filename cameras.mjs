@@ -59,6 +59,12 @@ export const CAMERAS = [
   { id: 'senHorizon', feed: 'sen', name: 'Sen SpaceTV-1 · horizon', group: 'Sen', kind: 'lens', mount: 'root', pos: [14.2, 7.4, 4.5], target: [100, 7.4, 40], optics: ['senWide'], ptu: false },
   { id: 'leeTip', feed: 'nasaLive', name: 'Canadarm2 · free LEE camera', group: 'MSS', kind: 'box', mount: 'armTip', pos: [0.45, -0.3, 0], dir: [0, -1, 0], up: [0, 0, 1], optics: ['mss'], ptu: false },
   { id: 'leeBase', feed: 'nasaLive', name: 'Canadarm2 · base LEE camera', group: 'MSS', kind: 'box', mount: 'armBase', pos: [0.45, -0.3, 0], dir: [0, -1, 0], up: [0, 0, 1], optics: ['mss'], ptu: false },
+  // Auslegerkameras (CLPA, mit Schwenk-Neige-Kopf) je eine an beiden Auslegern neben dem Ellbogen. Lage
+  // genähert: 0,9 m vor dem Ellbogengelenk seitlich am Ausleger, Blick den Ausleger entlang zum LEE.
+  { id: 'boom1', feed: 'nasaLive', name: 'Canadarm2 · boom camera, shoulder side', group: 'MSS', kind: 'box', mount: 'armBooms.b1', pos: [-6.2, 0.35, -0.24], dir: [1, 0, 0], up: [0, 1, 0], optics: ['mss'], ptu: true,
+    note: 'Looks along the boom to the shoulder and LEE B' },
+  { id: 'boom2', feed: 'nasaLive', name: 'Canadarm2 · boom camera, wrist side', group: 'MSS', kind: 'box', mount: 'armBooms.b2', pos: [-0.9, 0.35, -0.285], dir: [-1, 0, 0], up: [0, 1, 0], optics: ['mss'], ptu: true,
+    note: 'Looks along the boom to the wrist and LEE A' },
   { id: 'dextreHead', feed: 'nasaLive', name: 'Dextre · body camera', group: 'MSS', kind: 'box', mount: 'dextreBody', pos: [0, 3.5, 0.3], dir: [0, 0, 1], up: [0, 1, 0], optics: ['mss'], ptu: true },
   { id: 'mbs', feed: 'nasaLive', name: 'MBS · camera', group: 'MSS', kind: 'box', mount: 'pivots.mt', pos: [3.3, 2.0, -1.5], dir: [1, 0, 0.2], up: [0, 0, -1], optics: ['mss'], ptu: true },
 ];

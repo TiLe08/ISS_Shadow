@@ -23,6 +23,9 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
   NASA-Stream „Live Video“, die Harmony-HD-Kamera den NASA-HD-Stream, die Sen-Kameras SpaceTV-1. Ein von
   Hand gewählter Stream gilt danach für alle Kameras derselben Zuordnung (`iss.cams` → `feedPick`).
   YouTube-Spieler ohne Steuerleiste, Vorschläge und Infokarten (`controls=0&rel=0&iv_load_policy=3`).
+- **Auslegerkameras von Canadarm2** (`boom1`, `boom2`): je eine Kamera mit Schwenk-Neige-Kopf an beiden
+  Auslegern neben dem Ellbogen (`MODEL.armBooms`). Lage genähert; der NASA-Stream zeigte am 12.11. einen
+  Blick den Ausleger entlang, den bisher keine Kamera des Modells hatte.
 - **Kalibrierfeld** (`calib-panel.mjs`, Knopf **Calibrate** im Kamerafenster): Werte direkt an der
   Überlagerung mit dem Livebild einstellen statt im Code raten. Videoverzögerung (Zwilling zeigt die
   Telemetrie von vor n s), je Gelenk von Canadarm2 und Dextre Vorzeichen und Offset, Rollwinkel der
