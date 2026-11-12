@@ -18,6 +18,11 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 - Öffentliche Unterlagen zu Nullpunkten und Drehsinn der ISSLive-Kanäle gesucht: keine gefunden
   (Quellen in `docs/MODELL_UND_KALIBRIERUNG.md`). SARJ, BGA und Ku-Antenne bleiben wie kalibriert (Sonne bzw.
   TDRS); wenige Grad Abweichung der Solarflügel im Livebild erklärt vermutlich die Laufzeit des Videos (SARJ dreht etwa 4°/min), nicht geprüft.
+- **Kamerafenster: Stream je Kamera.** Bisher blieb der Livestream beim Kamerawechsel derselbe. Jetzt
+  bringt jede Kamera ihren Stream mit (`feed` in `CAMERAS`, `FEEDS`, `feedUrl`): Kameraports und MSS den
+  NASA-Stream „Live Video“, die Harmony-HD-Kamera den NASA-HD-Stream, die Sen-Kameras SpaceTV-1. Ein von
+  Hand gewählter Stream gilt danach für alle Kameras derselben Zuordnung (`iss.cams` → `feedPick`).
+  YouTube-Spieler ohne Steuerleiste, Vorschläge und Infokarten (`controls=0&rel=0&iv_load_policy=3`).
 - **Kalibrierfeld** (`calib-panel.mjs`, Knopf **Calibrate** im Kamerafenster): Werte direkt an der
   Überlagerung mit dem Livebild einstellen statt im Code raten. Videoverzögerung (Zwilling zeigt die
   Telemetrie von vor n s), je Gelenk von Canadarm2 und Dextre Vorzeichen und Offset, Rollwinkel der
