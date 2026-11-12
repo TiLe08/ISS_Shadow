@@ -65,6 +65,10 @@ export const CAMERAS = [
     note: 'Looks along the boom to the shoulder and LEE B' },
   { id: 'boom2', feed: 'nasaLive', name: 'Canadarm2 · boom camera, wrist side', group: 'MSS', kind: 'box', mount: 'armBooms.b2', pos: [-0.9, 0.35, -0.285], dir: [-1, 0, 0], up: [0, 1, 0], optics: ['mss'], ptu: true,
     note: 'Looks along the boom to the wrist and LEE A' },
+  // Eigene Kamera: für Bilder, die keiner bekannten Einbaustelle zuzuordnen sind. Lage px/py/pz (m,
+  // Stationssystem) im Kalibrierfeld; Grundstellung vorn an Harmony, Blick in Flugrichtung.
+  { id: 'custom', feed: 'nasaLive', name: 'Custom camera (place it in Calibrate)', group: 'Own', kind: 'box', mount: 'root', pos: [10, 4, -3], target: [60, 4, 2], optics: ['sd', 'hd'], ptu: true, custom: true,
+    note: 'Set its position in Calibrate (x forward, y starboard, z nadir), then pan, tilt and zoom here' },
   { id: 'dextreHead', feed: 'nasaLive', name: 'Dextre · body camera', group: 'MSS', kind: 'box', mount: 'dextreBody', pos: [0, 3.5, 0.3], dir: [0, 0, 1], up: [0, 1, 0], optics: ['mss'], ptu: true },
   { id: 'mbs', feed: 'nasaLive', name: 'MBS · camera', group: 'MSS', kind: 'box', mount: 'pivots.mt', pos: [3.3, 2.0, -1.5], dir: [1, 0, 0.2], up: [0, 0, -1], optics: ['mss'], ptu: true },
 ];
@@ -327,6 +331,7 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
   // Kamerakopf des Modells mit.
   function pose(id, out) {
     const { g, head } = byId[id], v = view(id);
+    if (camOf(id).custom) { const d = camOf(id).pos, q = (x, i) => Number.isFinite(x) ? x : d[i]; g.position.set(q(v.px, 0), q(v.py, 1), q(v.pz, 2)); g.updateMatrixWorld(true); }
     head.rotation.set(v.tilt * Math.PI / 180, -v.pan * Math.PI / 180, 0, 'YXZ'); head.updateWorldMatrix(true, false);
     out.matrixWorld.copy(head.matrixWorld); out.matrixWorld.decompose(out.position, out.quaternion, out.scale);
     // Feinjustage aus dem Kalibrierfeld (calib-panel.mjs): Versatz in m entlang rechts/oben/hinten der Kamera,

@@ -26,6 +26,8 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 - **Auslegerkameras von Canadarm2** (`boom1`, `boom2`): je eine Kamera mit Schwenk-Neige-Kopf an beiden
   Auslegern neben dem Ellbogen (`MODEL.armBooms`). Lage genähert; der NASA-Stream zeigte am 12.11. einen
   Blick den Ausleger entlang, den bisher keine Kamera des Modells hatte.
+- **Eigene Kamera** (`custom`): für Livebilder ohne bekannte Einbaustelle. Lage `px`/`py`/`pz` (m,
+  Stationssystem) im Kalibrierfeld, Schwenk/Neigung/Zoom wie bei den anderen Kameras.
 - **Kalibrierfeld** (`calib-panel.mjs`, Knopf **Calibrate** im Kamerafenster): Werte direkt an der
   Überlagerung mit dem Livebild einstellen statt im Code raten. Videoverzögerung (Zwilling zeigt die
   Telemetrie von vor n s), je Gelenk von Canadarm2 und Dextre Vorzeichen und Offset, Rollwinkel der
