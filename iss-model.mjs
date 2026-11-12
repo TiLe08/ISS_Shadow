@@ -431,12 +431,23 @@ export const MBS_IDS = [7, 8, 11, 13];
 // IGOAL MBS_MGF_1..4 (MT-System): PDGF1 Steuerbord-Nadir, PDGF2 Steuerbord-Zenit, PDGF3 Backbord-Zenit,
 // PDGF4 Backbord-Nadir-Ecke der Vorderseite, Blick nach +X.
 export const MBS_PDGF = { 7: [3.645, 1.373, 0.959], 8: [3.645, 1.373, -0.957], 11: [3.690, -1.286, -0.861], 13: [3.502, -1.294, 0.959] };
-export const MBS_ROLLS = [135, 180, 90, 225, 45, 270, 0, 315];   // erster = Vorwissen (größter Abstand bei der Pose vom 20.10.2026)
+export const MBS_ROLLS = [135, 180, 90, 225, 45, 270, 0, 315];
+// Vorwissen je Greifpunkt (Index in MBS_ROLLS). PDGF3 (v1.17): 0°, zusammen mit SSRMS_CONV in iss_twin.html
+// angepasst an die Livebilder CP8 vom 10.11. und 11.11.2026 (Canadarm2 dort mit LEE B als Basis).
+// PDGF2 (Dextre, v1.17): 90°. Mit der neuen Armkonvention streift Canadarm2 bei 135° einen Dextre-Arm in der
+// Pose vom 19.10.2026; 90° ist der nächste Rollwinkel, bei dem die Posen vom 19.10. und 11.11. frei bleiben
+// (Annahme, nicht im Bild geprüft). Die übrigen: 135°, größter Abstand bei der Pose vom 20.10.2026.
+export const MBS_PRIOR = Object.freeze({ 7: 0, 8: 2, 11: 6, 13: 0 });
 // Setzt MBS-Greifpunkt id auf Roll-Kandidat k (Position fest aus IGOAL, nur der Rollwinkel variiert).
 export function placeMbsFixture(id, k) {
   const f = MODEL.anchors?.[id]; if (!f) return;
   f.position.set(...MBS_PDGF[id]); f.rotation.set(0, 0, -Math.PI / 2); f.rotateY(MBS_ROLLS[k & 7] * D2R); f.updateMatrix();
   f.userData.mbsCandidate = k;
+}
+// Rollwinkel eines MBS-Greifpunkts frei in Grad setzen (Kalibrierfeld); null = Kandidat k beibehalten.
+export function setMbsFixtureRoll(id, deg) {
+  const f = MODEL.anchors?.[id]; if (!f || deg == null || !isFinite(deg)) return;
+  f.position.set(...MBS_PDGF[id]); f.rotation.set(0, 0, -Math.PI / 2); f.rotateY(deg * D2R); f.updateMatrix();
 }
 
 /* ---------- Roboterarme ---------- */
@@ -528,6 +539,7 @@ function buildSSRMS(base) {
   MODEL.armTip = new THREE.Group(); MODEL.armTip.position.set(-41.8901 * IN, 0, 0);
   MODEL.armTip.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI).multiply(new THREE.Quaternion().setFromRotationMatrix(C)); wr.add(MODEL.armTip);
   MODEL.ssrms = J;
+  MODEL.armBooms = { b1: sp, b2: ep };   // Ausleger 1 (Schulterseite) und 2 (Handgelenkseite), Träger der Auslegerkameras
 }
 
 /* ---------- Station ---------- */
@@ -681,7 +693,7 @@ export function buildStation(cfg = {}) {
   for (const z of [-0.95, 0.95]) box(root, 0.18, 46, 0.18, [1.72, 0, z], 'truss', 'MT rail');
   MODEL.anchors = {};
   for (const id of MBS_IDS) {
-    const f = new THREE.Group(); mt.add(f); MODEL.anchors[id] = f; placeMbsFixture(id, 0);
+    const f = new THREE.Group(); mt.add(f); MODEL.anchors[id] = f; placeMbsFixture(id, MBS_PRIOR[id]);
     cyl(f, 'y', 0.15, 0.32, 0.32, [0, -0.075, 0], 'gold', 'MBS PDGF ' + id, { segs: 16, rings: 0 });
   }
   // Greifpunkte an Modulen: [id, Ort, x-Achse, y-Achse (aus dem Greifpunkt heraus)]. Lab und Node 2 sind

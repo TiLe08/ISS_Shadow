@@ -2,6 +2,54 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.17: Canadarm2 an Livebildern ausgerichtet, Kalibrierfeld, Kamerafenster verschiebbar (11.11./12.11.)
+
+- **Canadarm2 stand falsch.** Mit der am 11.11.2026 aufgezeichneten Pose (MBS PDGF3, LEE B) zeigte der
+  Zwilling den Unterarm waagrecht hoch über CP8, im Livebild steht der Arm als umgekehrtes V. Vorzeichen
+  des Schulter-Nickgelenks (SP) umgekehrt, Rollwinkel von MBS PDGF3 0° statt 135° (`MBS_PRIOR`).
+  Geprüft an CP8 vom 10.11. 13:26 UTC und 11.11. 14:10 UTC gegen 1024 Kombinationen; die Posen vom 14.10.
+  und 19.10. bleiben frei von der Station.
+- Gelenkkonvention bei LEE A als Basis: Vorwissen jetzt „nach Hardware benannt“ (A), weil nur sie die
+  Pose vom 19.10. mit der neuen SP-Konvention frei hält. Dextre auf PDGF2: Vorwissen 90° (Annahme).
+- Greifen bei LEE A als Basis: Das freie Ende ist dann LEE B (`armBase`); Nutzlasten folgen jetzt diesem
+  Ende statt des festsitzenden.
+- Gelernte MSS-Kalibrierung unter `iss.cal.mss4`; die unter der alten Konvention gesammelten Belege
+  (`iss.cal.mss3`) werden verworfen.
+- Öffentliche Unterlagen zu Nullpunkten und Drehsinn der ISSLive-Kanäle gesucht: keine gefunden
+  (Quellen in `docs/MODELL_UND_KALIBRIERUNG.md`). SARJ, BGA und Ku-Antenne bleiben wie kalibriert (Sonne bzw.
+  TDRS); wenige Grad Abweichung der Solarflügel im Livebild erklärt vermutlich die Laufzeit des Videos (SARJ dreht etwa 4°/min), nicht geprüft.
+- **Kamerafenster: Stream je Kamera.** Bisher blieb der Livestream beim Kamerawechsel derselbe. Jetzt
+  bringt jede Kamera ihren Stream mit (`feed` in `CAMERAS`, `FEEDS`, `feedUrl`): Kameraports und MSS den
+  NASA-Stream „Live Video“, die Harmony-HD-Kamera den NASA-HD-Stream, die Sen-Kameras SpaceTV-1. Ein von
+  Hand gewählter Stream gilt danach für alle Kameras derselben Zuordnung (`iss.cams` → `feedPick`).
+  YouTube-Spieler ohne Steuerleiste, Vorschläge und Infokarten (`controls=0&rel=0&iv_load_policy=3`).
+- **Auslegerkameras von Canadarm2** (`boom1`, `boom2`): je eine Kamera mit Schwenk-Neige-Kopf an beiden
+  Auslegern neben dem Ellbogen (`MODEL.armBooms`). Lage genähert; der NASA-Stream zeigte am 12.11. einen
+  Blick den Ausleger entlang, den bisher keine Kamera des Modells hatte.
+- **Eigene Kamera** (`custom`): für Livebilder ohne bekannte Einbaustelle. Lage `px`/`py`/`pz` (m,
+  Stationssystem) im Kalibrierfeld, Schwenk/Neigung/Zoom wie bei den anderen Kameras.
+- **Kalibrierfeld** (`calib-panel.mjs`, Knopf **Calibrate** im Kamerafenster): Werte direkt an der
+  Überlagerung mit dem Livebild einstellen statt im Code raten. Videoverzögerung (Zwilling zeigt die
+  Telemetrie von vor n s), je Gelenk von Canadarm2 und Dextre Vorzeichen und Offset, Rollwinkel der
+  MBS-Greifpunkte, Drehung von Dextre an seinem Greifpunkt, Zusatzoffsets für SARJ, BGA, TRRJ und Ku,
+  Versatz und Rollen der gewählten Kamera. Gespeichert unter `iss.calib` (Kamera unter `iss.cams`),
+  Export/Import als JSON. Alle Werte stehen auf 0, bis man sie ändert; die eingebaute Kalibrierung bleibt.
+- **Kameramarkierungen:** Jede Außenkamera hat in der Hauptansicht einen Punkt an der Einbaustelle und
+  ihren Namen (CP-Ports kurz, z. B. „CP8“). Schalter „Cameras“ unter Display/Overlays neben „ISS labels“
+  blendet Punkte, Namen und den Sichtkegel aus und ein (`localStorage iss.camMarks`, Voreinstellung an).
+  Klick auf eine Markierung öffnet das Kamerafenster für diese Kamera. Überdecken sich Beschriftungen,
+  verschwindet nur der Name, der Punkt bleibt.
+- Das Kamerafenster lässt sich an der Kopfleiste verschieben und an allen vier Kanten und Ecken in der
+  Größe ändern (Mindestgröße 420 × 240 px). Bisher stand es fest unten rechts; die Größenänderung des
+  Browsers (`resize: both`) ging nur an der unteren rechten Ecke und brach ab, sobald der Zeiger über
+  das YouTube-Video lief.
+- Neues Modul `window-frame.mjs`: Ziehen mit Zeigererfassung, eingebettete iframes bekommen während des
+  Ziehens keine Mausereignisse. Lage und Größe stehen in `localStorage iss.camwin`; das Fenster bleibt
+  beim Verkleinern des Browserfensters und beim erneuten Öffnen im sichtbaren Bereich. Doppelklick auf
+  eine freie Stelle der Kopfleiste stellt Lage und Größe zurück.
+- Test `tests/test_window_frame.mjs` (Rechnung ohne Browser); im Browser geprüft: Verschieben,
+  Größenänderung über zwei Ecken, Wiederherstellen nach Neuladen, Zurücksetzen.
+
 # v1.16: Livestreams geprüft, Sen über sen.com (11.11.)
 
 - Laufende Streams am 11.11.2026 im Browser geprüft: NASA `M3HKLzjvKPc` (Stationsbild 4:3, wechselnde

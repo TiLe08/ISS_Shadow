@@ -18,12 +18,16 @@
 //     240 km × 180 km Bodenabdeckung, das sind etwa 32° × 24°. Für Horizont- und Andockkamera gibt es
 //     keine veröffentlichten Winkel; die Werte hier sind Schätzungen und so gekennzeichnet.
 // Was nicht in der Telemetrie steht: Schwenk, Neigung, Zoom und welche Kamera der Stream gerade zeigt.
-// Das stellt der Nutzer im Fenster ein (gespeichert unter localStorage iss.cams).
+// Das stellt der Nutzer im Fenster ein (gespeichert unter localStorage iss.cams). Das Fenster lässt sich
+// verschieben und in der Größe ändern (window-frame.mjs, gespeichert unter localStorage iss.camwin).
+// Markierungen und Namen aller Kameras in der Hauptansicht lassen sich über Display/Overlays „Cameras“
+// ein- und ausschalten (localStorage iss.camMarks); dazu gehört auch der Sichtkegel.
 //
 // Schnittstelle: setupCameras({ THREE, S, MODEL, t, onOpen }) baut die Modelle und gibt
 // { open(id), close(), tick(now), list } zurück. Die Kameramodelle sind Bauteile des Stationsmodells
 // (MODEL.parts) und folgen damit der gewählten Darstellung.
-import { box, cyl } from './iss-model.mjs';
+import { makeFrame } from './window-frame.mjs';
+import { box, cyl, addLabel } from './iss-model.mjs';
 
 // Optiken: Bildformat und senkrechtes Sichtfeld (Grad) am kurzen und langen Zoomende.
 const vfov = (hfov, aspect) => 2 * Math.atan(Math.tan(hfov * Math.PI / 360) / aspect) * 180 / Math.PI;
@@ -38,23 +42,35 @@ export const OPTICS = {
 };
 const ETVCG = ['sd', 'hd'];
 export const CAMERAS = [
+  // feed: welcher Livestream diese Kamera zeigt (FEEDS); der NASA-Stream „Live Video“ wechselt selbst
+  // zwischen den Außenkameras, welche gerade läuft, steht nicht in der Telemetrie.
   // id, Name, Gruppe, Bauform, Befestigung (root = Stationssystem, sonst Knoten in MODEL), Lage, Fußpunkt
   // des Trägerrohrs (base), Blickziel im Stationssystem bzw. Blickrichtung lokal, Optiken, schwenkbar
-  { id: 'cp8', name: 'CP8 · P1 outboard, zenith', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [1.0, -19.5, -3.2], base: [1.0, -19.5, -1.4], target: [1.5, 0, -0.5], optics: ETVCG, ptu: true,
+  { id: 'cp8', feed: 'nasaLive', name: 'CP8 · P1 outboard, zenith', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [1.0, -19.5, -3.2], base: [1.0, -19.5, -1.4], target: [1.5, 0, -0.5], optics: ETVCG, ptu: true,
     note: 'Looks starboard along the truss: Kibo, Harmony with Dragon, MBS, Z1' },
-  { id: 'cp9', name: 'CP9 · P1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [1.9, -19.2, 3.2], base: [1.6, -19.2, 2.1], target: [6, 0, 5], optics: ETVCG, ptu: true },
-  { id: 'cp3', name: 'CP3 · S1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [1.9, 19.2, 3.2], base: [1.6, 19.2, 2.1], target: [6, 0, 5], optics: ETVCG, ptu: true },
-  { id: 'cp13', name: 'CP13 · Destiny, zenith starboard', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [-2.0, 1.4, 2.85], base: [-2.0, 1.4, 3.9], target: [-20, 8, 1], optics: ETVCG, ptu: true,
+  { id: 'cp9', feed: 'nasaLive', name: 'CP9 · P1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [1.9, -19.2, 3.2], base: [1.6, -19.2, 2.1], target: [6, 0, 5], optics: ETVCG, ptu: true },
+  { id: 'cp3', feed: 'nasaLive', name: 'CP3 · S1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [1.9, 19.2, 3.2], base: [1.6, 19.2, 2.1], target: [6, 0, 5], optics: ETVCG, ptu: true },
+  { id: 'cp13', feed: 'nasaLive', name: 'CP13 · Destiny, zenith starboard', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [-2.0, 1.4, 2.85], base: [-2.0, 1.4, 3.9], target: [-20, 8, 1], optics: ETVCG, ptu: true,
     note: 'Position approximate: behind S0, the truss blocks the view forward' },
-  { id: 'hd2', name: 'Harmony forward HD camera', group: 'NASA HD', kind: 'box', mount: 'root', pos: [12.5, -1.6, 3.1], base: [12.3, -1.3, 3.25], target: [40, 0, 14], optics: ['n2hd'], ptu: false,
+  { id: 'hd2', feed: 'nasaHd', name: 'Harmony forward HD camera', group: 'NASA HD', kind: 'box', mount: 'root', pos: [12.5, -1.6, 3.1], base: [12.3, -1.3, 3.25], target: [40, 0, 14], optics: ['n2hd'], ptu: false,
     note: 'Looks forward past IDA-2; source of the NASA high-definition views' },
-  { id: 'senDock', name: 'Sen SpaceTV-1 · docking port', group: 'Sen', kind: 'lens', mount: 'root', pos: [14.2, 7.0, 4.3], target: [16.09, 0, 5.56], optics: ['senDock'], ptu: false },
-  { id: 'senNadir', name: 'Sen SpaceTV-1 · nadir', group: 'Sen', kind: 'lens', mount: 'root', pos: [14.0, 7.2, 4.72], target: [14.0, 7.2, 100], up: [1, 0, 0], optics: ['senNadir'], ptu: false },
-  { id: 'senHorizon', name: 'Sen SpaceTV-1 · horizon', group: 'Sen', kind: 'lens', mount: 'root', pos: [14.2, 7.4, 4.5], target: [100, 7.4, 40], optics: ['senWide'], ptu: false },
-  { id: 'leeTip', name: 'Canadarm2 · free LEE camera', group: 'MSS', kind: 'box', mount: 'armTip', pos: [0.45, -0.3, 0], dir: [0, -1, 0], up: [0, 0, 1], optics: ['mss'], ptu: false },
-  { id: 'leeBase', name: 'Canadarm2 · base LEE camera', group: 'MSS', kind: 'box', mount: 'armBase', pos: [0.45, -0.3, 0], dir: [0, -1, 0], up: [0, 0, 1], optics: ['mss'], ptu: false },
-  { id: 'dextreHead', name: 'Dextre · body camera', group: 'MSS', kind: 'box', mount: 'dextreBody', pos: [0, 3.5, 0.3], dir: [0, 0, 1], up: [0, 1, 0], optics: ['mss'], ptu: true },
-  { id: 'mbs', name: 'MBS · camera', group: 'MSS', kind: 'box', mount: 'pivots.mt', pos: [3.3, 2.0, -1.5], dir: [1, 0, 0.2], up: [0, 0, -1], optics: ['mss'], ptu: true },
+  { id: 'senDock', feed: 'sen', name: 'Sen SpaceTV-1 · docking port', group: 'Sen', kind: 'lens', mount: 'root', pos: [14.2, 7.0, 4.3], target: [16.09, 0, 5.56], optics: ['senDock'], ptu: false },
+  { id: 'senNadir', feed: 'sen', name: 'Sen SpaceTV-1 · nadir', group: 'Sen', kind: 'lens', mount: 'root', pos: [14.0, 7.2, 4.72], target: [14.0, 7.2, 100], up: [1, 0, 0], optics: ['senNadir'], ptu: false },
+  { id: 'senHorizon', feed: 'sen', name: 'Sen SpaceTV-1 · horizon', group: 'Sen', kind: 'lens', mount: 'root', pos: [14.2, 7.4, 4.5], target: [100, 7.4, 40], optics: ['senWide'], ptu: false },
+  { id: 'leeTip', feed: 'nasaLive', name: 'Canadarm2 · free LEE camera', group: 'MSS', kind: 'box', mount: 'armTip', pos: [0.45, -0.3, 0], dir: [0, -1, 0], up: [0, 0, 1], optics: ['mss'], ptu: false },
+  { id: 'leeBase', feed: 'nasaLive', name: 'Canadarm2 · base LEE camera', group: 'MSS', kind: 'box', mount: 'armBase', pos: [0.45, -0.3, 0], dir: [0, -1, 0], up: [0, 0, 1], optics: ['mss'], ptu: false },
+  // Auslegerkameras (CLPA, mit Schwenk-Neige-Kopf) je eine an beiden Auslegern neben dem Ellbogen. Lage
+  // genähert: 0,9 m vor dem Ellbogengelenk seitlich am Ausleger, Blick den Ausleger entlang zum LEE.
+  { id: 'boom1', feed: 'nasaLive', name: 'Canadarm2 · boom camera, shoulder side', group: 'MSS', kind: 'box', mount: 'armBooms.b1', pos: [-6.2, 0.35, -0.24], dir: [1, 0, 0], up: [0, 1, 0], optics: ['mss'], ptu: true,
+    note: 'Looks along the boom to the shoulder and LEE B' },
+  { id: 'boom2', feed: 'nasaLive', name: 'Canadarm2 · boom camera, wrist side', group: 'MSS', kind: 'box', mount: 'armBooms.b2', pos: [-0.9, 0.35, -0.285], dir: [-1, 0, 0], up: [0, 1, 0], optics: ['mss'], ptu: true,
+    note: 'Looks along the boom to the wrist and LEE A' },
+  // Eigene Kamera: für Bilder, die keiner bekannten Einbaustelle zuzuordnen sind. Lage px/py/pz (m,
+  // Stationssystem) im Kalibrierfeld; Grundstellung vorn an Harmony, Blick in Flugrichtung.
+  { id: 'custom', feed: 'nasaLive', name: 'Custom camera (place it in Calibrate)', group: 'Own', kind: 'box', mount: 'root', pos: [10, 4, -3], target: [60, 4, 2], optics: ['sd', 'hd'], ptu: true, custom: true,
+    note: 'Set its position in Calibrate (x forward, y starboard, z nadir), then pan, tilt and zoom here' },
+  { id: 'dextreHead', feed: 'nasaLive', name: 'Dextre · body camera', group: 'MSS', kind: 'box', mount: 'dextreBody', pos: [0, 3.5, 0.3], dir: [0, 0, 1], up: [0, 1, 0], optics: ['mss'], ptu: true },
+  { id: 'mbs', feed: 'nasaLive', name: 'MBS · camera', group: 'MSS', kind: 'box', mount: 'pivots.mt', pos: [3.3, 2.0, -1.5], dir: [1, 0, 0.2], up: [0, 0, -1], optics: ['mss'], ptu: true },
 ];
 
 /* Livestreams. YouTube vergibt für Dauerstreams immer wieder neue Kennungen, und beendete Streams werden
@@ -76,15 +92,32 @@ export const CHANNELS = [
    NASA führt die beiden Stationsstreams zusätzlich in der Playlist PL2aBZuCeDwlQMf6xMgQAUAY_nbHAgW5jz
    („Space Station Views“ auf nasa.gov/live); dort steht auch ein beendeter Stream. */
 export const KNOWN_STREAMS = [
-  { channel: 'NASA', id: 'M3HKLzjvKPc', title: 'Live Video from the International Space Station', checked: '2026-11-11' },
-  { channel: 'NASA', id: 'ROboUHfPUrU', title: 'Live High-Definition Views from the International Space Station', checked: '2026-11-11' },
-  { channel: 'Sen', id: 'fO9e9jnhYK8', title: 'Live 4K video of Earth and space (SpaceTV-1)', checked: '2026-11-11' },
+  { channel: 'NASA', id: 'M3HKLzjvKPc', title: 'Live Video from the International Space Station', checked: '2026-11-11', feed: 'nasaLive' },
+  { channel: 'NASA', id: 'ROboUHfPUrU', title: 'Live High-Definition Views from the International Space Station', checked: '2026-11-11', feed: 'nasaHd' },
+  { channel: 'Sen', id: 'fO9e9jnhYK8', title: 'Live 4K video of Earth and space (SpaceTV-1)', checked: '2026-11-11', feed: 'sen' },
 ];
+/* Welcher Stream zu welcher Kamera gehört (v1.17). Laufende Streams vom Launcher werden am Kanal und am
+   Titel erkannt; der NASA-HD-Stream heißt „Live High-Definition Views …“, der wechselnde „Live Video …“. */
+export const FEEDS = {
+  nasaLive: { channel: 'nasa', match: t => !/high.?definition|\bhd\b/i.test(t) && /space station|\biss\b|live video/i.test(t) },
+  nasaHd: { channel: 'nasa', match: t => /high.?definition|\bhd\b/i.test(t) && /space station|\biss\b/i.test(t) },
+  sen: { channel: 'sen', match: () => true },
+};
+// Adresse des Streams für eine Kamerazuordnung: laufender passender Stream, sonst der zuletzt geprüfte,
+// sonst die Kanal-Einbettung.
+export function feedUrl(feed, found = []) {
+  const f = FEEDS[feed]; if (!f) return '';
+  const hit = found.find(s => (s.channelName || String(s.channel).toLowerCase()) === f.channel && f.match(s.title || ''));
+  if (hit) return 'https://www.youtube.com/watch?v=' + hit.id;
+  const known = KNOWN_STREAMS.find(s => s.feed === feed); if (known) return 'https://www.youtube.com/watch?v=' + known.id;
+  const c = CHANNELS.find(c => c.id === f.channel); return c ? 'https://www.youtube.com/channel/' + c.channel : '';
+}
 const YT = 'https://www.youtube.com/embed/';
 // YouTube-Link (watch, youtu.be, live, embed, Kanal) -> Einbett-Adresse; sonst der Link selbst.
 export function embedUrl(url, origin = '') {
   const u = String(url || '').trim(); if (!u) return '';
-  const q = 'autoplay=1&mute=1&playsinline=1&enablejsapi=1' + (origin ? '&origin=' + encodeURIComponent(origin) : '');
+  // controls=0, rel=0, iv_load_policy=3: ohne Steuerleiste, Vorschläge und Infokarten über dem Bild.
+  const q = 'autoplay=1&mute=1&playsinline=1&controls=0&rel=0&iv_load_policy=3&disablekb=1&enablejsapi=1' + (origin ? '&origin=' + encodeURIComponent(origin) : '');
   let m = u.match(/(?:[?&]v=|youtu\.be\/|\/live\/|\/embed\/)([\w-]{11})(?![\w-])/);
   if (m) return `${YT}${m[1]}?${q}`;
   m = u.match(/[?&]channel=([\w-]+)/) || u.match(/\/channel\/([\w-]+)/);
@@ -103,7 +136,7 @@ export function streamChoices(found = []) {
 export function fitRect(aspect, w, h) { const ww = Math.min(w, h * aspect), hh = ww / aspect; return [(w - ww) / 2, (h - hh) / 2, ww, hh]; }
 
 const CSS = `
-#camWin{position:fixed;right:14px;bottom:14px;width:min(1180px,calc(100vw - 28px));height:min(540px,calc(100vh - 90px));z-index:60;background:var(--panel-solid,#09131c);border:1px solid var(--line2,#1f4458);display:flex;flex-direction:column;resize:both;overflow:hidden;font:12px var(--f-mono,monospace);color:var(--fg,#cfe6f2)}
+#camWin{position:fixed;right:14px;bottom:14px;width:min(1180px,calc(100vw - 28px));height:min(540px,calc(100vh - 90px));min-width:320px;min-height:200px;z-index:60;background:var(--panel-solid,#09131c);border:1px solid var(--line2,#1f4458);display:flex;flex-direction:column;overflow:visible;font:12px var(--f-mono,monospace);color:var(--fg,#cfe6f2)}
 #camWin[hidden]{display:none}
 #camWin header{display:flex;gap:8px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--line,#16303f);flex-wrap:wrap}
 #camWin header b{font:600 12px var(--f-disp,sans-serif);letter-spacing:.08em;text-transform:uppercase;color:var(--acc,#3fe0ff)}
@@ -111,7 +144,7 @@ const CSS = `
 #camWin input[type=text]{flex:1;min-width:160px;max-width:none}
 #camWin button,#camWin a.btn{background:transparent;color:inherit;border:1px solid var(--line2,#1f4458);font:inherit;padding:2px 8px;cursor:pointer;text-decoration:none}
 #camWin button[aria-pressed=true]{border-color:var(--acc,#3fe0ff);color:var(--acc,#3fe0ff)}
-#camWin .panes{flex:1;display:flex;min-height:0;position:relative}
+#camWin .panes{flex:1;display:flex;min-height:0;position:relative;overflow:hidden}
 #camWin .pane{flex:1;position:relative;min-width:0;background:#000;border-right:1px solid var(--line,#16303f);overflow:hidden}
 #camWin .pane:last-child{border-right:0}
 #camWin iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -126,12 +159,16 @@ const CSS = `
 #camWin .ctl input[type=range]{width:110px}
 #camWin .ctl output{min-width:3.2em}
 #camWin .note{color:var(--dim,#6a8899)}
+.lbl3d.cam{color:var(--warn,#ffb54a);border-left:0;padding-left:12px;pointer-events:auto;cursor:pointer;transform:translate(-5px,-50%)}
+.lbl3d.cam::before{content:'';position:absolute;left:0;top:50%;width:6px;height:6px;margin-top:-4px;border:1px solid var(--warn,#ffb54a);border-radius:50%;background:rgba(4,8,12,.8)}
+.lbl3d.cam:hover{background:rgba(40,24,4,.85)}
+.lbl3d.cam.lbl-off{visibility:visible;background:none;font-size:0;padding:6px 0 6px 12px}
 `;
 
 export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
   const st = (() => { try { return JSON.parse(localStorage.getItem('iss.cams') || '{}') || {}; } catch (e) { return {}; } })();
   const save = () => { try { localStorage.setItem('iss.cams', JSON.stringify(st)); } catch (e) {} };
-  st.view ||= {}; st.stream ||= '';
+  st.view ||= {}; st.stream ||= ''; st.feedPick ||= {};   // feedPick: vom Nutzer gewählter Stream je Zuordnung
   const byId = {}, pickers = [], own = new Map();
   const mountOf = c => c.mount === 'root' ? MODEL.root : c.mount.split('.').reduce((o, k) => o?.[k], MODEL);
   const D = { decor: true, segs: 10, rings: 0, longs: 4 }, keep = (c, ...parts) => own.set(c.id, (own.get(c.id) || []).concat(parts));
@@ -163,6 +200,25 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     const pick = new THREE.Mesh(new THREE.SphereGeometry(0.55, 10, 8), pickMat); pick.userData.camId = c.id; g.add(pick); pickers.push(pick);
     g.userData.cam = c; byId[c.id] = { g, head };
   }
+  /* Markierung und Beschriftung jeder Kamera (Punkt an der Einbaustelle, Name daneben), schaltbar über
+     „Cameras“ unter Display/Overlays. Klick auf die Markierung öffnet das Kamerafenster. Die Beschriftungen
+     stehen nicht in MODEL.labels, damit „ISS labels“ sie nicht mitschaltet. Verdeckt eine Beschriftung eine
+     andere (declutterLabels in iss_twin.html), bleibt der Punkt stehen und nur der Name verschwindet. */
+  const marks = [];
+  let marksOn = (() => { try { return localStorage.getItem('iss.camMarks') !== '0'; } catch (e) { return true; } })();
+  for (const c of CAMERAS) {
+    if (!byId[c.id]) continue;
+    const head = c.name.split(' · ')[0], text = /^CP\d+$/.test(head) ? head : t(c.name);
+    const o = addLabel(byId[c.id].g, text, 'cam'); if (!o) continue;
+    const i = MODEL.labels.indexOf(o); if (i >= 0) MODEL.labels.splice(i, 1);
+    o.element.title = t(c.name); o.element.addEventListener('click', () => open(c.id));
+    o.visible = marksOn; marks.push(o);
+  }
+  function showMarks(on) {
+    marksOn = !!on; for (const o of marks) o.visible = marksOn;
+    if (!marksOn) frustum.visible = false;
+    try { localStorage.setItem('iss.camMarks', marksOn ? '1' : '0'); } catch (e) {}
+  }
   // Sichtkegel der gewählten Kamera in der Hauptansicht (vier Kanten und ein Rahmen in 12 m Abstand).
   const frustum = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xffb54a, transparent: true, opacity: 0.7, depthWrite: false }));
   frustum.geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(16 * 3), 3)); frustum.frustumCulled = false; frustum.visible = false; S.scene.add(frustum);
@@ -183,6 +239,9 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     <button id="camReset">${t('Reset camera')}</button><span class="note" id="camNote"></span></div>`;
   document.body.append(win);
   const $ = s => win.querySelector(s);
+  // Fenster an der Kopfleiste verschieben, an Kanten und Ecken in der Größe ändern (window-frame.mjs).
+  const frame = makeFrame(win, $('header'), { key: 'iss.camwin', minW: 420, minH: 240 });
+  $('header').title = t('Drag to move, drag an edge or corner to resize, double-click to reset');
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true }); renderer.setPixelRatio(1);
   renderer.outputColorSpace = S.renderer.outputColorSpace; renderer.toneMapping = S.renderer.toneMapping; renderer.toneMappingExposure = S.renderer.toneMappingExposure;
   $('.twin').append(renderer.domElement);
@@ -206,16 +265,20 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     $('#camFovV').textContent = `${h.toFixed(1)}° × ${v.fov.toFixed(1)}°`;
     for (const k of ['#camPan', '#camTilt']) $(k).disabled = !c.ptu;
     $('#camNote').textContent = (c.ptu ? t('Pan, tilt and zoom are not in the telemetry: set them to match the live picture (saved per camera).') : t('Fixed camera.'))
+      + (c.feed === 'nasaLive' ? ' · ' + t('NASA switches this stream between cameras itself; pick the camera it is showing.') : '')
       + (o.estimate ? ' · ' + t('Field of view not published: estimate.') : '') + (c.note ? ' · ' + t(c.note) : '');
   }
   /* --- Livestream --- */
-  let choices = streamChoices(), tried = new Set();
+  let choices = streamChoices(), tried = new Set(), found = [];
+  // Stream der Kamera id: eigene Wahl für diese Zuordnung, sonst der passende laufende/bekannte Stream.
+  const streamOf = id => { const f = camOf(id)?.feed; return (f && st.feedPick[f]) || feedUrl(f, found) || choices[0]?.url || ''; };
   function fillStreams() {
     $('#camStreamSel').innerHTML = choices.map(s => `<option value="${s.url}">${s.label.replace(/[<&"]/g, '')}</option>`).join('') + `<option value="">${t('own link…')}</option>`;
     $('#camStreamSel').value = choices.some(s => s.url === st.stream) ? st.stream : '';
   }
-  function setStream(url, auto = false) {
+  function setStream(url, auto = false, pick = false) {
     if (!auto) tried = new Set();
+    if (pick && cur) { const f = camOf(cur).feed; if (f) { if (url) st.feedPick[f] = url; else delete st.feedPick[f]; } }
     st.stream = url; save(); $('#camUrl').value = url; $('#camYt').href = url || CHANNELS[0].page; $('#camWarn').hidden = true; fillStreams();
     const e = embedUrl(url, /^https?:/.test(location.protocol) ? location.origin : '');
     if ($('#camFrame').getAttribute('src') !== e) $('#camFrame').src = e;
@@ -237,24 +300,28 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
   async function refreshStreams() {
     if (!/^https?:/.test(location.protocol)) return;
     try { const r = await fetch('/__streams', { cache: 'no-store' }); if (!r.ok) return; const j = await r.json();
-      choices = streamChoices(j.streams || []); fillStreams();
+      found = j.streams || []; choices = streamChoices(found); fillStreams();
       // Gespeichertes Video, das der Launcher nicht (mehr) als laufend meldet: auf den ersten laufenden wechseln.
       const running = (j.streams || []).map(s => 'https://www.youtube.com/watch?v=' + s.id);
-      if (!st.stream || running.length && /[?&]v=/.test(st.stream) && !running.includes(st.stream)) { if (!win.hidden) setStream(choices[0].url); else st.stream = choices[0].url; }
+      // Gewählter bekannter Stream, der nicht mehr läuft: Wahl verwerfen (eigene Links bleiben).
+      for (const [f, u] of Object.entries(st.feedPick)) if (running.length && !running.includes(u) && KNOWN_STREAMS.some(k => u.endsWith('=' + k.id))) delete st.feedPick[f];
+      if (!st.stream || running.length && /[?&]v=/.test(st.stream) && !running.includes(st.stream)) { const u = cur ? streamOf(cur) : choices[0].url; if (!win.hidden) setStream(u, true); else st.stream = u; }
     } catch (e) {}
   }
   function open(id) {
-    cur = id || cur || 'cp8'; win.hidden = false; syncCtl();
-    if (!$('#camFrame').getAttribute('src')) setStream(st.stream || choices[0]?.url || '');
+    cur = id || cur || 'cp8'; win.hidden = false; frame.fit(); syncCtl();
+    // Jede Kamera bringt ihren Stream mit (FEEDS); gleicher Stream: Spieler läuft weiter.
+    const want = streamOf(cur);
+    if (want && want !== st.stream || !$('#camFrame').getAttribute('src')) setStream(want || st.stream);
     onOpen?.(cur);
   }
   function close() { win.hidden = true; frustum.visible = false; }
   fillStreams(); refreshStreams(); setInterval(refreshStreams, 30 * 60e3);
   $('#camSel').onchange = e => open(e.target.value);
   $('#camOpt').onchange = e => { const v = view(cur); v.optic = e.target.value; delete v.fov; save(); syncCtl(); };
-  $('#camStreamSel').onchange = e => { if (e.target.value) setStream(e.target.value); else $('#camUrl').focus(); };
-  $('#camLoad').onclick = () => setStream($('#camUrl').value.trim());
-  $('#camUrl').onkeydown = e => { if (e.key === 'Enter') setStream(e.target.value.trim()); };
+  $('#camStreamSel').onchange = e => { if (e.target.value) setStream(e.target.value, false, true); else $('#camUrl').focus(); };
+  $('#camLoad').onclick = () => setStream($('#camUrl').value.trim(), false, true);
+  $('#camUrl').onkeydown = e => { if (e.key === 'Enter') setStream(e.target.value.trim(), false, true); };
   $('#camClose').onclick = close;
   $('#camOv').onclick = e => { const on = !win.classList.contains('overlay'); win.classList.toggle('overlay', on); e.target.setAttribute('aria-pressed', on); };
   $('#camOpa').oninput = e => win.style.setProperty('--ov', e.target.value);
@@ -264,8 +331,13 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
   // Kamerakopf des Modells mit.
   function pose(id, out) {
     const { g, head } = byId[id], v = view(id);
+    if (camOf(id).custom) { const d = camOf(id).pos, q = (x, i) => Number.isFinite(x) ? x : d[i]; g.position.set(q(v.px, 0), q(v.py, 1), q(v.pz, 2)); g.updateMatrixWorld(true); }
     head.rotation.set(v.tilt * Math.PI / 180, -v.pan * Math.PI / 180, 0, 'YXZ'); head.updateWorldMatrix(true, false);
     out.matrixWorld.copy(head.matrixWorld); out.matrixWorld.decompose(out.position, out.quaternion, out.scale);
+    // Feinjustage aus dem Kalibrierfeld (calib-panel.mjs): Versatz in m entlang rechts/oben/hinten der Kamera,
+    // Rollen um die Blickachse. Die Einbaulagen sind Näherungen nach NASA-Beschreibung.
+    if (v.dx || v.dy || v.dz) { out.translateX(v.dx || 0); out.translateY(v.dy || 0); out.translateZ(v.dz || 0); }
+    if (v.roll) out.rotateZ(v.roll * Math.PI / 180);
     out.fov = v.fov; out.aspect = OPTICS[v.optic].aspect; out.updateProjectionMatrix(); out.updateMatrixWorld(true);
   }
   $('#camMain').onclick = () => {
@@ -290,7 +362,7 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     const c = [[-w, -h], [w, -h], [w, h], [-w, h]].map(([x, y]) => new THREE.Vector3(x, y, -d).applyMatrix4(cam.matrixWorld));
     let i = 0; const seg = (a, b) => { p.setXYZ(i++, a.x, a.y, a.z); p.setXYZ(i++, b.x, b.y, b.z); };
     for (let k = 0; k < 4; k++) { seg(o, c[k]); seg(c[k], c[(k + 1) % 4]); }
-    p.needsUpdate = true; frustum.visible = true;
+    p.needsUpdate = true; frustum.visible = marksOn;
   }
   function tick(nowP) {
     if (win.hidden || !cur || nowP - last < 66) return; last = nowP;
@@ -308,5 +380,5 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     updateFrustum();
     $('#camCap').textContent = t('TWIN') + ' · ' + t(camOf(cur).name);
   }
-  return { open, close, tick, list: CAMERAS, pose, state: st, refreshStreams };
+  return { open, close, tick, list: CAMERAS, pose, state: st, refreshStreams, save, get current() { return cur; }, labels: marks, showMarks, get marksOn() { return marksOn; } };
 }

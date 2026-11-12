@@ -14,6 +14,16 @@ Schwenk, Neigung, Zoom und die Frage, welche Kamera der Stream gerade zeigt, ste
 öffentlichen Telemetrie. Diese Werte stellt man im Fenster so ein, dass der Zwilling zum Livebild
 passt; sie werden je Kamera gespeichert (`localStorage iss.cams`).
 
+Jede Kamera bringt ihren Stream mit (v1.17): CP3, CP8, CP9, CP13 und die MSS-Kameras zeigen den
+NASA-Stream „Live Video“ (NASA schaltet darin selbst zwischen den Kameras um; welche gerade läuft, steht
+nicht in der Telemetrie), die Harmony-HD-Kamera den NASA-HD-Stream, die drei Sen-Kameras SpaceTV-1.
+Wer in der Liste einen anderen Stream oder einen eigenen Link wählt, ändert ihn für alle Kameras
+derselben Zuordnung.
+
+**Calibrate** öffnet das Kalibrierfeld (`calib-panel.mjs`, Beschreibung in
+`MODELL_UND_KALIBRIERUNG.md`): Videoverzögerung, Gelenk-Nullpunkte und ein Feinversatz der Kamera
+(`dx`/`dy`/`dz` in m entlang rechts/oben/hinten, `roll` in Grad), falls die Einbaulage nicht genau stimmt.
+
 ## Kameras und Einbaustellen
 
 | Kamera | Einbaustelle | Beleg | Lage im Modell |
