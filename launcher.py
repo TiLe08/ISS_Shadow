@@ -17,7 +17,7 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HTTP_PORT, MQTT_PORT, WS_PORT = 8137, 1883, 9001
-VERSION = "1.16"             # muss mit PAGE_VERSION in iss_twin.html übereinstimmen
+VERSION = "1.17"             # muss mit PAGE_VERSION in iss_twin.html übereinstimmen
 IDLE_TIMEOUT = 240          # s ohne Dashboard-Heartbeat bis zum Beenden
 URL = f"http://localhost:{HTTP_PORT}/iss_twin.html#mqtt"
 
