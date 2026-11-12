@@ -2,12 +2,12 @@
   "name": "iss-shadow",
   "private": true,
   "scripts": {
-    "test": "node tests/test_orbit_source.js && node tests/test_virtual_station.js && node tests/test_planet.mjs && node tests/test_cameras.mjs && node tests/test_model.mjs && node tests/test_radiators.mjs && node tests/test_zfight.mjs && node tests/test_regression.mjs && node tests/test_arm_walk.mjs && node tests/test_orbit_thrust.mjs && node tests/test_irosa.mjs && node tests/test_payloads.mjs && node tests/test_ui.mjs",
+    "test": "node tests/test_orbit_source.js && node tests/test_virtual_station.js && node tests/test_planet.mjs && node tests/test_cameras.mjs && node tests/test_window_frame.mjs && node tests/test_model.mjs && node tests/test_radiators.mjs && node tests/test_zfight.mjs && node tests/test_regression.mjs && node tests/test_arm_walk.mjs && node tests/test_orbit_thrust.mjs && node tests/test_irosa.mjs && node tests/test_payloads.mjs && node tests/test_ui.mjs",
     "test:py": "python3 -m unittest discover -s tests -p \"test_*.py\""
   },
   "devDependencies": {
     "three": "0.185.1",
     "jsdom": "30.1.2"
   },
-  "version": "1.16.0"
+  "version": "1.17.0"
 }

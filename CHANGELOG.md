@@ -2,7 +2,7 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
-# v1.17: Canadarm2 an Livebildern ausgerichtet (11.11.)
+# v1.17: Canadarm2 an Livebildern ausgerichtet, Kalibrierfeld, Kamerafenster verschiebbar (11.11./12.11.)
 
 - **Canadarm2 stand falsch.** Mit der am 11.11.2026 aufgezeichneten Pose (MBS PDGF3, LEE B) zeigte der
   Zwilling den Unterarm waagrecht hoch über CP8, im Livebild steht der Arm als umgekehrtes V. Vorzeichen
@@ -29,6 +29,21 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
   MBS-Greifpunkte, Drehung von Dextre an seinem Greifpunkt, Zusatzoffsets für SARJ, BGA, TRRJ und Ku,
   Versatz und Rollen der gewählten Kamera. Gespeichert unter `iss.calib` (Kamera unter `iss.cams`),
   Export/Import als JSON. Alle Werte stehen auf 0, bis man sie ändert; die eingebaute Kalibrierung bleibt.
+- **Kameramarkierungen:** Jede Außenkamera hat in der Hauptansicht einen Punkt an der Einbaustelle und
+  ihren Namen (CP-Ports kurz, z. B. „CP8“). Schalter „Cameras“ unter Display/Overlays neben „ISS labels“
+  blendet Punkte, Namen und den Sichtkegel aus und ein (`localStorage iss.camMarks`, Voreinstellung an).
+  Klick auf eine Markierung öffnet das Kamerafenster für diese Kamera. Überdecken sich Beschriftungen,
+  verschwindet nur der Name, der Punkt bleibt.
+- Das Kamerafenster lässt sich an der Kopfleiste verschieben und an allen vier Kanten und Ecken in der
+  Größe ändern (Mindestgröße 420 × 240 px). Bisher stand es fest unten rechts; die Größenänderung des
+  Browsers (`resize: both`) ging nur an der unteren rechten Ecke und brach ab, sobald der Zeiger über
+  das YouTube-Video lief.
+- Neues Modul `window-frame.mjs`: Ziehen mit Zeigererfassung, eingebettete iframes bekommen während des
+  Ziehens keine Mausereignisse. Lage und Größe stehen in `localStorage iss.camwin`; das Fenster bleibt
+  beim Verkleinern des Browserfensters und beim erneuten Öffnen im sichtbaren Bereich. Doppelklick auf
+  eine freie Stelle der Kopfleiste stellt Lage und Größe zurück.
+- Test `tests/test_window_frame.mjs` (Rechnung ohne Browser); im Browser geprüft: Verschieben,
+  Größenänderung über zwei Ecken, Wiederherstellen nach Neuladen, Zurücksetzen.
 
 # v1.16: Livestreams geprüft, Sen über sen.com (11.11.)
 
