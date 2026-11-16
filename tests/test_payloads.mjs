@@ -12,7 +12,9 @@ const live={S0000001:24.8,S0000002:15.2,S0000003:59.8,S0000004:300.3,CSAMT000001
 for(const [p,v] of Object.entries(live))t.ingest(p,v);
 let J=t.liveJoints();t.applyJoints(J);root.updateMatrixWorld(true);
 // --- Greifen und Transportieren ---
-const tipW=()=>{M.armTip.updateMatrixWorld(true);return V3().setFromMatrixPosition(M.armTip.matrixWorld);};
+// Freies LEE: bei LEE A als Basis mit Gelenken nach Hardware (v1.17 Vorwissen) ist das das LEE-B-Ende (armBase).
+const free=()=>J.baseEnd===0?M.armBase:M.armTip;
+const tipW=()=>{free().updateMatrixWorld(true);return V3().setFromMatrixPosition(free().matrixWorld);};
 const fixW=o=>{o.updateMatrixWorld(true);return V3().setFromMatrixPosition(o.userData.fixture.matrixWorld);};
 // Bishop so verschieben, dass sein Greifpunkt am freien LEE liegt (Prüfaufbau), dann greifen.
 const B=M.bishop;{const d=root.worldToLocal(tipW()).sub(root.worldToLocal(fixW(B)));B.position.add(d);B.userData.home={p:B.position.clone(),q:B.quaternion.clone()};}

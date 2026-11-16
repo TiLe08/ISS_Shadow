@@ -103,7 +103,7 @@ Vorzeichen und Halbdrehung wurde gegen die beiden aufgezeichneten Live-Posen get
 kollisionsfrei; verwendet wird die einfachste mit dem größten Abstand: alle Vorzeichen +,
 Nicken/Gieren null = gestreckter Arm, Offset des Schulter-Rollgelenks 180° im Rig-System,
 Gelenke vom Betriebsbasis-Ende aus benannt, Rollwinkel der MBS-Greifpunkte 135° (Vorwissen;
-wird weiter aus Live-Posen gelernt). Damit ist der Arm vom 20.10. überall frei; sein freies
+wird weiter aus Live-Posen gelernt). v1.17: Vorzeichen SP −1 und PDGF3 mit 0°, an den Livebildern CP8 vom 10. und 11.11.2026 geprüft (siehe docs/MODELL_UND_KALIBRIERUNG.md). Damit ist der Arm vom 20.10. überall frei; sein freies
 LEE ist etwa 1,6 m von der Verbindung Kapsel/Trunk des Cargo Dragon entfernt (CRS-35 brachte
 das letzte iROSA-Paar, das Canadarm2 aus dem Trunk holen soll). Diese Abbildung ist eine
 dokumentierte Annahme, keine veröffentlichte Konvention.

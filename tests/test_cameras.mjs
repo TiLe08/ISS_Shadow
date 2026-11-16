@@ -3,7 +3,7 @@
 //   - Einbett-Adressen für YouTube-Links, Auswahlliste der Streams, Einpassen des Bildformats
 //   - Einbaustellen: Jede Kamera liegt an der Struktur, an der sie laut Quelle sitzt.
 import assert from 'node:assert/strict';
-import { CAMERAS, OPTICS, CHANNELS, KNOWN_STREAMS, embedUrl, streamChoices, fitRect } from '../cameras.mjs';
+import { CAMERAS, OPTICS, CHANNELS, KNOWN_STREAMS, FEEDS, feedUrl, embedUrl, streamChoices, fitRect } from '../cameras.mjs';
 const hfov = o => 2 * Math.atan(Math.tan(o.fovMax * Math.PI / 360) * o.aspect) * 180 / Math.PI;
 // SD-Kamera der ETVCG: 77° × 61° bis 10° × 8° (NTSC 4:3).
 assert.ok(Math.abs(hfov(OPTICS.sd) - 77) < 1.5 && OPTICS.sd.fovMax === 61 && OPTICS.sd.fovMin === 8 && OPTICS.sd.aspect === 4 / 3);
@@ -40,6 +40,14 @@ const live = streamChoices([{ channel: 'NASA', channelName: 'nasa', channelId: C
 assert.deepEqual(live.map(s => s.url), [W('abcdefghijk'), W(KNOWN_STREAMS[2].id), W(KNOWN_STREAMS[0].id), W(KNOWN_STREAMS[1].id),
   C(CHANNELS[0].channel), C(CHANNELS[1].channel)]);
 assert.equal(live[1].label, 'Sen · Earth in 4K');
+// Jede Kamera hat ihren Stream: Kameraports und MSS -> NASA „Live Video“, Harmony-HD -> NASA-HD, Sen -> Sen.
+assert.ok(CAMERAS.every(c => FEEDS[c.feed]), 'feed je Kamera');
+assert.equal(feedUrl(cam.cp8.feed), W('M3HKLzjvKPc')); assert.equal(feedUrl(cam.hd2.feed), W('ROboUHfPUrU')); assert.equal(feedUrl(cam.senNadir.feed), W('fO9e9jnhYK8'));
+const run = [{ channel: 'NASA', channelName: 'nasa', id: 'aaaaaaaaaaa', title: 'Live High-Definition Views from the International Space Station' },
+  { channel: 'NASA', channelName: 'nasa', id: 'bbbbbbbbbbb', title: 'Live Video from the International Space Station (Official NASA Stream)' },
+  { channel: 'Sen', channelName: 'sen', id: 'ccccccccccc', title: 'Earth in 4K' }];
+assert.deepEqual(['nasaLive', 'nasaHd', 'sen'].map(f => feedUrl(f, run)), [W('bbbbbbbbbbb'), W('aaaaaaaaaaa'), W('ccccccccccc')]);
+assert.match(embedUrl(W('abcdefghijk')), /controls=0&rel=0/);
 // Bildformat einpassen: 4:3 in einem 16:9-Rahmen bekommt seitliche Balken.
 assert.deepEqual(fitRect(4 / 3, 1600, 900), [200, 0, 1200, 900]);
 assert.deepEqual(fitRect(16 / 9, 800, 900), [0, 225, 800, 450]);
