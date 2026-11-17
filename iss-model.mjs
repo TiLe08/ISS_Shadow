@@ -448,9 +448,12 @@ const mbsQuat = id => {
 };
 // Setzt MBS-Greifpunkt id auf seinen DOUG-Rahmen, optional mit einer zusätzlichen Drehung um die eigene
 // Achse (y, aus dem Greifpunkt heraus) in Grad für die Feinkalibrierung.
-export function setMbsFixtureRoll(id, deg) {
+// legacy = Rahmen von v1.17 (nur um +X gerollt, Rollwinkel MBS_LEGACY_ROLL), passend zur v1.17-Armkonvention.
+export const MBS_LEGACY_ROLL = { 7: 135, 8: 90, 11: 0, 13: 135 };
+export function setMbsFixtureRoll(id, deg, legacy = false) {
   const f = MODEL.anchors?.[id]; if (!f) return;
-  f.position.set(...MBS_PDGF[id]); f.quaternion.copy(mbsQuat(id));
+  f.position.set(...MBS_PDGF[id]);
+  if (legacy) { f.rotation.set(0, 0, -Math.PI / 2); f.rotateY(MBS_LEGACY_ROLL[id] * D2R); } else f.quaternion.copy(mbsQuat(id));
   if (deg && isFinite(deg)) f.rotateY(deg * D2R);
   f.updateMatrix();
 }

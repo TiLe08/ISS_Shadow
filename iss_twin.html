@@ -1166,7 +1166,7 @@ function buildISS() {
    Basis), auch wenn LEE A die Basis ist. Feinkorrekturen kommen nur noch aus dem Kalibrierfeld. */
 try { ['iss.cal.mss2', 'iss.cal.mss3', 'iss.cal.mss4'].forEach(k => localStorage.removeItem(k)); } catch (e) {}
 // Setzt alle vier MBS-Greifpunkte auf ihren DOUG-Rahmen plus die Feinkorrektur aus dem Kalibrierfeld.
-function applyMssCal() { for (const id of MBS_IDS) setMbsFixtureRoll(id, CALIB.mbsRoll[id]); }
+function applyMssCal() { for (const id of MBS_IDS) setMbsFixtureRoll(id, CALIB.mbsRoll[id], CALIB.armConv === 'v117'); }
 // Text für den Tooltip: Herkunft der MSS-Konvention der angezeigten Pose.
 const mssCalLabel = J => J.leeA ? 'LEE A base, joints named from the operating base (NASA DOUG)' : '';
 /* Telemetrie-Gelenkwinkel (Grad) -> Rig-Winkel (Grad) je Gelenk: rig = s · tlm + o.
@@ -1178,8 +1178,15 @@ const mssCalLabel = J => J.leeA ? 'LEE A base, joints named from the operating b
    LEE2-Rahmen von DOUG über zufällige Posen (WR-Offset −90°, damit ein gegriffener Greifpunkt richtig sitzt).
    Ersetzt die aus Livebildern geschätzte Wahl von v1.17 (SP-Vorzeichen umgekehrt, PDGF3-Roll 0°), die nur
    wegen des falschen Greifpunktrahmens passte. Herleitung: recherche/DOUG/DOUG_zero_configurations.md,
-   Prüfung: tests/test_doug.mjs. Feinkorrekturen pro Gelenk bleiben im Kalibrierfeld (CALIB.ssrms). */
-const SSRMS_CONV = { s: [-1, 1, 1, 1, 1, 1, -1], o: [180, 0, 0, 0, 0, 0, -90] };
+   Prüfung: tests/test_doug.mjs. Feinkorrekturen pro Gelenk bleiben im Kalibrierfeld (CALIB.ssrms).
+   v117 bleibt im Kalibrierfeld wählbar (CALIB.armConv): Sie passt besser zum Livebild CP8 vom 10.11.2026,
+   was darauf hindeutet, dass die ISSLive-Gelenkwinkel nicht DOUGs internen Vorzeichen folgen (wie beim BGA).
+   Sie gehört zu den alten, nur gerollten MBS-Rahmen (MBS_LEGACY_ROLL). */
+const SSRMS_CONVS = {
+  doug: { s: [-1, 1, 1, 1, 1, 1, -1], o: [180, 0, 0, 0, 0, 0, -90] },
+  v117: { s: [1, 1, -1, 1, 1, 1, 1], o: [180, 0, 0, 0, 0, 0, 0] },
+};
+const SSRMS_CONV = { get s() { return (SSRMS_CONVS[CALIB.armConv] || SSRMS_CONVS.doug).s; }, get o() { return (SSRMS_CONVS[CALIB.armConv] || SSRMS_CONVS.doug).o; } };
 /* Kalibrierfeld (calib-panel.mjs, v1.17): Abweichungen von den festen Konventionen, die Tim am Livebild
    einstellt. Gespeichert in localStorage (iss.calib), exportierbar als JSON. Leer = Konventionen wie oben.
    flip = Vorzeichen umkehren, off = zusätzlicher Nullpunkt in Grad, mbsRoll = zusätzliche Drehung eines
@@ -1188,7 +1195,7 @@ const SSRMS_CONV = { s: [-1, 1, 1, 1, 1, 1, -1], o: [180, 0, 0, 0, 0, 0, -90] };
    (Laufzeit des Videostreams). */
 const CALIB = (() => {
   const d = { delay: 0, ssrms: { flip: Array(7).fill(false), off: Array(7).fill(0) }, dextre: { flip: Array(15).fill(false), off: Array(15).fill(0) },
-    mbsRoll: {}, dextreRoll: 0, cal: {} };
+    mbsRoll: {}, dextreRoll: 0, cal: {}, armConv: 'doug' };
   try { const st = JSON.parse(localStorage.getItem('iss.calib') || 'null'); if (st) for (const k of Object.keys(d)) if (st[k] != null) d[k] = st[k];
     // v1.18: Canadarm2-Korrekturen und MBS-Rollwinkel bezogen sich auf die alte Konvention und gelten nicht mehr.
     if (st && st.conv !== 'doug') { d.ssrms = { flip: Array(7).fill(false), off: Array(7).fill(0) }; d.mbsRoll = {}; } } catch (e) {}

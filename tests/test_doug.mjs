@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import { readProject } from './harness.mjs';
 const { MODEL, buildStation, SSRMS_AX, MBS_IDS } = await import('../iss-model.mjs');
 const html = readProject('iss_twin.html');
-const CONV = Function('return ' + html.match(/const SSRMS_CONV = (\{[^;]*\});/)[1])();
+const CONV = Function('return ' + html.match(/const SSRMS_CONVS = (\{[^;]*\});/)[1])().doug;
 const WS = Function('return ' + html.match(/const MT_WORKSITES = (\{[^;]*\});/)[1])();
 buildStation({});
 const IN = 0.0254, D = Math.PI / 180;
