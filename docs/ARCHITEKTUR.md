@@ -200,9 +200,8 @@ Ausführlich in [MODELL_UND_KALIBRIERUNG.md](MODELL_UND_KALIBRIERUNG.md).
 | `iss.layout` | Spaltenbreiten, Kartenhöhe, eingeklappte Panels |
 | `iss.dash` | Dashboard-Layout |
 | `iss.graphs` | angeheftete Kanäle im Graphs-Panel |
-| `iss.cal.mss4` | gelernte MSS-Kalibrierung |
 | `iss.cal.trrj` | Drehsinn der Radiatorgelenke, falls die Prüfung im AUTOTRACK ihn korrigiert hat (v1.15) |
-| `iss.calib` | Kalibrierfeld: Videoverzögerung, Gelenk-Vorzeichen/-Offsets, Greifpunkt-Rollwinkel, Zusatzoffsets (v1.17) |
+| `iss.calib` | Kalibrierfeld: Videoverzögerung, Gelenk-Vorzeichen/-Offsets, Greifpunkt-Drehung, Zusatzoffsets (v1.17), Armkonvention `armConv` (v1.18) |
 | `iss.cams` | Kamerafenster: Schwenk, Neigung, Zoom und Kamerakopf je Kamera, gewählter Stream |
 | `iss.payloads` | was Canadarm2 hält und wo abgesetzte Nutzlasten stehen; zurücksetzen mit `ISS.resetPayloads()` in der Konsole |
 | `iss.ll2`, `iss.ll2.*` | Zwischenspeicher der LL2-Antworten, wenn ohne Launcher gearbeitet wird |

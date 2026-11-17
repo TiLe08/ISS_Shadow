@@ -458,29 +458,6 @@ export function setMbsFixtureRoll(id, deg, legacy = false) {
 }
 
 /* ---------- Roboterarme ---------- */
-// Generischer Arm mit sieben Gelenken (Dextres Arme): Gliedlängen L, Seitenversatz O, Radien rh/rb,
-// Gelenkbreite W. Gibt die Gelenkgruppen und das Handgelenk zurück.
-function buildArm7(base, p) {
-  const J = [], k = 'arm', { L, O, rh, rb, W } = p, nm = p.name, o = { segs: 12, sys: 'ssrms' };
-  const sr = new THREE.Group(); sr.position.y = p.y0; base.add(sr); J.push(sr);
-  cyl(sr, 'y', 0.75 * W, rh, rh, [0, 0.375 * W, 0], k, nm(0, 'Shoulder roll'), o);
-  const sy = new THREE.Group(); sy.position.y = 0.75 * W; sr.add(sy); J.push(sy);
-  cyl(sy, 'z', 1.5 * rh * 2, rh, rh, [0, 0.35 * W, 0], k, nm(1, 'Shoulder yaw'), o);
-  const sp = new THREE.Group(); sp.position.y = 0.75 * W; sy.add(sp); J.push(sp);
-  cyl(sp, 'x', O + 3 * rh, rh, rh, [O / 2, 0, 0], k, nm(2, 'Shoulder pitch'), o);
-  cyl(sp, 'y', L - 2.2 * rh, rb, rb, [O, L / 2, 0], k, nm(2, p.boom + ' 1'), { ...o, rings: 1 });
-  const ep = new THREE.Group(); ep.position.set(O, L, 0); sp.add(ep); J.push(ep);
-  cyl(ep, 'x', O + 3 * rh, rh, rh, [O / 2, 0, 0], k, nm(3, 'Elbow pitch'), o);
-  cyl(ep, 'y', L - 2.2 * rh, rb, rb, [O, L / 2, 0], k, nm(3, p.boom + ' 2'), { ...o, rings: 1 });
-  const wp = new THREE.Group(); wp.position.set(O, L, 0); ep.add(wp); J.push(wp);
-  cyl(wp, 'x', O + 3 * rh, rh, rh, [O / 2, 0, 0], k, nm(4, 'Wrist pitch'), o);
-  const wy = new THREE.Group(); wy.position.set(O, 0.75 * W, 0); wp.add(wy); J.push(wy);
-  cyl(wy, 'z', 1.35 * W, rh, rh, [0, 0, 0.5 * W], k, nm(5, 'Wrist yaw'), o);
-  const wr = new THREE.Group(); wr.position.set(0, 0.35 * W, 1.0 * W); wy.add(wr); J.push(wr);
-  cyl(wr, 'y', 0.5 * W, rh, rh, [0, 0.25 * W, 0], k, nm(6, 'Wrist roll'), o);
-  J.forEach((j, i) => j.userData.collisionGroup = p.group + i);
-  return { J, wr };
-}
 /* Dextre (SPDM) nach NASA DOUG (Stage 75-7, SPDM.str, v1.18). Knoten wie in DOUG: T(xyz in Zoll) ·
    Ry(pitch) · Rz(yaw) · Rx(roll); ein Gelenk ersetzt nur sein eigenes Feld (isp_spdm_mapping.tcl: Telemetrie
    ohne Vorzeichenwechsel, Achsen roll, yaw, pitch, pitch, pitch, yaw, roll und Körper roll). Das Fuß-LEE

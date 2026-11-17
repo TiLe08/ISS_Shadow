@@ -128,24 +128,17 @@ Greifpunkt heraus. „Gegriffen“ heißt: Das System des freien LEE fällt mit 
 zusammen. Die vier MBS-Greifpunkte (IDs 7, 8, 11, 13 = PDGF1-4) sitzen an den Ecken der Vorderseite
 des MBS (`MBS_PDGF`, aus IGOAL); dazu kommen Greifpunkte an Lab, Node 2, Node 3 und FGB.
 
-## MSS-Kalibrierung aus Live-Posen
+## MBS-Greifpunkte und Gelenknamen (v1.18, NASA DOUG)
 
-Wie jeder MBS-Greifpunkt um seine Achse gedreht ist und wie ISSLive die Gelenke benennt, wenn LEE A
-die Basis ist, ist nicht veröffentlicht. Das Programm **lernt** beides: Der echte Arm durchdringt nie
-die Station, also schließt jede Live-Pose die Hypothesen aus, unter denen sie kollidieren würde.
+Bis v1.17 wurden Rollwinkel der MBS-Greifpunkte und die Gelenkbenennung bei LEE-A-Basis aus Kollisionen
+der Live-Posen gelernt. Seit v1.18 kommen beide aus dem NASA-DOUG-Flugpaket Stage 75-7: Die Greifpunkte
+sind schräg eingebaut (`MBS_AXES` in `iss-model.mjs`), und die Gelenke heißen immer vom Betriebsbasis-Ende
+aus. Feinkorrekturen pro Greifpunkt (Drehung um die eigene Achse) gibt es im Kalibrierfeld. Wählt man dort
+die Armkonvention „v1.17“, gelten die alten, nur gerollten Rahmen (`MBS_LEGACY_ROLL`).
 
-- Kandidaten: 8 Rollwinkel je MBS-Greifpunkt (Vorwissen `MBS_PRIOR`: PDGF3 0°, PDGF2 90°, sonst 135°), 2 Gelenkkonventionen (Vorwissen A).
-- Gelernt wird nur aus einer vollständigen Pose, die 3 s stabil war (der Schnappschuss kommt in
-  Paketen; eine halbe Pose würde richtige Hypothesen ausschließen).
-- Kontakt Arm ↔ Dextre ist kein Beleg (einer der beiden Rollwinkel kann noch falsch sein); er dient
-  nur zur Auswahl unter den Überlebenden.
-- Gewählt wird die Hypothese, die dem Vorwissen am nächsten liegt.
-- Gespeichert im Browser unter `iss.cal.mss4` (v1.17 verwirft die alten Belege aus `iss.cal.mss3`) (Funktionen `learnMssFromPose`, `placeMbsFixture`,
-  `mssCalLabel`). Der Tooltip der Pose zeigt den Stand.
-
-**Dextre** steht auf dem Greifpunkt, den `CSASPDM0002` meldet (ohne diesen Kanal auf der Zenitseite
-des MBS). Basis 19 („SSRMS TIP LEE“) heißt: Dextre hängt mit seinem oberen Greifpunkt (3,9 m über dem
-eigenen Fuß-LEE) am freien Ende von Canadarm2.
+**Dextre** (v1.18: Kette aus DOUG, `SPDM.str`) steht auf dem Greifpunkt, den `CSASPDM0002` meldet (ohne
+diesen Kanal auf MBS PDGF2). Basis 19 („SSRMS TIP LEE“) heißt: Dextre hängt mit seinem oberen Greifpunkt
+(SPDM_PDGF, 3,4 m über dem Fuß-LEE) am freien Ende von Canadarm2.
 
 ## Abgleich mit SSP 30219 (v1.18)
 
@@ -183,7 +176,7 @@ nachstellen: Kamerafenster öffnen, **Overlay** einschalten, **Calibrate** drüc
 
 Der Kamerateil verschiebt die Zwillingskamera (`dx`, `dy`, `dz` in m, `roll` in Grad) und speichert in
 `iss.cams`. **Export** lädt alles als JSON herunter und kopiert es; gefundene Werte gehören danach in
-`SSRMS_CONV`, `MBS_PRIOR`, `CAL` bzw. `CAMERAS`, damit sie für alle gelten.
+`SSRMS_CONVS`, `MBS_AXES`, `CAL` bzw. `CAMERAS`, damit sie für alle gelten.
 
 ## Umsetzen von Canadarm2 im Kommandomodus
 
