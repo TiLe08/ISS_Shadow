@@ -13,6 +13,9 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
     heißen die Gelenke immer vom Basisende aus.
   - MT-Arbeitsplätze WS1-8 (ISSLive bestätigt WS4 und WS5 auf den Zentimeter), Lage der S-Band-Antennen
     und Azimut-Nullpunkt +45°, Augpunkte der Kameras CP3, CP8, CP9 und CP13.
+  - Dextre: Körper und beide Arme mit DOUGs Kette (SPDM.str) neu aufgebaut, Gelenke ohne Vorzeichenwechsel
+    (`setDougJoint`). Beleg: Die ISSLive-Winkel beider Arme vom 19.10. sind genau DOUGs Parkstellung. Ohne
+    Basis-Telemetrie steht Dextre auf MBS PDGF2; am Canadarm2 hängt es an seinem oberen Greifpunkt.
   - Bestätigt ohne Änderung: SARJ, TRRJ, Ku-Band. BGA: DOUG liegt wie SSP 30219 45° neben ISSLive, `CAL` bleibt.
 - **Offen:** Das Livebild CP8 vom 10.11. (Kamera an Dragon und S-Band-Schüssel eingepasst) passt besser
   zur v1.17-Armkonvention als zu DOUG. Das Kalibrierfeld kann deshalb zwischen „NASA DOUG“ (Standard)

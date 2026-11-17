@@ -70,7 +70,7 @@ export const CAMERAS = [
   // Stationssystem) im Kalibrierfeld; Grundstellung vorn an Harmony, Blick in Flugrichtung.
   { id: 'custom', feed: 'nasaLive', name: 'Custom camera (place it in Calibrate)', group: 'Own', kind: 'box', mount: 'root', pos: [10, 4, -3], target: [60, 4, 2], optics: ['sd', 'hd'], ptu: true, custom: true,
     note: 'Set its position in Calibrate (x forward, y starboard, z nadir), then pan, tilt and zoom here' },
-  { id: 'dextreHead', feed: 'nasaLive', name: 'Dextre · body camera', group: 'MSS', kind: 'box', mount: 'dextreBody', pos: [0, 3.5, 0.3], dir: [0, 0, 1], up: [0, 1, 0], optics: ['mss'], ptu: true },
+  { id: 'dextreHead', feed: 'nasaLive', name: 'Dextre · body camera', group: 'MSS', kind: 'box', mount: 'dextreBodyY', pos: [0, 1.9, 0.3], dir: [0, 0, 1], up: [0, 1, 0], optics: ['mss'], ptu: true },
   { id: 'mbs', feed: 'nasaLive', name: 'MBS · camera', group: 'MSS', kind: 'box', mount: 'pivots.mt', pos: [3.3, 2.0, -1.5], dir: [1, 0, 0.2], up: [0, 0, -1], optics: ['mss'], ptu: true },
 ];
 

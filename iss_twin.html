@@ -554,7 +554,7 @@ tr.fresh td.v{color:var(--ok)}
 <script type="module">
 import * as THREE from 'three';
 import { CollisionMonitor, radiatorTarget } from './model-checks.mjs';
-import { MODEL, MAT, setRenderStyle, setLabelFactory, buildStation, solarAngles, solarNormal, radiatorNormal, SSRMS_AX, DEXTRE_AX, MBS_IDS, setMbsFixtureRoll } from './iss-model.mjs';
+import { MODEL, MAT, setRenderStyle, setLabelFactory, buildStation, solarAngles, solarNormal, radiatorNormal, SSRMS_AX, MBS_IDS, setMbsFixtureRoll, setDougJoint, DEXTRE_CLOCK } from './iss-model.mjs';
 import { PlanetOverlay } from './planet-overlay.mjs';
 import { EarthTiles } from './earth-tiles.mjs';
 import { setupCameras } from './cameras.mjs';
@@ -3143,17 +3143,18 @@ function applyJoints(J) {
   MODEL.ssrms.forEach((j, i) => { j.rotation.set(0, 0, 0); j.rotation[SSRMS_AX[i]] = ssrmsRig(J.arm[i], i); });
   P.sgant.rotation.y = (J.sgant || 0) * D2R;P.kuCross.rotation.x=-(J.kuCross||0)*D2R;
   for(let i=0;i<2;i++){P['sbandAz'+i].rotation.z=((J.sband?.[2*i]||0)+SBAND_AZ0)*D2R;P['sbandEl'+i].rotation.set(-(J.sband?.[2*i+1]||0)*D2R,0,0);}
+  // Dextre-Gelenke (DOUG-Knoten, Grad) vor der Lage, weil das Körperrollen den oberen Greifpunkt bewegt.
+  setDougJoint(MODEL.dextreBody,dextreRig(J.dextre?.[14],14)/D2R);
+  MODEL.dextre.forEach((joints,side)=>joints.forEach((joint,i)=>setDougJoint(joint,dextreRig(J.dextre?.[side*7+i],side*7+i)/D2R)));
   {const m=MODEL.dextreMount,f=MODEL.anchors[J.dextreBase];
-   // 19 = Dextre vom freien LEE von Canadarm2 gegriffen: Dextre hängt mit seinem oberen
-   // Greifpunkt (3,9 m über dem eigenen Fuß-LEE) am freien Armende.
+   // 19 = Dextre vom freien LEE von Canadarm2 gegriffen: Dextre hängt mit seinem oberen Greifpunkt
+   // (SPDM_PDGF) am freien Armende; der Fuß folgt aus Körperrollen und Rumpflänge (DOUG).
    const tip=J.dextreBase===19?(J.baseEnd===0?MODEL.armBase:MODEL.armTip):null;
-   if(tip){if(m.parent!==tip){tip.add(m);m.quaternion.identity();}m.position.set(0,-3.9,0);}
-   else if(f&&J.dextreBase!==J.baseLoc){if(m.parent!==f){f.add(m);m.position.set(0,0,0);m.quaternion.identity();}}
-   else if(m.parent!==MODEL.dextreDefault.parent){const d=MODEL.dextreDefault;d.parent.add(m);m.position.copy(d.position);m.quaternion.copy(d.quaternion);}
-   // Kalibrierfeld: Drehung um die Achse des Greifpunkts (+Y), nur am Greifpunkt oder am Arm.
-   if(m.parent!==MODEL.dextreDefault.parent)m.quaternion.setFromAxisAngle(DEXTRE_UP,(+CALIB.dextreRoll||0)*D2R);}
-  MODEL.dextreBody.rotation.y=dextreRig(J.dextre?.[14],14);
-  MODEL.dextre.forEach((joints,side)=>joints.forEach((joint,i)=>{joint.rotation[DEXTRE_AX[i]]=dextreRig(J.dextre?.[side*7+i],side*7+i);}));
+   if(tip){if(m.parent!==tip)tip.add(m);m.position.set(0,0,0);m.quaternion.identity();m.updateMatrixWorld(true);
+     const rel=m.matrixWorld.clone().invert().multiply(MODEL.dextrePdgf.matrixWorld).invert();rel.decompose(m.position,m.quaternion,new THREE.Vector3());
+     if(+CALIB.dextreRoll)m.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(DEXTRE_UP,(+CALIB.dextreRoll)*D2R));}
+   else{const p=f&&J.dextreBase!==J.baseLoc?f:MODEL.dextreDefault.parent;if(m.parent!==p){p.add(m);m.position.set(0,0,0);}
+     m.quaternion.setFromAxisAngle(DEXTRE_UP,(DEXTRE_CLOCK+(+CALIB.dextreRoll||0))*D2R);}}
   MODEL.radiators.forEach((panels,i)=>{
     const fold=Math.acos(clamp(J.radDeploy?.[i]??1,0,1));
     panels.forEach((h,j)=>h.rotation.y=(j?2*(j%2?-1:1):1)*fold);

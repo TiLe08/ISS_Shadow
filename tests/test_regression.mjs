@@ -59,7 +59,7 @@ for(const m of t.MODEL.parts.filter(p=>/^SAW (1A|3A) blanket box$/.test(p.mesh.u
  t.LINK.sig='LOS';assert.match(t.poseSource().label,/^LAST KNOWN POSE/);t.LINK.sig='AOS';
  const keep=t.TM.get('CSAMT000001');t.TM.delete('CSAMT000001');assert.match(t.poseSource().label,/placeholder MT/);t.TM.set('CSAMT000001',keep);
  const L=t.liveJoints();t.applyJoints(L);root.updateMatrixWorld(true);
- assert.equal(new CollisionMonitor(t.MODEL,root).scan().length,0,'The flown pose (arrays, radiators, Canadarm2 on Node 2, Dextre stowed) must not overlap');
+ {const h=new CollisionMonitor(t.MODEL,root).scan();if(h.length)console.log('FLOWN',h.map(x=>x.a.name+' / '+x.b.name));assert.equal(h.length,0,'The flown pose (arrays, radiators, Canadarm2 on Node 2, Dextre stowed) must not overlap');}
  // Alle acht Flügel ergeben eine physikalische Ausrichtung, beide SARJs ein Alpha.
  const S=['1A','3A','1B','3B'];
  const normals=Object.keys(L.bga).map(ch=>t.solarNormal(S.includes(ch)?L.sarjS:L.sarjP,L.bga[ch]));

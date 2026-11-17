@@ -41,7 +41,6 @@ export function radiatorNormal(angle) { return new THREE.Vector3(0, -Math.sin(an
 // Drehachsen der sieben Gelenke von Canadarm2 im IGOAL-Rig (SR, SY, SP, EP, WP, WY, WR).
 export const SSRMS_AX = ['x', 'z', 'z', 'z', 'z', 'y', 'x'];
 // Drehachsen der sieben Gelenke eines Dextre-Arms.
-export const DEXTRE_AX = ['y', 'z', 'x', 'x', 'x', 'z', 'y'];
 
 /* ---------- Materialien ---------- */
 // Kleine Rastertextur ohne Canvas (läuft auch in Node): Grundfarbe mit Fugen an zwei Kanten.
@@ -482,27 +481,78 @@ function buildArm7(base, p) {
   J.forEach((j, i) => j.userData.collisionGroup = p.group + i);
   return { J, wr };
 }
-// Dextre (SPDM) auf dem Transporter mt: Fuß-LEE, Körperrollgelenk, ~3 m Rumpf mit Schulterbalken und
-// zwei Arme mit je sieben Gelenken. Ohne Basis-Telemetrie steht er auf der Zenitseite des MBS, mit ihr
-// (CSASPDM0002) auf dem gemeldeten Greifpunkt.
+/* Dextre (SPDM) nach NASA DOUG (Stage 75-7, SPDM.str, v1.18). Knoten wie in DOUG: T(xyz in Zoll) ·
+   Ry(pitch) · Rz(yaw) · Rx(roll); ein Gelenk ersetzt nur sein eigenes Feld (isp_spdm_mapping.tcl: Telemetrie
+   ohne Vorzeichenwechsel, Achsen roll, yaw, pitch, pitch, pitch, yaw, roll und Körper roll). Das Fuß-LEE
+   (SPDM_EE) fällt mit dem Greifpunktrahmen zusammen; mount trägt die Modellachsen (y aus dem Greifpunkt),
+   die Kette darunter DOUGs Achsen (x aus dem Greifpunkt). Ohne Basis-Telemetrie steht Dextre auf der
+   Zenitseite des MBS, mit ihr (CSASPDM0002) auf dem gemeldeten Greifpunkt. */
+export const DEXTRE_FIELDS = ['roll', 'yaw', 'pitch', 'pitch', 'pitch', 'yaw', 'roll'];
+const DEXTRE_ARMS = [
+  { mount: [[0, -46.9, 46.9], [0, 0, 45]], sr: [90, -90, -50] },
+  { mount: [[0, 46.9, 46.9], [0, 180, 45]], sr: [90, -90, -120] },
+];
+// [Gelenkknoten-Vorlauf (xyz, pyr), Gelenk-pyr]: SY, SP, EP, WP, WY, WR (SR steht in DEXTRE_ARMS).
+const DEXTRE_CHAIN = [
+  [[[0, 0, 0], [-90, 0, 90]], [[-9.6, -5.36, 0], [0, 0, 0]], [0, 0, 0]],
+  [[[9.6, -9.65, 9.37], [90, 0, 90]], [0, 0, 0]],
+  [[[0, -32.98, 0], [90, 0, 90]], [0, 90, -90]],
+  [[[0, -33.03, 0], [90, 0, 90]], [0, 90, -90]],
+  [[[0, -9.65, -9.32], [0, 0, 0]], [0, 0, 0]],
+  [[[9.6, 0, 0], [0, 0, 0]], [0, -90, 0]],
+];
+const DIN = 0.0254;
+// DOUG-Knoten: Gruppe mit Lage xyz (Zoll) und Euler pitch/yaw/roll in Grad (Reihenfolge Ry·Rz·Rx).
+function dougNode(parent, xyz, pyr) {
+  const g = new THREE.Group(); g.position.set(...xyz.map(v => v * DIN)); g.rotation.set(pyr[2] * D2R, pyr[0] * D2R, pyr[1] * D2R, 'YZX');
+  g.userData.pyr = pyr.slice(); parent.add(g); return g;
+}
+// Setzt ein DOUG-Gelenk: nur das Feld field (pitch/yaw/roll) wird durch deg ersetzt.
+export function setDougJoint(g, deg) {
+  const p = g.userData.pyr, f = g.userData.field, v = [p[0], p[1], p[2]];
+  v[{ pitch: 0, yaw: 1, roll: 2 }[f]] = deg || 0;
+  g.rotation.set(v[2] * D2R, v[0] * D2R, v[1] * D2R, 'YZX');
+}
+const DOUG_AXES = new THREE.Matrix4().set(0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1);   // DOUG-Achsen in Modellachsen
+// Drehung des Fuß-LEE um die Greifpunktachse (Ausrichtung beim Greifen), nicht in DOUG für den MBS-Fall belegt.
+export const DEXTRE_CLOCK = 0;
 function buildDextre(mt) {
-  const mount = new THREE.Group(); mount.position.set(3.0, -1.2, -1.1); mount.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, -1)); mt.add(mount);
-  MODEL.dextreMount = mount; MODEL.dextreDefault = { parent: mt, position: mount.position.clone(), quaternion: mount.quaternion.clone() };
-  cyl(mount, 'y', 0.5, 0.3, 0.3, [0, 0.25, 0], 'arm', 'Dextre LEE (base)', { sys: 'ssrms', segs: 12 });
-  const body = new THREE.Group(); body.position.y = 0.5; mount.add(body); MODEL.dextreBody = body;   // Körperrollen um die Rumpfachse
-  box(body, 0.9, 2.9, 0.9, [0, 1.45, 0], 'arm', 'Dextre torso', { sys: 'ssrms' });
-  box(body, 1.6, 0.4, 0.6, [0, 2.7, 0], 'arm', 'Dextre torso shoulder beam', { sys: 'ssrms' });
-  box(body, 0.5, 0.5, 0.5, [0, 3.15, 0], 'gold', 'Dextre torso head (cameras)', { sys: 'ssrms' });
+  // Ohne Basis-Telemetrie steht Dextre auf MBS PDGF2 (id 8), wie am 19./20.10.2026 gemeldet.
+  const home = MODEL.anchors[8], mount = new THREE.Group(); home.add(mount);
+  MODEL.dextreMount = mount; MODEL.dextreDefault = { parent: home, position: new THREE.Vector3(), quaternion: new THREE.Quaternion() };
+  const o = { sys: 'ssrms' };
+  cyl(mount, 'y', 0.9, 0.3, 0.3, [0, 0.45, 0], 'arm', 'Dextre LEE (base)', { ...o, segs: 12 });
+  const ee = new THREE.Group(); ee.quaternion.setFromRotationMatrix(DOUG_AXES); mount.add(ee);
+  cyl(ee, 'x', 1.0, 0.35, 0.35, [1.15, 0, 0], 'arm', 'Dextre torso', { ...o, segs: 14 });   // Fuß-LEE bis Körperrollgelenk (65 Zoll)
+  const body = dougNode(ee, [65, 0, 0], [0, 0, -45]); body.userData.field = 'roll'; MODEL.dextreBody = body;   // Körperrollen
+  // Modellachsen am Körper (y entlang des Rumpfs) für Kameras und Beschriftungen.
+  const bodyY = new THREE.Group(); bodyY.quaternion.setFromRotationMatrix(DOUG_AXES.clone().transpose()); body.add(bodyY); MODEL.dextreBodyY = bodyY;
+  box(bodyY, 0.9, 2.1, 0.9, [0, 0.75, 0], 'arm', 'Dextre torso (upper)', o);
+  // Oberer Greifpunkt (SPDM_PDGF), an dem Canadarm2 Dextre trägt; Modellachsen wie die übrigen Greifpunkte.
+  const pdgf = dougNode(body, [68.7, 0, 0], [0, 0, -45]); const pdgfY = new THREE.Group(); pdgfY.quaternion.setFromRotationMatrix(DOUG_AXES); pdgf.add(pdgfY); MODEL.dextrePdgf = pdgfY;
+  cyl(pdgf, 'x', 0.15, 0.32, 0.32, [0.08, 0, 0], 'gold', 'Dextre PDGF (top)', { ...o, segs: 16, rings: 0 });
+  box(bodyY, 0.5, 0.5, 0.5, [0, 1.95, 0.45], 'gold', 'Dextre torso head (cameras)', o);
+  const b1 = dougNode(body, [68.7, 0, 0], [90, -45, -180]);
+  tube(b1, [0, -46.9 * DIN, 46.9 * DIN], [0, 46.9 * DIN, 46.9 * DIN], 0.2, 0.2, 'arm', 'Dextre torso shoulder beam', o);
+  tube(b1, [0, 0, 0], [0, 0, 46.9 * DIN], 0.2, 0.2, 'arm', 'Dextre torso shoulder beam', o);
   MODEL.dextre = []; MODEL.dextreTools = [];
-  for (let side = 0; side < 2; side++) {
-    // Schulter-Rollachsen zeigen zur Seite (±X im Rumpfsystem), die Arme hängen entlang des Rumpfs.
-    // Baugleiche Arme: Die Aufnahme von Arm 2 ist die von Arm 1, um 180° um die Rumpfachse gedreht.
-    const sh = new THREE.Group(); sh.position.set(side ? 0.8 : -0.8, 2.7, 0); sh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(-1, 0, 0));
-    if (side) sh.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI)); body.add(sh);
-    const { J, wr } = buildArm7(sh, { L: 1.45, O: 0.32, rh: 0.15, rb: 0.11, W: 0.42, y0: 0, boom: 'Dextre arm ' + (side + 1) + ' boom', group: 'dextre' + side + ':',
-      name: (i, part) => 'Dextre arm ' + (side + 1) + ' joint ' + (i + 1) + (part.includes('boom') ? ' boom' : '') });
-    box(wr, 0.3, 0.4, 0.3, [0, 0.42, 0], 'gold', 'Dextre tool ' + (side + 1)); MODEL.dextre.push(J); MODEL.dextreTools.push(wr);
-  }
+  DEXTRE_ARMS.forEach((arm, side) => {
+    const nm = i => 'Dextre arm ' + (side + 1) + ' joint ' + (i + 1), J = [];
+    const m = dougNode(b1, ...arm.mount);
+    let j = dougNode(m, [0, 0, 0], arm.sr); j.userData.field = 'roll'; J.push(j);
+    cyl(j, 'x', 0.35, 0.15, 0.15, [0, 0, 0], 'arm', nm(0), { ...o, segs: 12 });
+    DEXTRE_CHAIN.forEach((step, k) => {
+      const pre = step.slice(0, -1), jp = step.at(-1); let par = j;
+      for (const [xyz, pyr] of pre) { const n = dougNode(par, xyz, pyr); if (xyz.some(Boolean)) tube(par, [0, 0, 0], n.position.toArray(), 0.11, 0.11, 'arm', nm(k) + ((k === 2 || k === 3) ? ' boom' : ''), o); par = n; }
+      j = dougNode(par, [0, 0, 0], jp); j.userData.field = DEXTRE_FIELDS[k + 1]; J.push(j);
+      cyl(j, 'z', 0.3, 0.14, 0.14, [0, 0, 0], 'arm', nm(k + 1), { ...o, segs: 12 });
+    });
+    const tool = new THREE.Group(); tool.quaternion.setFromRotationMatrix(DOUG_AXES.clone().transpose()); j.add(tool);
+    tool.rotateZ(-Math.PI / 2);   // Werkzeugachse (y) entlang DOUG +x des Handgelenk-Rollens
+    box(tool, 0.3, 0.6, 0.3, [0, 0.3, 0], 'gold', 'Dextre tool ' + (side + 1), o);
+    J.forEach((g, i) => g.userData.collisionGroup = 'dextre' + side + ':' + i);
+    MODEL.dextre.push(J); MODEL.dextreTools.push(tool);
+  });
 }
 /* Canadarm2 nach dem NASA-IGOAL-Rig (SSRMS_SH_LEE ... WRR, Zoll -> m): LEE bis Schulter-Rollgelenk
    1,359 m entlang der Rollachse, Giergelenk 0,703 m neben der Rollachse, Nickgelenk 0,569 m entlang
