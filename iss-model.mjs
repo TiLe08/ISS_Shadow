@@ -431,23 +431,28 @@ export const MBS_IDS = [7, 8, 11, 13];
 // IGOAL MBS_MGF_1..4 (MT-System): PDGF1 Steuerbord-Nadir, PDGF2 Steuerbord-Zenit, PDGF3 Backbord-Zenit,
 // PDGF4 Backbord-Nadir-Ecke der Vorderseite, Blick nach +X.
 export const MBS_PDGF = { 7: [3.645, 1.373, 0.959], 8: [3.645, 1.373, -0.957], 11: [3.690, -1.286, -0.861], 13: [3.502, -1.294, 0.959] };
-export const MBS_ROLLS = [135, 180, 90, 225, 45, 270, 0, 315];
-// Vorwissen je Greifpunkt (Index in MBS_ROLLS). PDGF3 (v1.17): 0°, zusammen mit SSRMS_CONV in iss_twin.html
-// angepasst an die Livebilder CP8 vom 10.11. und 11.11.2026 (Canadarm2 dort mit LEE B als Basis).
-// PDGF2 (Dextre, v1.17): 90°. Mit der neuen Armkonvention streift Canadarm2 bei 135° einen Dextre-Arm in der
-// Pose vom 19.10.2026; 90° ist der nächste Rollwinkel, bei dem die Posen vom 19.10. und 11.11. frei bleiben
-// (Annahme, nicht im Bild geprüft). Die übrigen: 135°, größter Abstand bei der Pose vom 20.10.2026.
-export const MBS_PRIOR = Object.freeze({ 7: 0, 8: 2, 11: 6, 13: 0 });
-// Setzt MBS-Greifpunkt id auf Roll-Kandidat k (Position fest aus IGOAL, nur der Rollwinkel variiert).
-export function placeMbsFixture(id, k) {
-  const f = MODEL.anchors?.[id]; if (!f) return;
-  f.position.set(...MBS_PDGF[id]); f.rotation.set(0, 0, -Math.PI / 2); f.rotateY(MBS_ROLLS[k & 7] * D2R); f.updateMatrix();
-  f.userData.mbsCandidate = k;
-}
-// Rollwinkel eines MBS-Greifpunkts frei in Grad setzen (Kalibrierfeld); null = Kandidat k beibehalten.
+// v1.18: Achsen der vier Greifpunkte aus NASA DOUG (Flugpaket Stage 75-7, Knoten MBS_PDGF1..4), in der
+// Greifpunkt-Konvention des Modells (y aus dem Greifpunkt heraus). Die Greifpunkte sind schräg eingebaut,
+// nicht nur um +X gerollt; die Positionen stimmen mit IGOAL überein. Quelle und Herleitung:
+// recherche/DOUG/DOUG_zero_configurations.md. Die früheren acht Rollkandidaten entfallen.
+export const MBS_AXES = {
+  7: [[0.5918, -0.5800, -0.5598], [0.7911, 0.5512, 0.2652]],
+  8: [[-0.5918, 0.5800, -0.5598], [0.7911, 0.5512, -0.2652]],
+  11: [[-0.0878, -0.0031, -0.9961], [0.9738, -0.2106, -0.0852]],
+  13: [[-0.6904, 0.4717, 0.5485], [0.7041, 0.2645, 0.6589]],
+};
+const mbsQuat = id => {
+  const [ax, ay] = MBS_AXES[id], y = new THREE.Vector3(...ay).normalize(), x = new THREE.Vector3(...ax);
+  x.addScaledVector(y, -x.dot(y)).normalize();
+  return new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(x, y, new THREE.Vector3().crossVectors(x, y)));
+};
+// Setzt MBS-Greifpunkt id auf seinen DOUG-Rahmen, optional mit einer zusätzlichen Drehung um die eigene
+// Achse (y, aus dem Greifpunkt heraus) in Grad für die Feinkalibrierung.
 export function setMbsFixtureRoll(id, deg) {
-  const f = MODEL.anchors?.[id]; if (!f || deg == null || !isFinite(deg)) return;
-  f.position.set(...MBS_PDGF[id]); f.rotation.set(0, 0, -Math.PI / 2); f.rotateY(deg * D2R); f.updateMatrix();
+  const f = MODEL.anchors?.[id]; if (!f) return;
+  f.position.set(...MBS_PDGF[id]); f.quaternion.copy(mbsQuat(id));
+  if (deg && isFinite(deg)) f.rotateY(deg * D2R);
+  f.updateMatrix();
 }
 
 /* ---------- Roboterarme ---------- */
@@ -658,10 +663,10 @@ export function buildStation(cfg = {}) {
   for (const e of [-1, 1]) box(root, 0.06, 2.3, 2.9, [-0.86 + e * 1.75, 21.72, -4.0], 'radiator', 'AMS-02 radiator', D).rotation.y = e * 0.18;
   carrier('ELC-2', 24.6, -1); carrier('ELC-4', 21.3, 1); carrier('ESP-3', 24.5, 1, 'ESP');
   carrier('ELC-3', -24.04, -1); carrier('ELC-1', -24.42, 1);
-  // S-Band-Antennen (SASA) auf der Zenitseite von S1/P1, hinter dem Bewegungsraum von MT, MBS und Dextre.
-  [1, -1].forEach((sign, i) => {
-    cyl(root, 'z', 1.0, 0.08, 0.08, [1.2, sign * 11, -2.7], 'truss', 'S-band SASA mast', { segs: 8 });
-    const az = new THREE.Group(); az.position.set(1.2, sign * 11, -3.25); root.add(az);
+  // S-Band-Antennen (SASA) auf der Zenitseite von S1/P1; Lage der Antennenköpfe aus NASA DOUG (v1.18).
+  [[0.08, 8.16, -3.96], [0.08, -9.16, -3.96]].forEach((p, i) => {
+    cyl(root, 'z', 2.3, 0.08, 0.08, [p[0], p[1], -2.8], 'truss', 'S-band SASA mast', { segs: 8 });
+    const az = new THREE.Group(); az.position.set(...p); root.add(az);
     const el = new THREE.Group(); az.add(el); MODEL.pivots['sbandAz' + i] = az; MODEL.pivots['sbandEl' + i] = el;
     cyl(el, 'z', 0.25, 0.45, 0.12, [0, 0, -0.12], 'white', 'S-band antenna ' + (i + 1), { sys: 'ct', segs: 18, rings: 0 });   // Hauptstrahl −Z bei az = el = 0
   });
@@ -693,7 +698,7 @@ export function buildStation(cfg = {}) {
   for (const z of [-0.95, 0.95]) box(root, 0.18, 46, 0.18, [1.72, 0, z], 'truss', 'MT rail');
   MODEL.anchors = {};
   for (const id of MBS_IDS) {
-    const f = new THREE.Group(); mt.add(f); MODEL.anchors[id] = f; placeMbsFixture(id, MBS_PRIOR[id]);
+    const f = new THREE.Group(); mt.add(f); MODEL.anchors[id] = f; setMbsFixtureRoll(id, 0);
     cyl(f, 'y', 0.15, 0.32, 0.32, [0, -0.075, 0], 'gold', 'MBS PDGF ' + id, { segs: 16, rings: 0 });
   }
   // Greifpunkte an Modulen: [id, Ort, x-Achse, y-Achse (aus dem Greifpunkt heraus)]. Lab und Node 2 sind

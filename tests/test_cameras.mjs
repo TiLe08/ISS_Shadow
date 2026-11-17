@@ -20,7 +20,9 @@ const cam = Object.fromEntries(CAMERAS.map(c => [c.id, c]));
 assert.ok(cam.cp8.pos[1] < -18 && cam.cp8.pos[2] < 0, 'CP8: P1 außen, Zenit');
 assert.ok(cam.cp9.pos[1] < -18 && cam.cp9.pos[2] > 0, 'CP9: P1 außen, Nadir');
 assert.ok(cam.cp3.pos[1] > 18 && cam.cp3.pos[1] < 20.3 && cam.cp3.pos[2] > 0, 'CP3: S1 außen, Nadir, innen neben ELC-4');
-assert.ok(cam.cp13.pos[1] > 0 && cam.cp13.pos[2] < 4.85 && cam.cp13.pos[0] < -1.65, 'CP13: Destiny Zenit Steuerbord, hinter S0');
+assert.ok(cam.cp13.pos[1] > 0 && cam.cp13.pos[2] < 4.85 && cam.cp13.pos[0] > -2.26 && cam.cp13.pos[0] < 6.42, 'CP13: Destiny Zenit Steuerbord');
+// v1.18: Augpunkte aus NASA DOUG (Stage 75-7).
+for (const [id, p] of Object.entries({ cp3: [0.93, 18.50, 3.63], cp8: [0.04, -19.39, -4.05], cp9: [0.17, -19.39, 4.06], cp13: [5.38, 3.91, 3.51] })) assert.deepEqual(cam[id].pos, p, id + ' DOUG eye point');
 // Einbett-Adressen
 assert.match(embedUrl('https://www.youtube.com/watch?v=abcdefghijk'), /^https:\/\/www\.youtube\.com\/embed\/abcdefghijk\?autoplay=1&mute=1/);
 assert.match(embedUrl('https://youtu.be/abcdefghijk?t=3'), /embed\/abcdefghijk\?/);

@@ -10,7 +10,7 @@ import{CollisionMonitor,meshesIntersect}from'../model-checks.mjs';
  const at=d=>{const c=(2.2+.33+d)/Math.SQRT2;p.position.set(0,c,c);mod.updateMatrixWorld(true);p.updateMatrixWorld(true);};
  at(.1);assert.ok(new THREE.Box3().setFromObject(mod).intersectsBox(new THREE.Box3().setFromObject(p)),'inside the box corner');
  assert.equal(meshesIntersect(mod,p),false,'45° box-corner contact is not an overlap');at(-.1);assert.equal(meshesIntersect(mod,p),true,'real penetration still detected');}
-const{t,w,dom}=await loadTwin(['updateIrosa','parseDockingEvents','setVehicleEvents','vvAt','updateVehicles','VV','VV_FALLBACK','gmstRad','liveJointsRaw','learnMssFromPose','MSS_CAL','mbsChoices','mssConvention','predictJoints','learnTracking','PRED','poseGapS','timebaseReset','linkWatchdog','startLive','stopLive','buildISS','MODEL','applyJoints','liveJoints','buildPanels','initLayout','LAYOUT','applyLayout','makeResizer','enterCmd','exitCmd','CMD','stepCmd','setWarp','setPaused','drawMap','D','WARPS','ingest','TM','TIMEBASE','poseSource','updatePanels','arrayLighting','DICT','MODEL_MANIFEST:MODEL','attitudeSource','hoursOfYear','solarNormal','solarAngles','sunEci','lvlhBasis','inShadow','radiatorNormal','uncal','cal','CAL','simTick','simInitOrbit','SIMST','LINK'],{visual:true});const root=t.buildISS();root.updateMatrixWorld(true);
+const{t,w,dom}=await loadTwin(['updateIrosa','parseDockingEvents','setVehicleEvents','vvAt','updateVehicles','VV','VV_FALLBACK','gmstRad','liveJointsRaw','predictJoints','learnTracking','PRED','poseGapS','timebaseReset','linkWatchdog','startLive','stopLive','buildISS','MODEL','applyJoints','liveJoints','buildPanels','initLayout','LAYOUT','applyLayout','makeResizer','enterCmd','exitCmd','CMD','stepCmd','setWarp','setPaused','drawMap','D','WARPS','ingest','TM','TIMEBASE','poseSource','updatePanels','arrayLighting','DICT','MODEL_MANIFEST:MODEL','attitudeSource','hoursOfYear','solarNormal','solarAngles','sunEci','lvlhBasis','inShadow','radiatorNormal','uncal','cal','CAL','simTick','simInitOrbit','SIMST','LINK'],{visual:true});const root=t.buildISS();root.updateMatrixWorld(true);
 const part=name=>t.MODEL.parts.find(p=>p.mesh.userData.name===name)?.mesh;
 const center=m=>new THREE.Box3().setFromObject(m).getCenter(new THREE.Vector3());
 const bounds=m=>new THREE.Box3().setFromObject(m);
@@ -148,10 +148,6 @@ for(const m of t.MODEL.parts.filter(p=>/^SAW (1A|3A) blanket box$/.test(p.mesh.u
   assert.equal(armHits().length,0,'19 Oct pose clear with the prior');
   const tip=t.MODEL.armTip.getWorldPosition(new THREE.Vector3()).applyMatrix4(root.matrixWorld.clone().invert());
   const ida3=new THREE.Vector3(...t.MODEL.ports.ida3.pos);assert.ok(tip.distanceTo(ida3)>2.5&&tip.distanceTo(ida3)<9,'free LEE near, not inside, the Cargo Dragon: '+tip.toArray());
-  const r=t.learnMssFromPose(t.liveJointsRaw());assert.ok(r.consistent);
-  assert.equal(armHits().length,0,'calibrated: the real pose is clear');
-  assert.ok(t.MSS_CAL.mbs[11][t.mssConvention()].filter(Boolean).length<=8);
-  assert.equal(t.learnMssFromPose(t.liveJointsRaw()).changed,false);
   t.TM.clear();for(const [k,v]of Object.entries(live))if(typeof v==='number')t.ingest(k,v,NaN,Date.now(),'SIM');assert.equal(armHits().length,0,'14 Oct Node 2 pose clear');
   Object.values(t.MODEL.vvG).forEach(g=>g.visible=false);t.TM.clear();t.MODEL.collision=null;}
  // Ein gestoppter Client kann die neue Quelle nicht berühren: späte Statuswechsel und Updates werden ignoriert.
@@ -229,8 +225,14 @@ for(const m of t.MODEL.parts.filter(p=>/^SAW (1A|3A) blanket box$/.test(p.mesh.u
  const fx=JSON.parse(fs.readFileSync(new URL('./live_sample_20261014.json',import.meta.url),'utf8'));
  for(const [k,v]of Object.entries(fx))if(typeof v==='number')t.ingest(k,v,NaN,Date.now(),'SIM');
  const L=t.liveJoints();t.applyJoints(L);t.TM.clear();
- for(const pass of [0,1,2]){Object.entries(t.MODEL.vvG).forEach(([k,g])=>{const [port,type]=k.split(':'),types=Object.keys(t.MODEL.vvG).filter(x=>x.startsWith(port+':'));g.visible=types[pass%types.length]===k;});
+ // Harmony nadir war am 14.10. leer (Cygnus NG-24 bis 9.10.); mit der DOUG-Armkonvention (v1.18) liegt der
+ // zweite Ausleger dort, wo der Solarflügel eines HTV-X stünde. Diese Port-Modelle werden deshalb ohne Arm geprüft.
+ const sel=(pass,skip)=>Object.entries(t.MODEL.vvG).forEach(([k,g])=>{const [port]=k.split(':'),types=Object.keys(t.MODEL.vvG).filter(x=>x.startsWith(port+':'));g.visible=types[pass%types.length]===k&&!(skip&&port==='harmonyNadir');});
+ for(const pass of [0,1,2]){sel(pass,true);
   assert.equal(new CollisionMonitor(t.MODEL,root).scan().length,0,'vehicle set '+pass+' clears the station and the flown arm pose');}
+ t.MODEL.armBase.visible=false;
+ for(const pass of [0,1]){sel(pass,false);assert.equal(new CollisionMonitor(t.MODEL,root).scan().length,0,'vehicle set '+pass+' clears the station');}
+ t.MODEL.armBase.visible=true;
  Object.values(t.MODEL.vvG).forEach(g=>g.visible=false);
 }
 

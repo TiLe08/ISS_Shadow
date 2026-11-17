@@ -65,8 +65,8 @@ export function setupCalibPanel({ CALIB, CAL, SSRMS_CONV, EXTCAM, MBS_IDS, apply
       <p class="note">${t('Model angle = sign × telemetry + offset. Built-in sign/offset:')} ${SSRMS_CONV.s.map((s, i) => `${SSRMS_J[i]} ${s < 0 ? '−' : '+'}${SSRMS_CONV.o[i] ? '/' + SSRMS_CONV.o[i] : ''}`).join(' ')}</p>
       <table>${SSRMS_J.map((n, i) => jointRow('ssrms', i, n, SSRMS_PUI[i])).join('')}</table></details>
     <details><summary>${t('MBS grapple fixtures')}</summary>
-      <p class="note">${t('Roll of the fixture the arm is based on, in degrees. Empty = learned from live poses.')}</p>
-      <table>${MBS_IDS.map(id => `<tr><td>PDGF ${id}</td><td><input type="number" step="45" data-mbs="${id}" value="${CALIB.mbsRoll[id] ?? ''}" placeholder="auto"></td></tr>`).join('')}</table></details>
+      <p class="note">${t('Extra turn of the fixture the arm is based on, about its own axis, in degrees. 0 = NASA DOUG frame.')}</p>
+      <table>${MBS_IDS.map(id => `<tr><td>PDGF ${id}</td><td><input type="number" step="1" data-mbs="${id}" value="${CALIB.mbsRoll[id] ?? ''}" placeholder="0"></td></tr>`).join('')}</table></details>
     <details><summary>Dextre (SPDM)</summary>
       <table>${DEXTRE_PUI.map((p, i) => jointRow('dextre', i, i === 14 ? t('Body roll') : DEXTRE_NAME(i), p)).join('')}
       <tr><td>${t('Mount roll')}</td><td></td><td><input type="number" step="15" data-k="dextreRoll" value="${num(CALIB.dextreRoll)}"></td><td></td></tr></table></details>
