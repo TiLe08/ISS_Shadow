@@ -147,6 +147,25 @@ die Station, also schließt jede Live-Pose die Hypothesen aus, unter denen sie k
 des MBS). Basis 19 („SSRMS TIP LEE“) heißt: Dextre hängt mit seinem oberen Greifpunkt (3,9 m über dem
 eigenen Fuß-LEE) am freien Ende von Canadarm2.
 
+## Abgleich mit SSP 30219 (v1.18)
+
+SSP 30219 Rev. K („Space Station Reference Coordinate Systems“, 1.2.2019), Bild 4.0-8, definiert die
+Gelenkwinkel der Energie- und Kühlsysteme:
+
+- **SARJ:** alpha_stbd = alpha, alpha_port = −alpha, Rechtsdrehung um die nach außen zeigende Gelenkachse;
+  bei 0° zeigt die Zellseite nach −Z (Zenit). Das Modell (`CAL.sarjS/sarjP`) stimmt damit überein; auch die
+  ISSLive-Werte (Backbord = 360° − Steuerbord) passen.
+- **TRRJ:** gamma = Rechtsdrehung um +X, 0° = Radiatorbalken in der X-Y-Ebene, beide Seiten gleich. Stimmt.
+- **BGA:** Die Norm gibt je Flügel eine eigene Formel (z. B. beta_S4UPR3A = −beta − 90°, 0° = Zellseite
+  nach innen). Mit ihr läge jeder Flügel in den Livedaten vom 20.10.2026 um 45° neben der Sonne; mit `CAL`
+  stehen alle acht genau zur Sonne. Die ISSLive-Kanäle folgen also nicht wörtlich der Norm (oder der
+  ausgelesene Text der Formel ist unvollständig); maßgebend bleiben die Livedaten.
+- Für Canadarm2, Dextre, MBS-Greifpunkte und Antennen enthält die Norm nur Bezugssysteme (Ursprung und
+  Achsen), keine Nullpunkte der Gelenke. Die Lage von MT und MBS (MT/MBS-Schnittstelle 95,79 in vor der
+  S0-Achse) stimmt mit dem Modell überein.
+
+`tests/test_ssp30219.mjs` prüft das.
+
 ## Kalibrierfeld (v1.17)
 
 Weil es keine öffentliche Festlegung der Nullpunkte gibt, lassen sich alle Konventionen im Browser

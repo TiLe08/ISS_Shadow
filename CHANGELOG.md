@@ -2,6 +2,16 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.18: Gelenkwinkel gegen SSP 30219 geprüft (17.11., in Arbeit)
+
+- **SSP 30219 Rev. K** (ISS-Bezugssysteme, NASA, 1.2.2019, Bild 4.0-8) legt Nullpunkt und Drehsinn von
+  SARJ (alpha), BGA (beta) und TRRJ (gamma) fest. SARJ und TRRJ im Modell stimmen damit genau überein
+  (alpha_port = -alpha_stbd, alpha = 0: Zellseite nach Zenit; gamma = 0: Radiatoren in der X-Y-Ebene).
+  Die BGA-Formeln der Norm liegen 45° neben den ISSLive-Kanälen; die Livedaten vom 20.10. (alle acht Flügel
+  genau zur Sonne, Skalarprodukt 1,000 statt 0,71 mit der Norm) bestätigen die bisherige Tabelle `CAL`.
+  Neuer Test `tests/test_ssp30219.mjs`. Für Canadarm2, Dextre und die Antennen enthält die Norm nur
+  Bezugssysteme, keine Gelenkwinkel.
+
 # v1.17: Canadarm2 an Livebildern ausgerichtet, Kalibrierfeld, Kamerafenster verschiebbar (11.11./12.11.)
 
 - **Canadarm2 stand falsch.** Mit der am 11.11.2026 aufgezeichneten Pose (MBS PDGF3, LEE B) zeigte der
