@@ -2,7 +2,22 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
-# v1.18: Gelenkwinkel gegen SSP 30219 geprüft (17.11., in Arbeit)
+# v1.18: Nullstellungen aus NASA DOUG und SSP 30219 (17.11., in Arbeit)
+
+- **NASA DOUG** (Robotik-Grafikwerkzeug der Besatzung, öffentliches Flugpaket Stage 75-7 vom 16.9.2026)
+  enthält die vollständigen Kinematikketten und die Abbildung Telemetrie -> Gelenk. Übernommen:
+  - MBS-Greifpunkte PDGF1-4 mit ihren schrägen Einbaurahmen (`MBS_AXES`). Die acht Rollkandidaten und das
+    Lernen aus Kollisionen der Live-Posen entfallen; gespeicherte Lernstände (`iss.cal.mss*`) werden gelöscht.
+  - Canadarm2: DOUG-Abbildung SR, −SY, −SP, −EP, −WP, −WY, +WR, alle 0 = gestreckter Arm, im Modell
+    `SSRMS_CONVS.doug` (Spitze auf 3 mm, Spitzenrahmen exakt; `tests/test_doug.mjs`). Bei LEE A als Basis
+    heißen die Gelenke immer vom Basisende aus.
+  - MT-Arbeitsplätze WS1-8 (ISSLive bestätigt WS4 und WS5 auf den Zentimeter), Lage der S-Band-Antennen
+    und Azimut-Nullpunkt +45°, Augpunkte der Kameras CP3, CP8, CP9 und CP13.
+  - Bestätigt ohne Änderung: SARJ, TRRJ, Ku-Band. BGA: DOUG liegt wie SSP 30219 45° neben ISSLive, `CAL` bleibt.
+- **Offen:** Das Livebild CP8 vom 10.11. (Kamera an Dragon und S-Band-Schüssel eingepasst) passt besser
+  zur v1.17-Armkonvention als zu DOUG. Das Kalibrierfeld kann deshalb zwischen „NASA DOUG“ (Standard)
+  und „v1.17“ umschalten; v1.17 nutzt dabei die alten, nur gerollten MBS-Rahmen. Bisher gespeicherte
+  Canadarm2-Korrekturen und MBS-Rollwinkel im Kalibrierfeld werden einmalig zurückgesetzt.
 
 - **SSP 30219 Rev. K** (ISS-Bezugssysteme, NASA, 1.2.2019, Bild 4.0-8) legt Nullpunkt und Drehsinn von
   SARJ (alpha), BGA (beta) und TRRJ (gamma) fest. SARJ und TRRJ im Modell stimmen damit genau überein
