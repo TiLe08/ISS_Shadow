@@ -39,6 +39,9 @@ assert.ok(M.poaPayload.visible&&M.otcmPayloads[0].visible&&!M.otcmPayloads[1].vi
 // --- Luke und Swesda-Flügel ---
 t.ingest('AIRLOCK000049',755);t.updateHatches();assert.equal(M.evHatch.userData.open,false);
 t.ingest('AIRLOCK000049',0.4);t.updateHatches();assert.equal(M.evHatch.userData.open,true,'EV-Luke offen bei Vakuum');
+// Quest: druckdichte Luke schwenkt nach innen (−Y, in die Crewlock), Thermalabdeckung nach außen (+Y).
+{root.updateMatrixWorld(true);const c=o=>{const b=new THREE.Box3().setFromObject(o);return root.worldToLocal(b.getCenter(V3()));};
+  assert.ok(c(M.evHatch).y<7.4,'Luke innen: '+c(M.evHatch).y.toFixed(2));assert.ok(c(M.evCover).y>7.9,'Abdeckung außen: '+c(M.evCover).y.toFixed(2));}
 const sunB=V3(0.6,0.2,-0.77).normalize();t.updateZvezdaArrays(sunB,false);root.updateMatrixWorld(true);
 for(const g of M.zvezdaArrays){const n=V3(1,0,0).applyQuaternion(g.children[0].quaternion).applyQuaternion(g.quaternion);
   assert.ok(n.dot(V3(sunB.x,0,sunB.z).normalize())>0.999,'Swesda-Flügel zur Sonne');}

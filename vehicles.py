@@ -6,9 +6,10 @@ US-Ports und nichts über die Crew. LL2 ist eine öffentliche, gepflegte Datenba
   station   /spacestation/4/?mode=detailed        Expedition, Crew und Rollen, aktuell angedockt
   events    /event/upcoming/?program=17            Außenbordeinsätze, Andockungen, Pressekonferenzen
   launches  /launch/upcoming/?program=17           nächste Starts zur Station
+  spacewalks /spacewalks/?ordering=-start          letzte Außenbordeinsätze: Beginn, Ende, EV-Crew
 Dieser Dienst ruft sie zeitversetzt ab, hält die letzten guten Antworten auf der Platte
 (cache/ll2_docking.json) und liefert sie dem Dashboard als /__vehicles. Die anonyme LL2-API
-erlaubt 15 Anfragen pro Stunde und Adresse; dieser Dienst braucht etwa 3,5.
+erlaubt 15 Anfragen pro Stunde und Adresse; dieser Dienst braucht etwa 5,5.
 """
 import json, logging, os, threading, time, urllib.request
 from pathlib import Path
@@ -20,6 +21,7 @@ FEEDS = {   # Name: (Pfad, Aktualisierung in s)
     "station": ("/spacestation/4/?mode=detailed&format=json", 7200),
     "events": ("/event/upcoming/?program=17&limit=12&format=json", 7200),
     "launches": ("/launch/upcoming/?program=17&limit=8&mode=list&format=json", 7200),
+    "spacewalks": ("/spacewalks/?ordering=-start&limit=6&format=json", 1800),
 }
 RETRY = 300             # s nach einem Fehler
 RATE_LIMITED = 3600     # s nach HTTP 429 (Ratenlimit)
@@ -115,8 +117,20 @@ def launch_summary(results):
     return out
 
 
+def spacewalk_summary(results):
+    """Letzte Außenbordeinsätze (LL2 /spacewalks/, geprüft 18.11.2026): end ist leer, solange einer läuft.
+    Wo die Crew draußen ist, meldet keine öffentliche Quelle."""
+    out = []
+    for s in results or []:
+        crew = [{"name": (c.get("astronaut") or {}).get("name"), "role": _name(c.get("role"), "role"),
+                 "agency": _name((c.get("astronaut") or {}).get("agency"))} for c in s.get("crew") or []]
+        out.append({"name": s.get("name"), "start": s.get("start"), "end": s.get("end"), "location": s.get("location"), "crew": crew})
+    return out
+
+
 PARSE = {"docking": lambda j: iss_events(j.get("results")), "station": station_summary,
-         "events": lambda j: event_summary(j.get("results")), "launches": lambda j: launch_summary(j.get("results"))}
+         "events": lambda j: event_summary(j.get("results")), "launches": lambda j: launch_summary(j.get("results")),
+         "spacewalks": lambda j: spacewalk_summary(j.get("results"))}
 
 
 class VehicleService:
@@ -144,7 +158,7 @@ class VehicleService:
         return {"available": bool(d["events"]), "source": "Launch Library 2 (TheSpaceDevs)", "fetched": d["fetched"],
                 "cached": self.cached, "error": self.error, "events": d["events"], "launches": d["launches"],
                 "station": (x.get("station") or {}).get("data"), "upcoming_events": (x.get("events") or {}).get("data"),
-                "upcoming_launches": (x.get("launches") or {}).get("data"),
+                "upcoming_launches": (x.get("launches") or {}).get("data"), "spacewalks": (x.get("spacewalks") or {}).get("data"),
                 "fetched_extra": {k: v.get("fetched") for k, v in x.items()}, "feed_errors": fe}
 
     def load_cache(self):
