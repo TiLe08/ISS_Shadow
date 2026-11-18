@@ -11,6 +11,7 @@ import fs from 'node:fs'; import vm from 'node:vm'; import { createRequire } fro
 import * as THREE from 'three'; import { JSDOM } from 'jsdom';
 const require = createRequire(import.meta.url), ROOT = new URL('../', import.meta.url);
 const MODULES = ['model-checks.mjs', 'iss-model.mjs'];      // Importe des Modul-Skripts, als globale Namen
+const NAMESPACES = { PROXOPS: 'proxops.mjs', RADAR: 'radar.mjs' };   // import * as NAME
 const CLASSIC = ['virtual-controls.js', 'channel-meta.js', 'i18n-strings.js', 'i18n.js', 'widgets.js', 'workspace.js'];
 export const readProject = f => fs.readFileSync(new URL(f, ROOT), 'utf8');
 export async function loadTwin(names, opts = {}) {
@@ -21,6 +22,7 @@ export async function loadTwin(names, opts = {}) {
   w.CSS2DObject = class extends THREE.Object3D { constructor(el) { super(); this.element = el; } };
   w.HTMLCanvasElement.prototype.getContext = () => new Proxy({ measureText: () => ({ width: 20 }) }, { get: (t, k) => t[k] || (() => {}) });
   for (const mod of MODULES) Object.assign(w, await import(new URL(mod, ROOT)));
+  for (const [k, f] of Object.entries(NAMESPACES)) w[k] = await import(new URL(f, ROOT));
   w.fetch = async () => ({ ok: false });          // kein Netz in Tests
   Object.assign(w, opts.globals || {});
   const ctx = dom.getInternalVMContext();

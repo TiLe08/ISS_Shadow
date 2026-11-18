@@ -1,0 +1,49 @@
+Proximity radar|Nahbereichsradar|Radar de proximidad|Радар ближней зоны|Radar de proximité|近傍レーダー
+Radar range|Radarreichweite|Alcance del radar|Дальность радара|Portée du radar|レーダー範囲
+Auto|Auto|Auto|Авто|Auto|自動
+Drag to rotate. Plane = V-bar/H-bar, up = zenith. Orbit positions from CelesTrak (SGP4, km accuracy), Kurs range, modeled approaches.|Ziehen zum Drehen. Ebene = V-Bar/H-Bar, oben = Zenit. Bahnpositionen von CelesTrak (SGP4, auf etwa 1 km genau), Kurs-Abstand, modellierte Anflüge.|Arrastre para girar. Plano = V-bar/H-bar, arriba = cenit. Posiciones orbitales de CelesTrak (SGP4, precisión de km), distancia Kurs, aproximaciones modeladas.|Перетащите для поворота. Плоскость = V-bar/H-bar, вверх = зенит. Орбиты CelesTrak (SGP4, точность порядка км), дальность «Курс», смоделированные сближения.|Faire glisser pour tourner. Plan = V-bar/H-bar, haut = zénith. Positions orbitales CelesTrak (SGP4, précision du km), distance Kurs, approches modélisées.|ドラッグで回転。平面 = V-bar/H-bar、上 = 天頂。軌道位置は CelesTrak (SGP4、km 精度)、Kurs 距離、モデル化した接近。
+Radar starts when this panel is open.|Das Radar startet, sobald dieses Panel offen ist.|El radar se inicia cuando este panel está abierto.|Радар запускается, когда эта панель открыта.|Le radar démarre lorsque ce panneau est ouvert.|このパネルを開くとレーダーが起動します。
+No free-flying object within 5000 km.|Kein frei fliegendes Objekt im Umkreis von 5000 km.|Ningún objeto en vuelo libre a menos de 5000 km.|Нет свободно летящих объектов в пределах 5000 км.|Aucun objet en vol libre à moins de 5000 km.|5000 km 以内に自由飛行物体はありません。
+SGP4 library unavailable|SGP4-Bibliothek nicht verfügbar|Biblioteca SGP4 no disponible|Библиотека SGP4 недоступна|Bibliothèque SGP4 indisponible|SGP4 ライブラリを利用できません
+Orbits: CelesTrak ({0} objects, {1} ago)|Bahnen: CelesTrak ({0} Objekte, vor {1})|Órbitas: CelesTrak ({0} objetos, hace {1})|Орбиты: CelesTrak ({0} объектов, {1} назад)|Orbites : CelesTrak ({0} objets, il y a {1})|軌道: CelesTrak ({0} 個、{1} 前)
+CelesTrak unavailable|CelesTrak nicht erreichbar|CelesTrak no disponible|CelesTrak недоступен|CelesTrak indisponible|CelesTrak に接続できません
+Loading orbits…|Lade Bahnen…|Cargando órbitas…|Загрузка орбит…|Chargement des orbites…|軌道を読み込み中…
+Docked per orbit data: {0}|Laut Bahndaten angedockt: {0}|Acoplados según datos orbitales: {0}|Пристыкованы по орбитальным данным: {0}|Amarrés d'après les orbites : {0}|軌道データ上ドッキング中: {0}
+{0} objects with old orbit data hidden|{0} Objekte mit alten Bahndaten ausgeblendet|{0} objetos con datos orbitales antiguos ocultos|Скрыто объектов со старыми орбитами: {0}|{0} objets aux orbites anciennes masqués|古い軌道データの物体 {0} 個を非表示
+Orange = modeled approach or departure (estimated timeline).|Orange = modellierter An- oder Abflug (geschätzter Zeitablauf).|Naranja = aproximación o salida modelada (cronología estimada).|Оранжевый = смоделированное сближение или отлёт (оценочный график).|Orange = approche ou départ modélisé (chronologie estimée).|オレンジ = モデル化した接近・離脱 (推定タイムライン)。
+modeled|modelliert|modelado|модель|modélisé|モデル
+{0} d old|{0} d alt|{0} d de antigüedad|возраст {0} сут|âge {0} j|{0} 日前
+LL2 schedule|LL2-Zeitplan|calendario LL2|график LL2|calendrier LL2|LL2 予定
+per LL2 schedule|laut LL2-Zeitplan|según el calendario LL2|по графику LL2|selon le calendrier LL2|LL2 予定どおり
+estimated|geschätzt|estimado|оценка|estimé|推定
+preview|Vorschau|vista previa|предпросмотр|aperçu|プレビュー
+Undock|Abdocken|Desacoplar|Расстыковка|Désamarrage|分離
+Dock|Andocken|Acoplar|Стыковка|Amarrage|ドッキング
+Play the departure sequence at 30× speed (display only)|Abflug 30-fach beschleunigt abspielen (nur Anzeige)|Reproducir la salida a 30× (solo visualización)|Показать отлёт в 30 раз быстрее (только отображение)|Lire le départ à 30× (affichage seulement)|離脱シーケンスを 30 倍速で再生 (表示のみ)
+Play the arrival sequence at 30× speed (display only)|Ankunft 30-fach beschleunigt abspielen (nur Anzeige)|Reproducir la llegada a 30× (solo visualización)|Показать прибытие в 30 раз быстрее (только отображение)|Lire l'arrivée à 30× (affichage seulement)|到着シーケンスを 30 倍速で再生 (表示のみ)
+{0} departing from {1}|{0} fliegt von {1} ab|{0} sale de {1}|{0} отходит от {1}|{0} quitte {1}|{0} が {1} から離脱中
+{0} approaching {1}|{0} im Anflug auf {1}|{0} se aproxima a {1}|{0} сближается с {1}|{0} en approche de {1}|{0} が {1} に接近中
+Approach to waypoint 1 (220 m)|Anflug auf Wegpunkt 1 (220 m)|Aproximación al punto de paso 1 (220 m)|Сближение до точки 1 (220 м)|Approche du point 1 (220 m)|ウェイポイント 1 (220 m) へ接近
+Holding at waypoint 1|Halt an Wegpunkt 1|Espera en el punto de paso 1|Зависание в точке 1|Attente au point 1|ウェイポイント 1 で待機
+Approach to waypoint 2 (20 m)|Anflug auf Wegpunkt 2 (20 m)|Aproximación al punto de paso 2 (20 m)|Сближение до точки 2 (20 м)|Approche du point 2 (20 m)|ウェイポイント 2 (20 m) へ接近
+Holding at waypoint 2|Halt an Wegpunkt 2|Espera en el punto de paso 2|Зависание в точке 2|Attente au point 2|ウェイポイント 2 で待機
+Final approach|Endanflug|Aproximación final|Причаливание|Approche finale|最終接近
+Soft capture, retracting to hard capture|Weiches Ankoppeln, Einziehen bis zum festen Ankoppeln|Captura suave, retracción hasta captura firme|Мягкий захват, стягивание до жёсткого|Capture douce, rétraction jusqu'à la capture ferme|ソフトキャプチャ、ハードキャプチャへ引き込み
+Undocked, backing away|Abgedockt, setzt zurück|Desacoplado, retrocediendo|Расстыкован, отходит|Désamarré, recul|分離、後退中
+Departure burns|Abflugzündungen|Encendidos de salida|Импульсы увода|Allumages de départ|離脱噴射
+Leaving the keep-out sphere (200 m)|Verlässt die Sicherheitskugel (200 m)|Saliendo de la esfera de exclusión (200 m)|Выход из запретной сферы (200 м)|Sortie de la sphère d'exclusion (200 m)|立入禁止球 (200 m) から離脱
+Closing the nose cone|Nasenkappe schließt|Cerrando el cono de morro|Закрытие носового обтекателя|Fermeture du cône avant|ノーズコーンを閉鎖中
+Fly-around to the docking axis|Umfliegen bis zur Andockachse|Vuelo alrededor hasta el eje de acoplamiento|Облёт до оси стыковки|Survol jusqu'à l'axe d'amarrage|ドッキング軸への周回飛行
+Station keeping|Halten (Station Keeping)|Mantenimiento de posición|Зависание|Maintien en position|位置保持
+Final approach (Kurs)|Endanflug (Kurs)|Aproximación final (Kurs)|Причаливание (Курс)|Approche finale (Kurs)|最終接近 (Kurs)
+Contact, hooks closing|Kontakt, Haken schließen|Contacto, cierre de ganchos|Касание, закрытие крюков|Contact, fermeture des crochets|接触、フック閉鎖中
+Hooks open, springs push the vehicle away|Haken offen, Federn drücken das Fahrzeug ab|Ganchos abiertos, los resortes empujan el vehículo|Крюки открыты, пружины отталкивают корабль|Crochets ouverts, les ressorts éloignent le véhicule|フック開放、ばねで機体を押し離す
+Separation burn|Trennzündung|Encendido de separación|Импульс увода|Allumage de séparation|分離噴射
+Departing|Fliegt ab|Alejándose|Отлёт|En éloignement|離脱中
+R-bar approach from below|R-Bar-Anflug von unten|Aproximación R-bar desde abajo|Сближение по R-bar снизу|Approche R-bar par le dessous|下方からの R-bar 接近
+Holding at the capture point (10 m)|Halt am Einfangpunkt (10 m)|Espera en el punto de captura (10 m)|Зависание в точке захвата (10 м)|Attente au point de capture (10 m)|キャプチャ点 (10 m) で待機
+Waiting for Canadarm2 capture (arm telemetry)|Wartet auf das Greifen durch Canadarm2 (Armtelemetrie)|Esperando la captura del Canadarm2 (telemetría del brazo)|Ожидание захвата Canadarm2 (телеметрия манипулятора)|En attente de la capture par Canadarm2 (télémesure du bras)|Canadarm2 による把持待ち (アームのテレメトリ)
+Released by Canadarm2, departure burns|Von Canadarm2 freigegeben, Abflugzündungen|Liberado por el Canadarm2, encendidos de salida|Отпущен Canadarm2, импульсы увода|Largué par Canadarm2, allumages de départ|Canadarm2 から放出、離脱噴射
+Held by Canadarm2|Von Canadarm2 gehalten|Sujeto por el Canadarm2|Удерживается Canadarm2|Tenu par Canadarm2|Canadarm2 が把持中
+Canadarm2 berthing (arm telemetry)|Anlegen mit Canadarm2 (Armtelemetrie)|Atraque con el Canadarm2 (telemetría del brazo)|Причаливание Canadarm2 (телеметрия манипулятора)|Accostage par Canadarm2 (télémesure du bras)|Canadarm2 による結合 (アームのテレメトリ)
+Canadarm2 release (arm telemetry)|Freigabe durch Canadarm2 (Armtelemetrie)|Liberación por el Canadarm2 (telemetría del brazo)|Отпуск Canadarm2 (телеметрия манипулятора)|Largage par Canadarm2 (télémesure du bras)|Canadarm2 による放出 (アームのテレメトリ)
