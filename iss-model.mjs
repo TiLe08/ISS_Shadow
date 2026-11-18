@@ -359,6 +359,21 @@ function radiatorWing(parent, y, name, key) {
 }
 
 /* ---------- Besuchsfahrzeuge ---------- */
+/* Nasenkappe des Dragon (v1.19): f = 1 offen (Lage wie bis v1.18), f = 0 geschlossen vor dem
+   Andockadapter (breites Ende an der Kapsel, Spitze zur Station). Die Kappe dreht als starrer Körper um
+   eine Scharnierachse parallel zu Y; deren Lage folgt aus den beiden Endlagen (Näherung, das echte
+   Scharnier sitzt am oberen Rand der Kapselspitze). */
+function noseConeHinge(cone) {
+  const ao = -1.35, ac = -Math.PI, po = [0.55, 1.0], pc = [0.40, 0];
+  // pc − H = R(ac − ao) (po − H)  ->  (I − R) H = pc − R po
+  const d = ac - ao, c = Math.cos(d), s = Math.sin(d), R = ([x, z]) => [c * x + s * z, -s * x + c * z];
+  const rp = R(po), bx = pc[0] - rp[0], bz = pc[1] - rp[1], a11 = 1 - c, a12 = -s, a21 = s, a22 = 1 - c, det = a11 * a22 - a12 * a21;
+  const H = [(bx * a22 - a12 * bz) / det, (a11 * bz - a21 * bx) / det];
+  return f => {
+    const a = ac + (ao - ac) * f, dd = a - ao, cc = Math.cos(dd), ss = Math.sin(dd), x = po[0] - H[0], z = po[1] - H[1];
+    cone.rotation.y = a; cone.position.set(H[0] + cc * x + ss * z, 0, H[1] - ss * x + cc * z); cone.userData.open = f;
+  };
+}
 // Teilzylinder-Hülle entlang +X (z. B. die Solarzellen auf dem halben Umfang des Dragon-Trunks).
 function arcSkin(parent, r, len, x, theta0, arc, kind, name) {
   const g = new THREE.CylinderGeometry(r, r, len, 24, 1, true, theta0, arc); ROT.x(g);
@@ -375,7 +390,8 @@ function usosVehicle(type) {
     hull(g, 'x', [[0.35, 0], [0.35, 0.95], [0.8, 1.12], [3.9, 1.97]], [0, 0], k, nm + 'capsule', { segs: 32 });
     cyl(g, 'x', 0.25, 2.0, 1.97, [4.025, 0, 0], 'dark', nm + 'heat shield', { segs: 32, rings: 0 });
     const cone = new THREE.Group(); cone.position.set(0.55, 0, 1.0); cone.rotation.y = -1.35; g.add(cone);   // aufgeklappte Nasenkappe
-    cyl(cone, 'x', 0.45, 0.25, 0.92, [0.22, 0, 0], k, nm + 'nose cone (open)', { segs: 20 });
+    cyl(cone, 'x', 0.45, 0.25, 0.92, [0.22, 0, 0], k, nm + 'nose cone', { segs: 20 });
+    g.userData.setCone = noseConeHinge(cone);
     if (crew) {                 // vier SuperDraco-Paare und zwei Seitenfenster
       for (let i = 0; i < 4; i++) { const a = Math.PI / 4 + i * Math.PI / 2, rr = 1.62;
         box(g, 0.9, 0.55, 0.32, [2.75, Math.cos(a) * rr, Math.sin(a) * rr], 'dark', nm + 'SuperDraco pod', { decor: true }).rotation.x = a - Math.PI / 2; }

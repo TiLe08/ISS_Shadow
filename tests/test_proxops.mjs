@@ -1,0 +1,110 @@
+// test_proxops.mjs: An- und Abflug der Besuchsfahrzeuge (proxops.mjs) und Nahbereichsradar (radar.mjs).
+//   - Abläufe: Abstand stetig und monoton, Dragon schließt die Nasenkappe vor dem Ausblenden, Kurs-Abstand
+//     ersetzt die Schätzung, Ereignisarten und Namensabgleich, Port aus dem Ereignistext.
+//   - Seite: Abdocken laut LL2 -> Fahrzeug fliegt entlang der Portachse weg und verschwindet danach;
+//     russisches Portflag fällt -> Abflug ab dem Augenblick; geplantes Abdocken und geplante Ankunft aus dem
+//     LL2-Ereignisplan; Vorschau ohne Protokolleintrag; Cygnus am Arm folgt dem Arm, nicht dem Ablauf.
+//   - Radar: TLE-Epoche, LVLH-Achsen, Erkennung angedockter Fahrzeuge, Zeichnen ohne Fehler.
+import assert from 'node:assert/strict'; import * as THREE from 'three';
+import * as P from '../proxops.mjs'; import * as R from '../radar.mjs';
+import { loadTwin } from './harness.mjs';
+
+// --- Abläufe ---
+for (const fam of ['dragon', 'kurs', 'berth']) for (const kind of ['arrive', 'depart']) {
+  const k = P.SEQ[fam][kind].keys;
+  let prev = null;
+  for (let tt = k[0][0]; tt <= k[k.length - 1][0]; tt += 5) {
+    const d = P.distanceAt(k, tt);
+    if (prev !== null) { assert.ok(Math.abs(d - prev) < 15, `${fam} ${kind}: stetig bei ${tt}`); assert.ok(kind === 'arrive' ? d <= prev + 1e-9 : d >= prev - 1e-9, `${fam} ${kind}: monoton`); }
+    prev = d;
+  }
+  assert.equal(P.distanceAt(k, kind === 'arrive' ? 0 : 0), 0, `${fam} ${kind}: am Port bei t = 0`);
+}
+{ const a = P.stateAt('crewDragon', 'depart', 30), b = P.stateAt('crewDragon', 'depart', 1000), z = P.stateAt('crewDragon', 'depart', 2000);
+  assert.ok(a.active && a.cone === 1 && a.d > 0 && a.d < 3, 'Dragon direkt nach dem Abdocken: Kappe offen, wenige m');
+  assert.ok(b.active && b.cone === 0 && b.d > 200, 'Kappe zu nach Verlassen der Sicherheitskugel');
+  assert.ok(!z.active && z.done, 'Ablauf beendet');
+  assert.ok(!P.stateAt('crewDragon', 'arrive', -4000).active && P.stateAt('crewDragon', 'arrive', -3000).active, 'Anflug beginnt 60 min vorher');
+  assert.ok(P.stateAt('crewDragon', 'arrive', -100).speed < 0, 'Annäherung: Abstand nimmt ab'); }
+{ const s = P.stateAt('progress', 'arrive', -600, 123); assert.ok(s.measured && s.d === 123, 'Kurs-Abstand ersetzt die Schätzung');
+  assert.ok(!P.stateAt('cygnus', 'arrive', -600, 123).measured, 'Kurs nur bei Sojus/Progress'); }
+assert.equal(P.eventKind('Undocking', 'Crew-13 Dragon Undocking'), 'depart');
+assert.equal(P.eventKind('Docking', 'Progress MS-36 Docking'), 'arrive');
+assert.equal(P.eventKind('Spacecraft Event', 'Cygnus NG-24 Release'), 'depart');
+assert.equal(P.eventKind('EVA', 'US Spacewalk 95'), null);
+assert.ok(P.sameVehicle('Crew-13 Dragon Undocking', 'Crew-13 · Crew Dragon Grace'), 'Missionskennung');
+assert.ok(P.sameVehicle('PROGRESS-MS 35', 'Progress MS-35'), 'Schreibweise CelesTrak/LL2');
+assert.ok(!P.sameVehicle('Progress MS-34 Undocking', 'Progress MS-35'), 'andere Nummer');
+const TYPES = { ida2: ['crewDragon', 'cargoDragon'], ida3: ['crewDragon', 'cargoDragon'], mrm2: ['progress', 'soyuz'], smAft: ['progress', 'soyuz'] };
+assert.equal(P.portFromText('Progress MS-36 will dock to the aft port of Zvezda', 'progress', TYPES, ['mrm2', 'smAft']), 'smAft');
+assert.equal(P.portFromText('Progress MS-36 docking', 'progress', TYPES, ['smAft']), 'smAft', 'erster freier passender Port');
+assert.equal(P.portFromText('Dragon to the space-facing port of Harmony', 'cargoDragon', TYPES, ['ida2']), 'ida3');
+
+// --- Seite ---
+const { t } = await loadTwin(['buildISS', 'MODEL', 'LINK', 'ingest', 'VV', 'PROX', 'updateVehicles', 'updateProxOps', 'updatePayloads', 'resetPayloads', 'PL', 'EVENTS', 'liveJoints', 'applyJoints', 'previewProx', 'proxActivities', 'setVehicleEvents']);
+t.buildISS(); t.LINK.src = 'mqtt'; t.resetPayloads();
+const M = t.MODEL, T0 = Date.parse('2026-11-20T12:00:00Z');
+const ev = (name, cfg, loc, dock, dep) => ({ docking: dock, departure: dep, docking_location: { name: loc, spacestation: { id: 4, name: 'International Space Station' } }, flight_vehicle: { spacecraft: { name, spacecraft_config: { name: cfg } } } });
+const iso = ms => new Date(ms).toISOString();
+const frame = at => { t.updateVehicles(at); t.updateProxOps(); };
+const g = M.vvG['ida2:crewDragon'], home = () => g.userData.dock.p;
+t.setVehicleEvents({ events: [ev('Crew Dragon Grace', 'Crew Dragon 2', 'Harmony forward', '2026-10-01T23:05:00Z', iso(T0))], upcoming_events: [] }, 'test');
+frame(T0 - 60e3); assert.ok(g.visible, 'angedockt'); const p0 = g.position.clone(); assert.ok(p0.distanceTo(home()) < 1e-9);
+frame(T0 + 300e3); assert.ok(g.visible, 'nach dem Abdocken noch sichtbar');
+const off = g.position.clone().sub(p0); assert.ok(off.x > 10 && Math.abs(off.y) < 1e-6 && Math.abs(off.z) < 1e-6, 'entlang der Portachse (+X an Harmony vorn) weg: ' + off.x.toFixed(1));
+assert.equal(t.proxActivities()[0]?.kind, 'depart');
+assert.ok(t.EVENTS.some(e => /departing/.test(e.msg || e.text || JSON.stringify(e))), 'Abflug im Protokoll');
+frame(T0 + 3000e3); assert.ok(!g.visible, 'nach dem Ablauf ausgeblendet');
+// Russisches Portflag fällt: Abflug ab jetzt, auch wenn LL2 noch nichts weiß.
+t.setVehicleEvents({ events: [ev('Progress MS-35', 'Progress MS', 'Poisk', '2026-09-19T13:44:20Z', null), ev('Crew Dragon Grace', 'Crew Dragon 2', 'Harmony forward', '2026-10-01T23:05:00Z', null)] }, 'test');
+const pg = M.vvG['mrm2:progress'];
+t.ingest('RUSSEG000019', 1); frame(T0); assert.ok(pg.visible);
+t.ingest('RUSSEG000019', 0); frame(T0 + 1000); frame(T0 + 200e3);
+assert.ok(pg.visible && pg.position.distanceTo(pg.userData.dock.p) > 10, 'Progress fliegt nach dem Flag-Abfall weg');
+frame(T0 + 1000e3); assert.ok(!pg.visible, 'Progress danach weg');
+// Geplantes Abdocken (LL2-Ereignisplan, minutengenau) eines angedockten Dragon.
+t.VV.extra.upcoming_events = [{ name: 'Crew-13 Dragon Undocking', type: 'Undocking', date: iso(T0 + 2000e3), precision: 'Minute' }];
+t.VV.list.find(v => /Grace/.test(v.name)).name = 'Crew-13 · Crew Dragon Grace';
+frame(T0 + 1900e3); assert.ok(g.visible && g.position.distanceTo(home()) < 1e-9, 'vor dem Plan angedockt');
+frame(T0 + 2000e3 + 400e3); assert.ok(g.visible && g.position.distanceTo(home()) > 20, 'laut Plan abgedockt und unterwegs');
+assert.ok(!t.MODEL.vvCur.ida2, 'nicht mehr als angedockt geführt');
+assert.ok(/LL2/.test(g.userData.label?.element?.textContent || 'LL2'));
+// Geplante Ankunft eines Cargo Dragon an Harmony zenit.
+t.VV.extra.upcoming_events = [{ name: 'CRS-36 Dragon Docking', type: 'Docking', date: iso(T0 + 5000e3), precision: 'Minute', description: 'docks to the space-facing port of Harmony' }];
+const cd = M.vvG['ida3:cargoDragon'];
+frame(T0 + 5000e3 - 2000e3); assert.ok(cd.visible && cd.position.distanceTo(cd.userData.dock.p) > 100, 'Cargo Dragon im Anflug');
+frame(T0 + 5000e3 - 10e3); assert.ok(cd.position.distanceTo(cd.userData.dock.p) < 1, 'kurz vor dem Kontakt');
+frame(T0 + 5000e3 + 3600e3); assert.ok(cd.visible && t.MODEL.vvCur.ida3?.name.startsWith('CRS-36'), 'nach der Ankunft als angedockt geführt (Schätzung)');
+// Vorschau: kein Protokolleintrag, Fahrzeug bewegt sich, danach wieder angedockt.
+t.VV.extra.upcoming_events = []; frame(T0 + 9000e3);
+const n0 = t.EVENTS.length, pr = M.vvG['prichal:soyuz'] || M.vvG['smAft:progress'];
+const port = Object.keys(t.MODEL.vvCur)[0]; t.previewProx(port, 'depart'); t.PROX.preview.start -= 200e3 / 30;
+frame(T0 + 9000e3); const key = port + ':' + t.MODEL.vvCur[port].type, gv = M.vvG[key];
+assert.ok(gv.visible && gv.position.distanceTo(gv.userData.dock.p) > 5, 'Vorschau bewegt das Fahrzeug');
+assert.equal(t.EVENTS.length, n0, 'Vorschau ohne Protokoll'); assert.ok(t.MODEL.vvCur[port], 'Vorschau ändert den Datenstand nicht');
+t.PROX.preview.start -= 1e7; frame(T0 + 9000e3); assert.ok(gv.position.distanceTo(gv.userData.dock.p) < 1e-9 && !t.PROX.preview, 'nach der Vorschau wieder angedockt');
+void pr;
+
+// --- Radar ---
+assert.equal(new Date(R.tleEpoch('1 25544U 98067A   26322.50000000  .00016717  00000-0  30408-3 0  9993')).toISOString(), '2026-11-18T12:00:00.000Z');
+{ // ISS auf Kreisbahn in der x-y-Ebene bei +x, Flug nach +y; Objekt 1 km voraus, 500 m darüber, 200 m Richtung Bahnnormale
+  const rI = { x: 6778, y: 0, z: 0 }, vI = { x: 0, y: 7.67, z: 0 };
+  const o = R.toLvlh(rI, vI, { x: 6778.5, y: 1, z: 0.2 }, vI);
+  assert.ok(Math.abs(o.rel[0] - 1000) < 1e-6 && Math.abs(o.rel[2] + 500) < 1e-6 && Math.abs(o.rel[1] + 200) < 1e-6, 'LVLH: +V voraus, −R oben, +H = −Bahnnormale ' + o.rel);
+}
+{ // Fake-SGP4: Position direkt aus der Zeile 2 (Testkodierung), Geschwindigkeit wie die ISS
+  const lib = { twoline2satrec: (l1, l2) => ({ p: l2.slice(8).trim().split(/\s+/).map(Number) }), propagate: s => ({ position: { x: s.p[0], y: s.p[1], z: s.p[2] }, velocity: { x: 0, y: 7.67, z: 0 } }) };
+  const ep = '1 00000U 00000A   26322.50000000  .00000000  00000-0  00000-0 0  0000';
+  const L = (id, name, p, e = ep) => ({ name, id, l1: e, l2: '2 ' + String(id).padStart(5, '0') + ' ' + p.join(' '), epoch: R.tleEpoch(e) });
+  const tles = [L(25544, 'ISS (ZARYA)', [6778, 0, 0]), L(49044, 'ISS (NAUKA)', [6778, 0, 0]), L(1, 'PROGRESS-MS 35', [6778, 0, 0]), L(2, 'CREW DRAGON 13', [6778, 0.5, 0]),
+    L(3, 'DRAGON CRS-36', [6778, 300, 0]), L(4, 'OLD THING', [6778, 50, 0], '1 00000U 00000A   26300.50000000  .00000000  00000-0  00000-0 0  0000')];
+  const r = R.propagateAll(lib, tles, Date.parse('2026-11-18T12:00:00Z'), ['Crew-13 · Crew Dragon Grace', 'Progress MS-35'], P.sameVehicle);
+  const st = Object.fromEntries(r.items.map(i => [i.name, i.state]));
+  assert.deepEqual(st, { 'PROGRESS-MS 35': 'attached', 'CREW DRAGON 13': 'attached', 'DRAGON CRS-36': 'free', 'OLD THING': 'stale' }, JSON.stringify(st));
+  assert.equal(R.autoScale(r.items), 1e6, 'Bildradius 1000 km für ein Objekt in 300 km');
+  const calls = []; const ctx = new Proxy({}, { get: (o, k) => k in o ? o[k] : (...a) => calls.push(k), set: (o, k, v) => (o[k] = v, true) });
+  R.drawRadar(ctx, 300, 220, [{ label: 'X', rel: [300e3, 0, 0], range: 300e3, rate: -5, kind: 'tle' }, { label: 'Y', rel: [5, 0, 20], range: 21, rate: 0.1, kind: 'model' }],
+    { scale: 1e6, kurs: { range: 150, rate: -0.2 }, colors: { fg: '#fff', dim: '#888', accent: '#0ff', warn: '#ff0', model: '#fa0' } });
+  assert.ok(calls.filter(k => k === 'fillText').length >= 8, 'Radar gezeichnet');
+}
+console.log('PASS proxops: Dragon/Kurs/CBM-Abläufe, Nasenkappe, Kurs-Abstand, LL2-Abdocken, Portflag, Ereignisplan (Ab- und Anflug), Vorschau; Radar: TLE-Epoche, LVLH, angedockt/frei/alt, Zeichnen');

@@ -5,6 +5,7 @@ Startet in einem Hintergrundprozess (ohne Konsolenfenster, wenn mit pythonw gest
   2. Telemetrie-Bridge (bridge.py)        ISSLive -> MQTT, CSV-Protokolle in ./logs
      Besuchsfahrzeuge (vehicles.py)       Andockereignisse aus Launch Library 2, /__vehicles
      NASA-Bahnvorhersage (ephemeris.py)   /__orbit
+     Bahnelemente CelesTrak (tle.py)      Nahbereichsradar, /__tle
   3. lokalen Webserver                    http://localhost:8137/iss_twin.html
 und öffnet das Dashboard im Standardbrowser.
 Alles beendet sich, wenn im Dashboard EXIT gedrückt wird, oder einige Minuten, nachdem der
@@ -17,7 +18,7 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HTTP_PORT, MQTT_PORT, WS_PORT = 8137, 1883, 9001
-VERSION = "1.18.2"             # muss mit PAGE_VERSION in iss_twin.html übereinstimmen
+VERSION = "1.19"             # muss mit PAGE_VERSION in iss_twin.html übereinstimmen
 IDLE_TIMEOUT = 240          # s ohne Dashboard-Heartbeat bis zum Beenden
 URL = f"http://localhost:{HTTP_PORT}/iss_twin.html#mqtt"
 
@@ -57,6 +58,7 @@ class Handler(SimpleHTTPRequestHandler):
     # .mjs-Typ, dann verweigern Browser die ES-Module des Dashboards.
     """HTTP-Handler: liefert die Projektdateien aus und beantwortet die internen Endpunkte
     /__orbit (Bahnvorhersage), /__vehicles (Besuchsfahrzeuge), /__streams (laufende Livestreams),
+    /__tle (Bahnelemente von CelesTrak für das Nahbereichsradar),
     /__alive (Heartbeat des Dashboards,
     Version und Ordner) und /__shutdown. Protokolle, Cache, Tests und Python-Dateien werden nicht
     ausgeliefert.
@@ -88,6 +90,9 @@ class Handler(SimpleHTTPRequestHandler):
         if self.path.split("?", 1)[0] == "/__vehicles":
             vv = STATE.get("vehicles")
             return self._reply(vv.snapshot() if vv else {"available": False, "error": "Vehicle service starting", "events": []})
+        if self.path.split("?", 1)[0] == "/__tle":
+            tl = STATE.get("tle")
+            return self._reply(tl.snapshot() if tl else {"fetched": None, "groups": {}, "error": "TLE service starting"})
         if self.path.split("?", 1)[0] == "/__streams":
             sv = STATE.get("streams")
             return self._reply(sv.snapshot() if sv else {"fetched": 0, "streams": [], "errors": {"service": "starting"}})
@@ -186,6 +191,10 @@ def main():
     vehicles.log = logging.getLogger("vehicles")
     STATE["vehicles"] = vehicles.VehicleService(os.path.join(HERE, "cache"))
     STATE["vehicles"].start()
+    import tle
+    tle.log = logging.getLogger("tle")
+    STATE["tle"] = tle.TleService(os.path.join(HERE, "cache"))
+    STATE["tle"].start()
     import streams
     streams.log = logging.getLogger("streams")
     STATE["streams"] = streams.StreamService()
