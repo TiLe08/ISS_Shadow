@@ -3,7 +3,7 @@
 //   - Einbett-Adressen für YouTube-Links, Auswahlliste der Streams, Einpassen des Bildformats
 //   - Einbaustellen: Jede Kamera liegt an der Struktur, an der sie laut Quelle sitzt.
 import assert from 'node:assert/strict';
-import { CAMERAS, OPTICS, CHANNELS, KNOWN_STREAMS, FEEDS, feedUrl, embedUrl, streamChoices, fitRect } from '../cameras.mjs';
+import { CAMERAS, OPTICS, FOV_MIN, FOV_MAX, fovToSlider, sliderToFov, clampFov, fineStep, wrapAngle, CHANNELS, KNOWN_STREAMS, FEEDS, feedUrl, embedUrl, streamChoices, fitRect } from '../cameras.mjs';
 const hfov = o => 2 * Math.atan(Math.tan(o.fovMax * Math.PI / 360) * o.aspect) * 180 / Math.PI;
 // SD-Kamera der ETVCG: 77° × 61° bis 10° × 8° (NTSC 4:3).
 assert.ok(Math.abs(hfov(OPTICS.sd) - 77) < 1.5 && OPTICS.sd.fovMax === 61 && OPTICS.sd.fovMin === 8 && OPTICS.sd.aspect === 4 / 3);
@@ -54,3 +54,12 @@ assert.match(embedUrl(W('abcdefghijk')), /controls=0&rel=0/);
 assert.deepEqual(fitRect(4 / 3, 1600, 900), [200, 0, 1200, 900]);
 assert.deepEqual(fitRect(16 / 9, 800, 900), [0, 225, 800, 450]);
 console.log(`PASS Kameras: ${CAMERAS.length} Kameras, Sichtfelder SD 77°×61°..10°×8°, HD 36°..3,4°, MSS 52°×40°, Einbaustellen, Stream-Adressen, Bildformat`);
+
+// Sichtfeld über den Zoombereich hinaus, logarithmischer Regler, Feinschritte.
+for (const o of Object.values(OPTICS)) assert.ok(FOV_MIN <= o.fovMin && o.fovMax <= FOV_MAX);
+assert.ok(FOV_MIN <= 0.5 && FOV_MAX >= 120);
+assert.equal(clampFov(200), FOV_MAX); assert.equal(clampFov(0.01), FOV_MIN); assert.equal(clampFov(33.3), 33.3);
+for (const f of [0.5, 1.9, 61, 150]) assert.ok(Math.abs(sliderToFov(fovToSlider(f)) - f) < 1e-9);
+assert.equal(fineStep({}), 0.1); assert.equal(fineStep({ shiftKey: true }), 1); assert.equal(fineStep({ altKey: true }), 0.01);
+assert.equal(wrapAngle(180.1, -180, 180, true), -179.9); assert.equal(wrapAngle(-180.5, -180, 180, true), 179.5);
+assert.equal(wrapAngle(90.3, -90, 90, false), 90); assert.equal(wrapAngle(12.345 + 0.01, -90, 90, false), 12.36);

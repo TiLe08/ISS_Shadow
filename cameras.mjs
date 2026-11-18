@@ -40,6 +40,19 @@ export const OPTICS = {
   senWide: { name: 'Sen 4K wide angle (16:9, estimated)', aspect: 16 / 9, fovMax: 60, fovMin: 40, estimate: true },
   senDock: { name: 'Sen 4K (16:9, estimated)', aspect: 16 / 9, fovMax: 45, fovMin: 25, estimate: true },
 };
+// Das Sichtfeld lässt sich über den Zoombereich der Optik hinaus einstellen (senkrecht 0,5° bis 150°),
+// etwa für unbekannte Optiken oder einen Überblick. Der Regler läuft logarithmisch, damit lange Brennweiten
+// genauso fein einstellbar sind wie kurze; der Zoombereich der Optik steht im Hinweis.
+export const FOV_MIN = 0.5, FOV_MAX = 150;
+export const fovToSlider = f => Math.log(f), sliderToFov = x => Math.exp(x);
+export const clampFov = f => Math.min(FOV_MAX, Math.max(FOV_MIN, f));
+// Feinschritt mit Pfeiltasten oder Mausrad: 0,1°, mit Umschalt 1°, mit Alt 0,01°.
+export const fineStep = e => e.shiftKey ? 1 : e.altKey ? 0.01 : 0.1;
+// Winkel auf den Bereich [lo, hi] bringen; Schwenk und Rollen laufen über ±180° herum.
+export function wrapAngle(a, lo, hi, wrap) {
+  if (wrap) { const span = hi - lo; a = ((a - lo) % span + span) % span + lo; }
+  return Math.round(Math.min(hi, Math.max(lo, a)) * 100) / 100;
+}
 const ETVCG = ['sd', 'hd'];
 export const CAMERAS = [
   // feed: welcher Livestream diese Kamera zeigt (FEEDS); der NASA-Stream „Live Video“ wechselt selbst
@@ -156,8 +169,10 @@ const CSS = `
 #camWin.overlay .twin canvas{opacity:var(--ov,.5)}
 #camWin .ctl{display:flex;gap:10px;align-items:center;padding:5px 8px;border-top:1px solid var(--line,#16303f);flex-wrap:wrap}
 #camWin .ctl label{display:flex;gap:4px;align-items:center}
-#camWin .ctl input[type=range]{width:110px}
+#camWin .ctl input[type=range]{width:130px}
+#camWin .ctl input[type=number]{width:5.2em;background:var(--bg2,#070d14);color:inherit;border:1px solid var(--line2,#1f4458);font:inherit;padding:1px 3px}
 #camWin .ctl output{min-width:3.2em}
+#camWin .ctl .out{color:var(--warn,#ffb54a)}
 #camWin .note{color:var(--dim,#6a8899)}
 .lbl3d.cam{color:var(--warn,#ffb54a);border-left:0;padding-left:12px;pointer-events:auto;cursor:pointer;transform:translate(-5px,-50%)}
 .lbl3d.cam::before{content:'';position:absolute;left:0;top:50%;width:6px;height:6px;margin-top:-4px;border:1px solid var(--warn,#ffb54a);border-radius:50%;background:rgba(4,8,12,.8)}
@@ -234,8 +249,8 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     <button id="camMain" title="${t('Move the main 3D view to this camera')}">${t('Main view')}</button><button id="camClose">×</button></header>
     <div class="panes"><div class="pane live"><div class="cap">${t('LIVE')}</div><iframe id="camFrame" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="warn" id="camWarn" hidden></div></div>
     <div class="pane twin"><div class="cap" id="camCap">${t('TWIN')}</div></div></div>
-    <div class="ctl"><label>${t('Pan')} <input type="range" id="camPan" min="-180" max="180" step="0.5"><output id="camPanV"></output></label><label>${t('Tilt')} <input type="range" id="camTilt" min="-90" max="90" step="0.5"><output id="camTiltV"></output></label><label>${t('Roll')} <input type="range" id="camRoll" min="-180" max="180" step="0.5"><output id="camRollV"></output></label>
-    <label>${t('Field of view')} <input type="range" id="camFov" step="0.1"><output id="camFovV"></output></label><label>${t('Overlay opacity')} <input type="range" id="camOpa" min="0.1" max="0.9" step="0.05" value="0.5"></label>
+    <div class="ctl" title="${t('Arrow keys or mouse wheel: 0.1°, with Shift 1°, with Alt 0.01°')}"><label>${t('Pan')} <input type="range" id="camPan" min="-180" max="180" step="0.01"><input type="number" id="camPanN" min="-180" max="180" step="0.1">°</label><label>${t('Tilt')} <input type="range" id="camTilt" min="-90" max="90" step="0.01"><input type="number" id="camTiltN" min="-90" max="90" step="0.1">°</label><label>${t('Roll')} <input type="range" id="camRoll" min="-180" max="180" step="0.01"><input type="number" id="camRollN" min="-180" max="180" step="0.1">°</label>
+    <label>${t('Field of view')} <input type="range" id="camFov" min="${fovToSlider(FOV_MIN)}" max="${fovToSlider(FOV_MAX)}" step="0.0005"><input type="number" id="camFovN" min="${FOV_MIN}" max="${FOV_MAX}" step="0.1">° <output id="camFovV"></output></label><label>${t('Overlay opacity')} <input type="range" id="camOpa" min="0.1" max="0.9" step="0.05" value="0.5"></label>
     <button id="camReset">${t('Reset camera')}</button><span class="note" id="camNote"></span></div>`;
   document.body.append(win);
   const $ = s => win.querySelector(s);
@@ -253,19 +268,22 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     const c = camOf(id), v = (st.view[id] ||= {});
     if (!c.optics.includes(v.optic)) { v.optic = c.optics[0]; delete v.fov; }
     const o = OPTICS[v.optic]; v.pan ??= 0; v.tilt ??= 0;
-    v.fov = Math.min(o.fovMax, Math.max(o.fovMin, v.fov ?? o.fovMax)); return v;
+    v.fov = clampFov(v.fov ?? o.fovMax); return v;
   }
   function syncCtl() {
     const c = camOf(cur), v = view(cur), o = OPTICS[v.optic];
     $('#camSel').value = cur;
     $('#camOpt').innerHTML = c.optics.map(k => `<option value="${k}">${t(OPTICS[k].name)}</option>`).join(''); $('#camOpt').value = v.optic; $('#camOpt').disabled = c.optics.length < 2;
-    $('#camPan').value = v.pan; $('#camTilt').value = v.tilt; $('#camRoll').value = v.roll || 0; $('#camFov').min = o.fovMin; $('#camFov').max = o.fovMax; $('#camFov').value = v.fov; $('#camFov').disabled = o.fovMin === o.fovMax;
-    $('#camPanV').textContent = v.pan.toFixed(1) + '°'; $('#camTiltV').textContent = v.tilt.toFixed(1) + '°'; $('#camRollV').textContent = (v.roll || 0).toFixed(1) + '°';
-    const h = 2 * Math.atan(Math.tan(v.fov * Math.PI / 360) * o.aspect) * 180 / Math.PI;
-    $('#camFovV').textContent = `${h.toFixed(1)}° × ${v.fov.toFixed(1)}°`;
-    for (const k of ['#camPan', '#camTilt']) $(k).disabled = !c.ptu;
+    const r = v.roll || 0, set = (k, x) => { $(k).value = x; if (document.activeElement !== $(k + 'N')) $(k + 'N').value = +x.toFixed(2); };
+    set('#camPan', v.pan); set('#camTilt', v.tilt); set('#camRoll', r);
+    $('#camFov').value = fovToSlider(v.fov); if (document.activeElement !== $('#camFovN')) $('#camFovN').value = +v.fov.toFixed(2);
+    const h = 2 * Math.atan(Math.tan(v.fov * Math.PI / 360) * o.aspect) * 180 / Math.PI, out = v.fov < o.fovMin - 1e-6 || v.fov > o.fovMax + 1e-6;
+    $('#camFovV').textContent = `(${h.toFixed(1)}° × ${v.fov.toFixed(1)}°)`;
+    $('#camFovV').className = out ? 'out' : ''; $('#camFovV').title = out ? t('Outside the zoom range of this camera') : '';
+    for (const k of ['#camPan', '#camTilt', '#camPanN', '#camTiltN']) $(k).disabled = !c.ptu;
     $('#camNote').textContent = (c.ptu ? t('Pan, tilt, roll and zoom are not in the telemetry: set them to match the live picture (saved per camera).') : t('Fixed camera.'))
       + (c.feed === 'nasaLive' ? ' · ' + t('NASA switches this stream between cameras itself; pick the camera it is showing.') : '')
+      + ' · ' + t('Zoom range') + ' ' + (o.fovMin === o.fovMax ? o.fovMin.toFixed(1) : o.fovMin.toFixed(1) + '–' + o.fovMax.toFixed(1)) + '° ' + t('vertical')
       + (o.estimate ? ' · ' + t('Field of view not published: estimate.') : '') + (c.note ? ' · ' + t(c.note) : '');
   }
   /* --- Livestream --- */
@@ -325,7 +343,28 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
   $('#camClose').onclick = close;
   $('#camOv').onclick = e => { const on = !win.classList.contains('overlay'); win.classList.toggle('overlay', on); e.target.setAttribute('aria-pressed', on); };
   $('#camOpa').oninput = e => win.style.setProperty('--ov', e.target.value);
-  for (const [k, f] of [['#camPan', 'pan'], ['#camTilt', 'tilt'], ['#camRoll', 'roll'], ['#camFov', 'fov']]) $(k).oninput = e => { view(cur)[f] = +e.target.value; save(); syncCtl(); };
+  // Regler und Zahlenfeld je Achse; Pfeiltasten und Mausrad in Feinschritten (fineStep).
+  const AX = { pan: ['#camPan', -180, 180, true], tilt: ['#camTilt', -90, 90, false], roll: ['#camRoll', -180, 180, true] };
+  function setAx(f, x) {
+    const v = view(cur);
+    if (f === 'fov') v.fov = Math.round(clampFov(x) * 1000) / 1000;
+    else { const [, lo, hi, wrap] = AX[f]; v[f] = wrapAngle(x, lo, hi, wrap); }
+    save(); syncCtl();
+  }
+  function fine(f, el) {
+    const go = (e, dir) => { e.preventDefault(); const v = view(cur), d = dir * fineStep(e);
+      // Sichtfeld: Feinschritt in Grad, vom aktuellen Wert aus
+      setAx(f, (f === 'fov' ? v.fov : v[f] || 0) + d);
+      if (el.type === 'number') el.value = +(f === 'fov' ? v.fov : v[f]).toFixed(2); };
+    el.addEventListener('keydown', e => { const dir = { ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1 }[e.key]; if (dir) go(e, dir); });
+    el.addEventListener('wheel', e => { if (!el.disabled) go(e, e.deltaY < 0 ? 1 : -1); }, { passive: false });
+  }
+  for (const [f, [k]] of Object.entries({ ...AX, fov: ['#camFov'] })) {
+    $(k).oninput = e => setAx(f, f === 'fov' ? sliderToFov(+e.target.value) : +e.target.value);
+    $(k + 'N').onchange = e => { if (e.target.value !== '' && Number.isFinite(+e.target.value)) setAx(f, +e.target.value); else syncCtl(); };
+    $(k + 'N').onblur = () => syncCtl();
+    fine(f, $(k)); fine(f, $(k + 'N'));
+  }
   $('#camReset').onclick = () => { delete st.view[cur]; save(); syncCtl(); };
   // Kamerasystem in Weltkoordinaten: Einbaulage · Schwenk (um die Hochachse) · Neigung. Dreht auch den
   // Kamerakopf des Modells mit.
