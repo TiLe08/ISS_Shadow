@@ -234,7 +234,7 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     <button id="camMain" title="${t('Move the main 3D view to this camera')}">${t('Main view')}</button><button id="camClose">×</button></header>
     <div class="panes"><div class="pane live"><div class="cap">${t('LIVE')}</div><iframe id="camFrame" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><div class="warn" id="camWarn" hidden></div></div>
     <div class="pane twin"><div class="cap" id="camCap">${t('TWIN')}</div></div></div>
-    <div class="ctl"><label>${t('Pan')} <input type="range" id="camPan" min="-180" max="180" step="0.5"><output id="camPanV"></output></label><label>${t('Tilt')} <input type="range" id="camTilt" min="-90" max="90" step="0.5"><output id="camTiltV"></output></label>
+    <div class="ctl"><label>${t('Pan')} <input type="range" id="camPan" min="-180" max="180" step="0.5"><output id="camPanV"></output></label><label>${t('Tilt')} <input type="range" id="camTilt" min="-90" max="90" step="0.5"><output id="camTiltV"></output></label><label>${t('Roll')} <input type="range" id="camRoll" min="-180" max="180" step="0.5"><output id="camRollV"></output></label>
     <label>${t('Field of view')} <input type="range" id="camFov" step="0.1"><output id="camFovV"></output></label><label>${t('Overlay opacity')} <input type="range" id="camOpa" min="0.1" max="0.9" step="0.05" value="0.5"></label>
     <button id="camReset">${t('Reset camera')}</button><span class="note" id="camNote"></span></div>`;
   document.body.append(win);
@@ -248,7 +248,7 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
   const cam = new THREE.PerspectiveCamera(48, 4 / 3, 0.05, 2e8);
   let cur = null, last = 0;
   const camOf = id => CAMERAS.find(c => c.id === id);
-  // Gespeicherte Einstellung einer Kamera: Optik, Schwenk, Neigung, Sichtfeld (senkrecht, Grad).
+  // Gespeicherte Einstellung einer Kamera: Optik, Schwenk, Neigung, Rollen um die Blickachse, Sichtfeld (senkrecht, Grad).
   function view(id) {
     const c = camOf(id), v = (st.view[id] ||= {});
     if (!c.optics.includes(v.optic)) { v.optic = c.optics[0]; delete v.fov; }
@@ -259,12 +259,12 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     const c = camOf(cur), v = view(cur), o = OPTICS[v.optic];
     $('#camSel').value = cur;
     $('#camOpt').innerHTML = c.optics.map(k => `<option value="${k}">${t(OPTICS[k].name)}</option>`).join(''); $('#camOpt').value = v.optic; $('#camOpt').disabled = c.optics.length < 2;
-    $('#camPan').value = v.pan; $('#camTilt').value = v.tilt; $('#camFov').min = o.fovMin; $('#camFov').max = o.fovMax; $('#camFov').value = v.fov; $('#camFov').disabled = o.fovMin === o.fovMax;
-    $('#camPanV').textContent = v.pan.toFixed(1) + '°'; $('#camTiltV').textContent = v.tilt.toFixed(1) + '°';
+    $('#camPan').value = v.pan; $('#camTilt').value = v.tilt; $('#camRoll').value = v.roll || 0; $('#camFov').min = o.fovMin; $('#camFov').max = o.fovMax; $('#camFov').value = v.fov; $('#camFov').disabled = o.fovMin === o.fovMax;
+    $('#camPanV').textContent = v.pan.toFixed(1) + '°'; $('#camTiltV').textContent = v.tilt.toFixed(1) + '°'; $('#camRollV').textContent = (v.roll || 0).toFixed(1) + '°';
     const h = 2 * Math.atan(Math.tan(v.fov * Math.PI / 360) * o.aspect) * 180 / Math.PI;
     $('#camFovV').textContent = `${h.toFixed(1)}° × ${v.fov.toFixed(1)}°`;
     for (const k of ['#camPan', '#camTilt']) $(k).disabled = !c.ptu;
-    $('#camNote').textContent = (c.ptu ? t('Pan, tilt and zoom are not in the telemetry: set them to match the live picture (saved per camera).') : t('Fixed camera.'))
+    $('#camNote').textContent = (c.ptu ? t('Pan, tilt, roll and zoom are not in the telemetry: set them to match the live picture (saved per camera).') : t('Fixed camera.'))
       + (c.feed === 'nasaLive' ? ' · ' + t('NASA switches this stream between cameras itself; pick the camera it is showing.') : '')
       + (o.estimate ? ' · ' + t('Field of view not published: estimate.') : '') + (c.note ? ' · ' + t(c.note) : '');
   }
@@ -325,7 +325,7 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
   $('#camClose').onclick = close;
   $('#camOv').onclick = e => { const on = !win.classList.contains('overlay'); win.classList.toggle('overlay', on); e.target.setAttribute('aria-pressed', on); };
   $('#camOpa').oninput = e => win.style.setProperty('--ov', e.target.value);
-  for (const [k, f] of [['#camPan', 'pan'], ['#camTilt', 'tilt'], ['#camFov', 'fov']]) $(k).oninput = e => { view(cur)[f] = +e.target.value; save(); syncCtl(); };
+  for (const [k, f] of [['#camPan', 'pan'], ['#camTilt', 'tilt'], ['#camRoll', 'roll'], ['#camFov', 'fov']]) $(k).oninput = e => { view(cur)[f] = +e.target.value; save(); syncCtl(); };
   $('#camReset').onclick = () => { delete st.view[cur]; save(); syncCtl(); };
   // Kamerasystem in Weltkoordinaten: Einbaulage · Schwenk (um die Hochachse) · Neigung. Dreht auch den
   // Kamerakopf des Modells mit.
