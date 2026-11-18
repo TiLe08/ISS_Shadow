@@ -28,6 +28,13 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
   Gerechnet wird nur bei offenem Panel, einmal pro Sekunde.
 - Neue Tests `tests/test_proxops.mjs`, `tests/test_tle.py`.
 
+# v1.18.3: Dragon an Harmony zenit gedreht, Kameramarkierungen aus (18.11.)
+
+- Fahrzeuge an Harmony zenit (IDA-3) sind um 90° um die Andockachse gedreht (`clock` in `PORTS`): Die
+  geöffnete Nasenkappe des Dragon zeigt jetzt nach Backbord zu CP8, wie im Livebild vom 18.11.2026.
+- Kameramarkierungen in der Hauptansicht sind beim ersten Start aus (Schalter „Cameras“ unter Display);
+  eine gespeicherte Wahl bleibt erhalten.
+
 # v1.18.2: Rollregler im Kamerafenster (18.11.)
 
 - Neben Schwenk und Neigung gibt es einen Regler **Rollen** (−180° bis +180°): dreht das Zwillingsbild um
