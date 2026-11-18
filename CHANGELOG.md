@@ -2,6 +2,12 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.18.2: Rollregler im Kamerafenster (18.11.)
+
+- Neben Schwenk und Neigung gibt es einen Regler **Rollen** (−180° bis +180°): dreht das Zwillingsbild um
+  die Blickachse, damit es sich mit dem Livebild deckt. Er gilt für alle Kameras, auch feste, wird je
+  Kamera gespeichert und ist derselbe Wert wie „roll“ im Kalibrierfeld; „Reset camera“ setzt ihn zurück.
+
 # v1.18.1: Dextre am Canadarm2, Überlappungsmonitor, Kameramasten (18.11.)
 
 - **Dextre hing quer durch das LEE**, wenn Canadarm2 es trägt (Basis 19): Der obere Greifpunkt von Dextre
