@@ -21,7 +21,7 @@
 // Das stellt der Nutzer im Fenster ein (gespeichert unter localStorage iss.cams). Das Fenster lässt sich
 // verschieben und in der Größe ändern (window-frame.mjs, gespeichert unter localStorage iss.camwin).
 // Markierungen und Namen aller Kameras in der Hauptansicht lassen sich über Display/Overlays „Cameras“
-// ein- und ausschalten (localStorage iss.camMarks); dazu gehört auch der Sichtkegel.
+// ein- und ausschalten (localStorage iss.camMarks, Voreinstellung aus); dazu gehört auch der Sichtkegel.
 //
 // Schnittstelle: setupCameras({ THREE, S, MODEL, t, onOpen }) baut die Modelle und gibt
 // { open(id), close(), tick(now), list } zurück. Die Kameramodelle sind Bauteile des Stationsmodells
@@ -205,7 +205,7 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
      stehen nicht in MODEL.labels, damit „ISS labels“ sie nicht mitschaltet. Verdeckt eine Beschriftung eine
      andere (declutterLabels in iss_twin.html), bleibt der Punkt stehen und nur der Name verschwindet. */
   const marks = [];
-  let marksOn = (() => { try { return localStorage.getItem('iss.camMarks') !== '0'; } catch (e) { return true; } })();
+  let marksOn = (() => { try { return localStorage.getItem('iss.camMarks') === '1'; } catch (e) { return false; } })();
   for (const c of CAMERAS) {
     if (!byId[c.id]) continue;
     const head = c.name.split(' · ')[0], text = /^CP\d+$/.test(head) ? head : t(c.name);

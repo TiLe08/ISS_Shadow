@@ -2,10 +2,12 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
-# v1.18.3: Dragon an Harmony zenit gedreht (18.11.)
+# v1.18.3: Dragon an Harmony zenit gedreht, Kameramarkierungen aus (18.11.)
 
 - Fahrzeuge an Harmony zenit (IDA-3) sind um 90° um die Andockachse gedreht (`clock` in `PORTS`): Die
   geöffnete Nasenkappe des Dragon zeigt jetzt nach Backbord zu CP8, wie im Livebild vom 18.11.2026.
+- Kameramarkierungen in der Hauptansicht sind beim ersten Start aus (Schalter „Cameras“ unter Display);
+  eine gespeicherte Wahl bleibt erhalten.
 
 # v1.18.2: Rollregler im Kamerafenster (18.11.)
 
