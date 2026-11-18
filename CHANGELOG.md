@@ -2,6 +2,20 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.18.4: freischwebende Teile angebunden, Dragon C211 gedreht (18.11.)
+
+- Suche nach Teilen ohne Verbindung zur Station (Oberflächenpunkte im Abstand von 0,12 m): Vorher
+  14 lose Gruppen, jetzt keine mehr.
+  - **Beta-Gelenke (BGA):** neues Gehäuse von der IEA bis zum Mastbehälter. Die Mastbehälter von 1A und 2A
+    samt Flügel und iROSA hingen bis zu 1,25 m frei neben der IEA.
+  - **Stauboxen** der Solarflügel reichen innen bis an den Mastbehälter und außen bis an die Zellbahn.
+  - **S-Band-Masten (SASA)** reichen bis zur Zenitfläche von S1/P1; der Steuerbordmast endete in der Luft.
+  - **Dextre:** Stütze unter dem oberen Greifpunkt (der Greifpunkt schwebte 0,35 m über dem Rumpf).
+  - **JEM-Roboterarm** gefaltet auf der Zenitseite von Kibo geparkt statt frei über der Exposed Facility
+    (Parkstellung genähert, keine Telemetrie).
+- Dragon an Harmony zenit (C211) weitere 90° gegen den Uhrzeigersinn (von Zenit gesehen) gedreht:
+  Die geöffnete Nasenkappe zeigt nach achtern.
+
 # v1.18.3: Dragon an Harmony zenit gedreht, Kameramarkierungen aus (18.11.)
 
 - Fahrzeuge an Harmony zenit (IDA-3) sind um 90° um die Andockachse gedreht (`clock` in `PORTS`): Die
