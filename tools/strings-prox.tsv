@@ -42,8 +42,8 @@ Separation burn|Trennzündung|Encendido de separación|Импульс увода
 Departing|Fliegt ab|Alejándose|Отлёт|En éloignement|離脱中
 R-bar approach from below|R-Bar-Anflug von unten|Aproximación R-bar desde abajo|Сближение по R-bar снизу|Approche R-bar par le dessous|下方からの R-bar 接近
 Holding at the capture point (10 m)|Halt am Einfangpunkt (10 m)|Espera en el punto de captura (10 m)|Зависание в точке захвата (10 м)|Attente au point de capture (10 m)|キャプチャ点 (10 m) で待機
-Captured by Canadarm2, moving to the berthing port|Von Canadarm2 gegriffen, Weg zum Anlegeport|Capturado por el Canadarm2, hacia el puerto de atraque|Захвачен Canadarm2, перенос к причалу|Capturé par Canadarm2, vers le port d'amarrage|Canadarm2 が把持、結合ポートへ移動
-Berthing (CBM bolts)|Anlegen (CBM-Bolzen)|Atraque (pernos CBM)|Причаливание (болты CBM)|Accostage (boulons CBM)|結合 (CBM ボルト)
-Berthed|Angelegt|Atracado|Причален|Accosté|結合完了
-Unberthed, Canadarm2 moves it to the release point|Abgelegt, Canadarm2 bringt es zum Freigabepunkt|Desatracado, el Canadarm2 lo lleva al punto de liberación|Отсоединён, Canadarm2 переносит к точке отпуска|Désaccosté, Canadarm2 le porte au point de largage|結合解除、Canadarm2 が放出点へ移動
-Released, departure burns|Freigegeben, Abflugzündungen|Liberado, encendidos de salida|Отпущен, импульсы увода|Largué, allumages de départ|放出、離脱噴射
+Waiting for Canadarm2 capture (arm telemetry)|Wartet auf das Greifen durch Canadarm2 (Armtelemetrie)|Esperando la captura del Canadarm2 (telemetría del brazo)|Ожидание захвата Canadarm2 (телеметрия манипулятора)|En attente de la capture par Canadarm2 (télémesure du bras)|Canadarm2 による把持待ち (アームのテレメトリ)
+Released by Canadarm2, departure burns|Von Canadarm2 freigegeben, Abflugzündungen|Liberado por el Canadarm2, encendidos de salida|Отпущен Canadarm2, импульсы увода|Largué par Canadarm2, allumages de départ|Canadarm2 から放出、離脱噴射
+Held by Canadarm2|Von Canadarm2 gehalten|Sujeto por el Canadarm2|Удерживается Canadarm2|Tenu par Canadarm2|Canadarm2 が把持中
+Canadarm2 berthing (arm telemetry)|Anlegen mit Canadarm2 (Armtelemetrie)|Atraque con el Canadarm2 (telemetría del brazo)|Причаливание Canadarm2 (телеметрия манипулятора)|Accostage par Canadarm2 (télémesure du bras)|Canadarm2 による結合 (アームのテレメトリ)
+Canadarm2 release (arm telemetry)|Freigabe durch Canadarm2 (Armtelemetrie)|Liberación por el Canadarm2 (telemetría del brazo)|Отпуск Canadarm2 (телеметрия манипулятора)|Largage par Canadarm2 (télémesure du bras)|Canadarm2 による放出 (アームのテレメトリ)

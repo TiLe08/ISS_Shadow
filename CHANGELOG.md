@@ -11,8 +11,12 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
     die **Nasenkappe schließt** (Drehung um ein Scharnier), danach wird das Fahrzeug ausgeblendet (18 min).
   - Sojus/Progress: Umfliegen, Halten in etwa 180 m, Endanflug; Abflug mit Federn, Trennzündung nach 3 min.
     Läuft Kurs, ersetzt der gemeldete Abstand (RUSSEG000005) den geschätzten.
-  - Cygnus/HTV-X: R-Bar-Anflug, Halt am Einfangpunkt 10 m, Anlegen; Abflug über den Freigabepunkt. Hält
-    Canadarm2 das Fahrzeug (Telemetrie), folgt es weiter dem Arm.
+  - Cygnus/HTV-X werden **angelegt, nicht angedockt**: R-Bar-Anflug von unten bis zum Einfangpunkt 10 m
+    unter dem CBM, dort halten sie, bis Canadarm2 sie greift (CSASSRMS011 = CAPTURED); sie fliegen nie
+    selbst in den Port. Dann folgen sie dem Arm; lässt der Arm sie am CBM los, gelten sie sofort als
+    angelegt (auch bevor LL2 das Ereignis führt). Lässt er sie abseits los, ist das die Freigabe: Abflug
+    ab genau dieser Stelle, nach unten, dann ausgeblendet. Ohne Armtelemetrie warten sie am Einfangpunkt,
+    bis die Daten sie als angelegt führen.
   - Zeitpunkte: abfallendes russisches Portflag (echte Zeit), LL2-Abdockzeit und, neu, der LL2-Ereignisplan
     (minutengenaue Docking-/Undocking-Ereignisse, Abgleich über die Missionskennung, Port aus dem Text).
     Nach einer geplanten Ankunft gilt das Fahrzeug bis zu 12 h als angedockt, bis LL2 das Ereignis führt.

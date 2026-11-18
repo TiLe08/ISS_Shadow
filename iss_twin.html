@@ -1030,7 +1030,7 @@ const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
       angedockt, bis LL2 das Andockereignis führt. Planzeiten können sich verschieben; die Anzeige sagt
       deshalb „laut Plan“.
    Die Vorschau spielt einen Ablauf 30-fach beschleunigt ab, ohne Daten oder Protokoll zu verändern. */
-const PROX = { drop: {}, preview: null, active: {}, announced: {} };
+const PROX = { drop: {}, preview: null, active: {}, announced: {}, berthed: {}, release: {}, gone: {} };   // berthed/release: Schlüssel Port:Typ, aus der Armtelemetrie
 const PROX_MINUTE = /minute|second/i;
 const proxSettle = type => PROXOPS.SEQ[PROXOPS.FAMILY[type]]?.arrive.settle || 0;
 // Kurs-Abstand in m, wenn eines der beiden Kurs-Geräte arbeitet und der Wert plausibel ist, sonst NaN.
@@ -1044,7 +1044,22 @@ function kursRange() {
    Ergebnis: { Port: { kind, v: {name, type}, t0 (ms, Ereigniszeit), src, plan } }. */
 function proxPlan(at, cur) {
   const out = {}, list = VV.list || VV_FALLBACK, fam = v => PROXOPS.FAMILY[v.type];
-  const put = (port, x) => { if (port && fam(x.v) && !out[port]) out[port] = x; };
+  const put = (port, x) => {
+    if (!port || !fam(x.v) || out[port]) return;
+    // Angelegtes Fahrzeug, das Canadarm2 schon am CBM losgelassen hat: angelegt, kein Anflug mehr.
+    const b = PROX.berthed[port + ':' + x.v.type];
+    if (x.kind === 'arrive' && b && b > x.t0 - PROXOPS.lead(fam(x.v)) * 1000) { cur[port] ||= { name: x.v.name, type: x.v.type, t0: x.t0, src: t('Canadarm2 berthing (arm telemetry)'), generic: false }; return; }
+    out[port] = x;
+  };
+  // 0. Freigabe durch Canadarm2 (Armtelemetrie): Abflug ab der Stelle, an der der Arm losgelassen hat.
+  for (const k of Object.keys(PROX.berthed)) if (at - PROX.berthed[k] > 24 * 3600e3) delete PROX.berthed[k];
+  for (const [k, r] of Object.entries(PROX.release)) {
+    const [port, type] = k.split(':');
+    PROX.gone[k] = r.t;                       // freigegeben: eine geplante Ankunft davor gilt nicht mehr
+    if (at - r.t > PROXOPS.tail('berth') * 1000 || at < r.t) { delete PROX.release[k]; continue; }
+    if (cur[port]?.type === type) delete cur[port];
+    put(port, { kind: 'depart', v: { name: r.name, type }, t0: r.t, src: t('Canadarm2 release (arm telemetry)'), from: r });
+  }
   // 1. Abgefallenes russisches Portflag
   for (const [port, d] of Object.entries(PROX.drop)) {
     if (cur[port] || at - d.t0 > PROXOPS.tail(fam(d.v) || 'kurs') * 1000) { delete PROX.drop[port]; continue; }
@@ -1071,6 +1086,7 @@ function proxPlan(at, cur) {
       if (Object.values(cur).some(c => !c.generic && PROXOPS.sameVehicle(e.name, c.name))) continue;      // LL2 führt es schon als angedockt
       const free = Object.keys(VV_PORT_TYPES).filter(p => !cur[p] || cur[p].generic);
       const port = PROXOPS.portFromText(e.name + ' ' + (e.description || ''), type, VV_PORT_TYPES, free); if (!port) continue;
+      if (PROX.gone[port + ':' + type] > te - PROXOPS.lead(f) * 1000) continue;
       const name = String(e.name).replace(/\s*(docking|berthing|arrival|capture)\b.*$/i, '').trim() || VV_TYPE_NAME[type];
       if (at < te) put(port, { kind, v: { name, type }, t0: te, src: t('LL2 schedule'), plan: true });
       else { cur[port] = { name, type, t0: te, src: t('LL2 schedule') + ' (' + t('estimated') + ')', generic: false };
@@ -1111,7 +1127,7 @@ function updateVehicles(at) {
   for (const [key, g] of Object.entries(MODEL.vvG || {})) {
     const [port, type] = key.split(':'), c = vis[port], a = PROX.active[port], show = a ? a.v.type === type : !!c && c.type === type; g.visible = show;
     if (!show) continue;
-    const txt = a ? `${a.v.name} · ${t(a.st.phase)}${a.preview ? ' (' + t('preview') + ')' : a.plan ? ' (' + t('per LL2 schedule') + ')' : ''}` : c.generic ? VV_TYPE_NAME[type] + '? · ' + VV_PORT_NAME[port] : c.name;
+    const txt = a ? `${a.v.name} · ${t(PL.st.held === key ? 'Held by Canadarm2' : a.st.phase)}${a.preview ? ' (' + t('preview') + ')' : a.plan ? ' (' + t('per LL2 schedule') + ')' : ''}` : c.generic ? VV_TYPE_NAME[type] + '? · ' + VV_PORT_NAME[port] : c.name;
     const el = g.userData.label?.element; if (el && el.textContent !== txt) el.textContent = txt;
   }
   if (MODEL.vvInit && !CMD.active) for (const port of new Set([...Object.keys(cur), ...Object.keys(MODEL.vvCur)])) {
@@ -1136,7 +1152,8 @@ function updateProxOps() {
     const port = key.split(':')[0], a = PROX.active[port], armed = PL.st.held === key || !!PL.st.away[key];
     if (!g.visible || armed) continue;
     if (a && a.v.type === key.split(':')[1]) {
-      g.position.copy(d0.p).addScaledVector(d0.dir, a.st.d); g.quaternion.copy(d0.q);
+      if (a.from) { g.position.copy(a.from.p).addScaledVector(d0.dir, a.st.d - PROXOPS.CAPTURE_DIST); g.quaternion.copy(a.from.q); }   // ab der Freigabestelle
+      else { g.position.copy(d0.p).addScaledVector(d0.dir, a.st.d); g.quaternion.copy(d0.q); }
       g.userData.setCone?.(a.st.cone);
     } else { g.position.copy(d0.p); g.quaternion.copy(d0.q); g.userData.setCone?.(1); }
   }
@@ -1283,6 +1300,7 @@ function plChoose(J, now, list) {
     if (d < bd) { bd = d; best = m.key; }
   }
   if (best) return best;
+  for (const [port, a] of Object.entries(PROX.active)) if (a.kind === 'arrive' && a.st.berth) return port + ':' + a.v.type;   // wartet am Einfangpunkt
   for (const v of VV.list || VV_FALLBACK) if (['cygnus', 'htvx'].includes(v.type) && ['unityNadir', 'harmonyNadir'].includes(v.port) &&
     ((v.t0 > now && v.t0 - now < 8 * 3600e3) || (isFinite(v.t1) && v.t1 <= now && now - v.t1 < 8 * 3600e3))) return v.port + ':' + v.type;
   return 'unknown';
@@ -1302,8 +1320,13 @@ function updatePayloads(J, now) {
       if (m) {
         const cur = m.obj.matrix.clone(), h = m.obj.userData.home, near = h && new THREE.Vector3().setFromMatrixPosition(cur).distanceTo(h.p) < 0.3;
         const docked = m.vehicle && !!vvAt(now)[k.split(':')[0]];
-        if (near || (m.vehicle && docked)) delete PL.st.away[k];
-        else if (m.vehicle) delete PL.st.away[k];                  // abgelegt und freigegeben: freier Flug, nicht mehr gezeichnet
+        void docked;
+        if (m.vehicle) {                  // v1.19: am CBM losgelassen = angelegt; anderswo = Freigabe, Abflug ab dort (proxops)
+          delete PL.st.away[k];
+          if (near) PROX.berthed[k] = now;
+          else { const p = new THREE.Vector3(), q = new THREE.Quaternion(); cur.decompose(p, q, new THREE.Vector3());
+            PROX.release[k] = { p, q, t: now, name: MODEL.vvCur[k.split(':')[0]]?.name || PROX.active[k.split(':')[0]]?.v.name || t(m.name) }; }
+        } else if (near) delete PL.st.away[k];
         else PL.st.away[k] = cur.toArray();
         logEvent(t('Canadarm2 released: {0}', t(m.name)));
       }

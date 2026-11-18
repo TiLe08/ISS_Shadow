@@ -18,7 +18,7 @@ for (const fam of ['dragon', 'kurs', 'berth']) for (const kind of ['arrive', 'de
     if (prev !== null) { assert.ok(Math.abs(d - prev) < 15, `${fam} ${kind}: stetig bei ${tt}`); assert.ok(kind === 'arrive' ? d <= prev + 1e-9 : d >= prev - 1e-9, `${fam} ${kind}: monoton`); }
     prev = d;
   }
-  assert.equal(P.distanceAt(k, kind === 'arrive' ? 0 : 0), 0, `${fam} ${kind}: am Port bei t = 0`);
+  assert.equal(P.distanceAt(k, 0), fam === 'berth' ? P.CAPTURE_DIST : 0, `${fam} ${kind}: bei t = 0 am Port bzw. (angelegt) am Einfang-/Freigabepunkt`);
 }
 { const a = P.stateAt('crewDragon', 'depart', 30), b = P.stateAt('crewDragon', 'depart', 1000), z = P.stateAt('crewDragon', 'depart', 2000);
   assert.ok(a.active && a.cone === 1 && a.d > 0 && a.d < 3, 'Dragon direkt nach dem Abdocken: Kappe offen, wenige m');
@@ -84,6 +84,28 @@ assert.ok(gv.visible && gv.position.distanceTo(gv.userData.dock.p) > 5, 'Vorscha
 assert.equal(t.EVENTS.length, n0, 'Vorschau ohne Protokoll'); assert.ok(t.MODEL.vvCur[port], 'Vorschau ändert den Datenstand nicht');
 t.PROX.preview.start -= 1e7; frame(T0 + 9000e3); assert.ok(gv.position.distanceTo(gv.userData.dock.p) < 1e-9 && !t.PROX.preview, 'nach der Vorschau wieder angedockt');
 void pr;
+
+// Anlegen (Cygnus): wartet am Einfangpunkt, fliegt nie selbst in den Port; Canadarm2 führt; Freigabe -> Abflug ab dort.
+{ const cy = M.vvG['unityNadir:cygnus'], TB = T0 + 20000e3, J = t.liveJoints(); t.applyJoints(J);
+  t.VV.extra.upcoming_events = [{ name: 'Cygnus NG-25 Berthing', type: 'Berthing', date: iso(TB), precision: 'Minute', description: 'berthing to the Earth-facing port of Unity' }];
+  const dist = () => cy.position.distanceTo(cy.userData.dock?.p || cy.position);
+  frame(TB - 7000e3); assert.ok(cy.visible && Math.abs(dist() - P.CAPTURE_DIST) < 0.01, 'Cygnus hält am Einfangpunkt ' + dist().toFixed(2));
+  frame(TB - 60e3); assert.ok(Math.abs(dist() - P.CAPTURE_DIST) < 0.01, 'ohne Arm kein Eigenflug in den Port');
+  // Canadarm2 greift (Telemetrie): Fahrzeug folgt dem Arm, nicht dem Ablauf.
+  t.ingest('CSASSRMS011', 0); t.updatePayloads(J, TB - 50e3); t.ingest('CSASSRMS011', 2); t.updateVehicles(TB - 40e3); t.updatePayloads(J, TB - 40e3); t.updateProxOps();
+  assert.equal(t.PL.st.held, 'unityNadir:cygnus', 'Arm greift das wartende Fahrzeug');
+  const held = cy.position.clone(); assert.ok(held.distanceTo(cy.userData.dock.p) > 0.01);
+  assert.ok(/Canadarm2/.test(cy.userData.label?.element?.textContent || 'Canadarm2'));
+  // Loslassen abseits des CBM = Freigabe: Abflug ab dieser Stelle entlang der Portachse.
+  t.ingest('CSASSRMS011', 0); t.updateVehicles(TB - 30e3); t.updatePayloads(J, TB - 30e3); t.updateProxOps();
+  assert.ok(t.PROX.release['unityNadir:cygnus'], 'Freigabe vermerkt');
+  t.updateVehicles(TB + 300e3); t.updatePayloads(J, TB + 300e3); t.updateProxOps();
+  const mv = cy.position.clone().sub(held); assert.ok(cy.visible && mv.z > 5 && Math.hypot(mv.x, mv.y) < 1e-6, 'fliegt ab der Freigabestelle nach unten weg ' + mv.toArray().map(x => x.toFixed(1)));
+  t.updateVehicles(TB + 3000e3); t.updatePayloads(J, TB + 3000e3); t.updateProxOps(); assert.ok(!cy.visible, 'danach ausgeblendet');
+  // Am CBM losgelassen = angelegt: kein Anflug mehr, als angelegt geführt.
+  t.PROX.release = {}; t.PROX.gone = {}; t.PROX.berthed['unityNadir:cygnus'] = TB - 100e3; frame(TB - 50e3);
+  assert.ok(cy.visible && dist() < 1e-9 && t.MODEL.vvCur.unityNadir?.name.startsWith('Cygnus NG-25'), 'nach dem Anlegen durch den Arm angelegt');
+  t.VV.extra.upcoming_events = []; t.PROX.berthed = {}; }
 
 // --- Radar ---
 assert.equal(new Date(R.tleEpoch('1 25544U 98067A   26322.50000000  .00016717  00000-0  30408-3 0  9993')).toISOString(), '2026-11-18T12:00:00.000Z');

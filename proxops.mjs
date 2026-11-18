@@ -18,6 +18,7 @@
    - Cygnus/HTV-X (Einfangen und Anlegen): Anflug von unten (R-Bar) bis zum Einfangpunkt etwa 10 m
      unter der Station, Halt, Canadarm2 greift und setzt am CBM an. Abflug umgekehrt, Freigabe in etwa
      10 m, dann Abflugzündungen.
+   Anlegen (Cygnus, HTV-X) siehe SEQ.berth: kein Eigenflug in den Port, das macht Canadarm2.
    Wegpunkte und Geschwindigkeiten sind gerundete Richtwerte, die einzelnen Zeitpunkte sind
    Schätzungen (je Flug verschieden) und als solche gekennzeichnet. Nur die Russen melden mit Kurs
    (RUSSEG000005/6) einen echten Abstand; liegt er vor, ersetzt er den geschätzten (siehe kursDistance).
@@ -56,17 +57,21 @@ export const SEQ = {
       phases: [[0, 'Hooks open, springs push the vehicle away'], [180, 'Separation burn'], [480, 'Departing']],
     },
   },
+  /* Angelegte Fahrzeuge fliegen nie selbst an den Port: Sie halten am Einfangpunkt, bis Canadarm2 sie
+     greift (Telemetrie CSASSRMS011 = CAPTURED, Seite: Greifen und Transportieren). Ab dann folgen sie dem
+     Arm bis zum CBM; lässt der Arm sie dort los, gelten sie als angelegt. Ohne Armtelemetrie bleiben sie
+     am Einfangpunkt stehen, bis die Daten (LL2) sie als angelegt führen. Zeitachse: t = 0 bei der Ankunft
+     ist das Anlegen (LL2-Andockzeit), beim Abflug die Freigabe am Freigabepunkt (LL2-Abflugzeit); das
+     Abnehmen vom CBM und der Weg zum Freigabepunkt davor folgen nur dem Arm. */
   berth: {
     arrive: {
-      keys: [[-9000, 250], [-7800, 30], [-7200, 10], [-5400, 10], [-900, 1], [0, 0]],
-      phases: [[-9000, 'R-bar approach from below'], [-7200, 'Holding at the capture point (10 m)'], [-5400, 'Captured by Canadarm2, moving to the berthing port'],
-        [-900, 'Berthing (CBM bolts)'], [0, 'Berthed']],
-      settle: 0, arm: [-5400, 0],
+      keys: [[-9000, 250], [-7800, 30], [-7200, 10], [0, 10]],
+      phases: [[-9000, 'R-bar approach from below'], [-7200, 'Holding at the capture point (10 m)'], [-6000, 'Waiting for Canadarm2 capture (arm telemetry)']],
+      settle: 0,
     },
     depart: {
-      keys: [[0, 0], [1800, 1], [3600, 10], [4200, 60], [5400, 400]],
-      phases: [[0, 'Unberthed, Canadarm2 moves it to the release point'], [3600, 'Released, departure burns'], [4200, 'Departing']],
-      arm: [0, 3600],
+      keys: [[0, 10], [600, 60], [1800, 400]],
+      phases: [[0, 'Released by Canadarm2, departure burns'], [600, 'Departing']],
     },
   },
 };
@@ -90,8 +95,9 @@ function phaseAt(phases, t) { let p = phases[0][1]; for (const [t0, s] of phases
 
 /* Zustand eines Fahrzeugs im Ablauf kind ('arrive' | 'depart') zur Zeit t (s relativ zum Ereignis).
    Ergebnis: { active, done, d (m entlang der Portachse), cone (1 = Nasenkappe offen, 0 = zu), phase,
-   arm (true, solange laut Ablauf Canadarm2 das Fahrzeug führt), speed (m/s, geschätzt) } oder
+   berth (angelegtes Fahrzeug: den Port erreicht nur der Arm), speed (m/s, geschätzt) } oder
    { active: false } außerhalb des Ablaufs. kursRange (m) ersetzt bei 'kurs'-Fahrzeugen den Abstand. */
+export const CAPTURE_DIST = 10;          // Einfang- und Freigabepunkt angelegter Fahrzeuge, m unter dem CBM (Richtwert)
 export function stateAt(type, kind, t, kursRange = NaN) {
   const family = FAMILY[type]; if (!family) return { active: false };
   const s = SEQ[family][kind]; if (!s || !isFinite(t)) return { active: false };
@@ -104,8 +110,7 @@ export function stateAt(type, kind, t, kursRange = NaN) {
   const speed = (distanceAt(s.keys, t + 1) - distanceAt(s.keys, t - 1)) / 2;
   let cone = 1;
   if (kind === 'depart' && s.cone) cone = 1 - smooth((t - s.cone[0]) / (s.cone[1] - s.cone[0]));
-  const arm = !!s.arm && t >= s.arm[0] && t < s.arm[1];
-  return { active: true, done: false, d: Math.max(0, d), cone, phase: phaseAt(s.phases, t), arm, speed, measured, family };
+  return { active: true, done: false, d: Math.max(0, d), cone, phase: phaseAt(s.phases, t), speed, measured, family, berth: family === 'berth' };
 }
 
 /* Ordnet einen Text aus dem LL2-Ereignisplan einem An- oder Abflug zu: 'arrive', 'depart' oder null.
