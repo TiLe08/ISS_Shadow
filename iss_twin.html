@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ISS Digital Shadow v1.17</title>
+<title>ISS Digital Shadow v1.18</title>
 <!--
   iss_twin.html: Hauptseite von ISS Shadow (digitaler Schatten / Zwilling der ISS).
 
@@ -554,7 +554,7 @@ tr.fresh td.v{color:var(--ok)}
 <script type="module">
 import * as THREE from 'three';
 import { CollisionMonitor, radiatorTarget } from './model-checks.mjs';
-import { MODEL, MAT, setRenderStyle, setLabelFactory, buildStation, solarAngles, solarNormal, radiatorNormal, SSRMS_AX, DEXTRE_AX, MBS_IDS, MBS_PRIOR, placeMbsFixture, setMbsFixtureRoll } from './iss-model.mjs';
+import { MODEL, MAT, setRenderStyle, setLabelFactory, buildStation, solarAngles, solarNormal, radiatorNormal, SSRMS_AX, MBS_IDS, setMbsFixtureRoll, setDougJoint, DEXTRE_CLOCK } from './iss-model.mjs';
 import { PlanetOverlay } from './planet-overlay.mjs';
 import { EarthTiles } from './earth-tiles.mjs';
 import { setupCameras } from './cameras.mjs';
@@ -563,7 +563,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 /* ================================================================
-   ISS DIGITAL SHADOW v1.17
+   ISS DIGITAL SHADOW v1.18
    Körpersystem im gesamten Modell: +X vorwärts (Flugrichtung, Ende mit Node 2),
    +Y Steuerbord (Gitterträger), +Z Nadir (zur Erde). Längen in Metern.
    ================================================================ */
@@ -1159,132 +1159,47 @@ function buildISS() {
   applyMssCal(); return root;
 }
 
-/* ---------- MSS-Kalibrierung, gelernt aus Live-Posen ----------
-   Die Positionen der MBS-Greifpunkte stammen aus dem IGOAL-Modell; wie jeder um seine Achse
-   gedreht ist und wie ISSLive die Armgelenke benennt, wenn LEE A die Betriebsbasis ist (nach
-   Hardware oder vom Basisende aus), ist nicht veröffentlicht. Der echte Arm durchdringt nie die
-   Station, also schließt jede Live-Pose die Hypothesen aus, unter denen sie kollidieren würde.
-   Jeder MBS-Greifpunkt hat 8 Roll-Kandidaten, die Konvention hat 2. Gewählt wird die Hypothese,
-   die dem modellierten Vorwissen am nächsten liegt, unter allen, die noch mit jeder gesehenen
-   Pose vereinbar sind. Gespeichert in localStorage (iss.cal.mss4; v1.17 verwirft die unter der alten Gelenkkonvention gesammelten Belege aus iss.cal.mss3). Kontakt des Arms mit sich
-   selbst gilt nicht als Beleg. */
-const MSS_CAL = (() => {
-  const fresh = () => Object.fromEntries(MBS_IDS.map(id => [id, { B: Array(8).fill(true), A: Array(8).fill(true) }]));
-  const d = { conv: { B: true, A: true }, mbs: fresh(), poses: 0, conflicts: 0 };
-  // v1.10: Greifpunktpositionen kommen aus dem IGOAL-Modell; gelernt wird nur der Rollwinkel. Ältere
-  // gespeicherte Belege (iss.cal.mss2) wurden gegen die alte Anordnung gesammelt und werden verworfen.
-  try { localStorage.removeItem('iss.cal.mss2'); localStorage.removeItem('iss.cal.mss3'); const st = JSON.parse(localStorage.getItem('iss.cal.mss4') || 'null'); if (st && st.mbs && st.conv) Object.assign(d, st); } catch (e) {}
-  return d;
-})();
-// Kalibrierung speichern (Fehler, etwa in privaten Fenstern, werden ignoriert).
-function saveMssCal() { try { localStorage.setItem('iss.cal.mss4', JSON.stringify(MSS_CAL)); } catch (e) {} }
-// B = Gelenke vom Betriebsbasis-Ende aus benannt, A = nach Hardware. v1.17: A ist das Vorwissen, weil mit der
-// neuen SP-Konvention nur A die Pose vom 19.10.2026 (LEE A an PDGF3) frei von der Station hält.
-const mssConvention = () => MSS_CAL.conv.A ? 'A' : 'B';
-function mbsChoices() {
-  const conv = mssConvention(), out = {}, pref = MSS_CAL.pref || {};
-  for (const id of MBS_IDS) {
-    const alive = MSS_CAL.mbs[id][conv].map((v, k) => v ? k : -1).filter(k => k >= 0);
-    out[id] = pref[id] !== undefined && alive.includes(pref[id]) ? pref[id] : alive.includes(MBS_PRIOR[id]) ? MBS_PRIOR[id] : alive[0] ?? 0;
-  }
-  return out;
-}
-// Setzt alle vier MBS-Greifpunkte auf ihren aktuell gewählten Roll-Kandidaten.
-function applyMssCal() { const ch = mbsChoices(); for (const id of MBS_IDS) { placeMbsFixture(id, ch[id]); setMbsFixtureRoll(id, CALIB.mbsRoll[id]); } }
-// Text für den Tooltip: woher die MSS-Kalibrierung der angezeigten Pose stammt.
-function mssCalLabel(J) {
-  const id = J.baseLoc, parts = [];
-  if (MBS_IDS.includes(id)) { const n = MSS_CAL.mbs[id][mssConvention()].filter(Boolean).length; parts.push(`MBS fixture roll: ${n === 8 ? 'model prior (no live evidence yet)' : 'learned from live poses, ' + n + ' of 8 candidates left'}`); }
-  if (J.leeA || J.baseEnd === 0) parts.push(J.leeA ? 'LEE A base, joints named from the base (confirmed by live poses)' : 'LEE A base, joints named by hardware' + (MSS_CAL.conv.B ? ' (not yet confirmed by live poses)' : ' (confirmed)'));
-  return parts.join(' · ');
-}
-/* Beleg: Ist die rohe Live-Pose (wie die Telemetrie sie liefert) unter jedem noch offenen Paar
-   (Konvention, Platzierung) kollisionsfrei? Aufgerufen, wenn sich die Live-Armpose ändert. */
-const MSS_RT = { lastKey: null, lastTry: -1e9, seenKey: null, seenAt: 0 };
-// Lernschritt der MSS-Kalibrierung aus einer Live-Pose (siehe Kommentar oben): verwirft alle
-// Hypothesen, unter denen die Pose kollidieren würde, und wählt aus dem Rest. Gibt null zurück,
-// wenn die Pose nichts entscheidet, { notReady } vor dem Modellaufbau.
-function learnMssFromPose(raw) {
-  if (!MODEL.ssrms || !MODEL.collision) return { notReady: true };
-  const id = raw.baseLoc, isMbs = MBS_IDS.includes(id), leeA = raw.baseEnd === 0, dId = raw.dextreBase, dMbs = MBS_IDS.includes(dId) && dId !== id;
-  if (!isMbs && !leeA && !dMbs) return null;
-  const before0 = JSON.stringify([MSS_CAL.conv, MSS_CAL.mbs]);
-  // Greifpunkt von Dextre: nur Dextre gegen die Station (der Arm ist hier kein Beleg).
-  if (dMbs) {
-    const dcheck = MODEL.collision.armChecker(MODEL.dextreMount, { ignore: /^(SSRMS|Shoulder|Elbow|Wrist)/, fixedOnly: true });
-    const okD = new Set();
-    for (let k = 0; k < 8; k++) if (MSS_CAL.mbs[dId].B[k] || MSS_CAL.mbs[dId].A[k]) {
-      placeMbsFixture(dId, k); MODEL.anchors[dId].updateMatrixWorld(true); applyJoints({ ...raw, baseEnd: 5 });
-      if (!dcheck()) okD.add(k);
-    }
-    if (okD.size) for (const c of ['B', 'A']) MSS_CAL.mbs[dId][c] = MSS_CAL.mbs[dId][c].map((v, k) => v && okD.has(k));
-    applyMssCal();
-  }
-  if (!isMbs && !leeA) { saveMssCal(); return { consistent: true, changed: before0 !== JSON.stringify([MSS_CAL.conv, MSS_CAL.mbs]) }; }
-  const convs = leeA ? ['B', 'A'].filter(c => MSS_CAL.conv[c]) : ['B', 'A'];
-  const check = MODEL.collision.armChecker(MODEL.armBase, { ignore: /Dextre/, fixedOnly: true });
-  const ok = new Set(), tested = new Map();
-  for (const c of convs) {
-    const ks = isMbs ? MSS_CAL.mbs[id][c].map((v, k) => v ? k : -1).filter(k => k >= 0) : [-1];
-    for (const k of ks) {
-      const key = (leeA ? c : '-') + k;              // ohne LEE A spielt die Konvention keine Rolle
-      if (!tested.has(key)) {
-        if (k >= 0) { placeMbsFixture(id, k); MODEL.anchors[id].updateMatrixWorld(true); }
-        applyJoints(leeA && c === 'B' ? { ...raw, baseEnd: 5 } : raw);
-        tested.set(key, !check());
-      }
-      if (tested.get(key)) ok.add(c + ':' + k);
-    }
-  }
-  applyMssCal();
-  if (!ok.size) { MSS_CAL.conflicts++; saveMssCal(); return { consistent: false }; }    // Modell weicht anderswo ab: Bisheriges behalten
-  if (leeA) for (const c of ['B', 'A']) if (MSS_CAL.conv[c]) MSS_CAL.conv[c] = [...ok].some(x => x.startsWith(c + ':'));
-  if (isMbs) for (const c of ['B', 'A']) MSS_CAL.mbs[id][c] = MSS_CAL.mbs[id][c].map((v, k) => v && ok.has(c + ':' + k));
-  // Auswahl unter dem Rest: Arm und Dextre frei voneinander bevorzugen (kein Beleg:
-  // jeder der Rollwinkel kann noch falsch sein), am nächsten am Vorwissen.
-  if (isMbs && dMbs) {
-    const conv = mssConvention(), ka = MSS_CAL.mbs[id][conv].map((v, k) => v ? k : -1).filter(k => k >= 0), kd = MSS_CAL.mbs[dId][conv].map((v, k) => v ? k : -1).filter(k => k >= 0);
-    let best = null;
-    outer: for (const d of kd) {
-      placeMbsFixture(dId, d); MODEL.anchors[dId].updateMatrixWorld(true); applyJoints(conv === 'B' && leeA ? { ...raw, baseEnd: 5 } : raw);
-      const both = MODEL.collision.armChecker(MODEL.armBase, { fixedOnly: true });
-      for (const a of ka) {
-        placeMbsFixture(id, a); MODEL.anchors[id].updateMatrixWorld(true); applyJoints(conv === 'B' && leeA ? { ...raw, baseEnd: 5 } : raw);
-        if (!both()) { best = { [id]: a, [dId]: d }; break outer; }
-      }
-    }
-    MSS_CAL.pref = best || {};
-  }
-  MSS_CAL.poses++; saveMssCal(); applyMssCal();
-  return { consistent: true, changed: before0 !== JSON.stringify([MSS_CAL.conv, MSS_CAL.mbs]), left: ok.size };
-}
+/* ---------- MSS: Greifpunkte und Gelenknamen (v1.18, NASA DOUG) ----------
+   Bis v1.17 wurden Rollwinkel der MBS-Greifpunkte und die Gelenkbenennung bei LEE-A-Basis aus
+   Kollisionen der Live-Posen gelernt. NASA DOUG (Stage 75-7) legt beides fest: die Greifpunktrahmen
+   stehen in MBS_AXES (iss-model.mjs), und die Gelenke heißen immer vom Betriebsbasis-Ende aus (SR an der
+   Basis), auch wenn LEE A die Basis ist. Feinkorrekturen kommen nur noch aus dem Kalibrierfeld. */
+try { ['iss.cal.mss2', 'iss.cal.mss3', 'iss.cal.mss4'].forEach(k => localStorage.removeItem(k)); } catch (e) {}
+// Setzt alle vier MBS-Greifpunkte auf ihren DOUG-Rahmen plus die Feinkorrektur aus dem Kalibrierfeld.
+function applyMssCal() { for (const id of MBS_IDS) setMbsFixtureRoll(id, CALIB.mbsRoll[id], CALIB.armConv === 'v117'); }
+// Text für den Tooltip: Herkunft der MSS-Konvention der angezeigten Pose.
+const mssCalLabel = J => J.leeA ? 'LEE A base, joints named from the operating base (NASA DOUG)' : '';
 /* Telemetrie-Gelenkwinkel (Grad) -> Rig-Winkel (Grad) je Gelenk: rig = s · tlm + o.
-   Nicht veröffentlicht. Gewählt (v1.10) durch Testen jeder Vorzeichen-/Halbdrehungs-Kombination
-   gegen die Live-Posen vom 14.10. (Basis Node 2) und 20.10.2026 (MBS PDGF3, LEE A) auf der
-   IGOAL-Geometrie: alle Vorzeichen +, Nicken und Gieren null = gestreckter Arm, Offset des
-   Schulter-Rollgelenks 180° im hier verwendeten Rig-System, Gelenke vom Betriebsbasis-Ende aus
-   benannt. Das ist die kollisionsfreie Wahl mit dem größten Abstand in beiden Posen; mehrere
-   andere Kombinationen sind ebenfalls kollisionsfrei, sie bleibt also eine dokumentierte Annahme.
-   v1.17: Vorzeichen des Schulter-Nickgelenks (SP) umgekehrt, Greifpunkt MBS PDGF3 mit Roll 0° statt 135°.
-   Beleg: Livebilder CP8 vom 10.11.2026 13:26 UTC und 11.11.2026 14:10 UTC mit der aufgezeichneten Pose
-   (Basis MBS PDGF3, LEE B; SR 245,0 SY 52,0 SP −77,0 EP −115,0 WP/WY/WR 0). Im Livebild steht der Arm als
-   umgekehrtes V: Ellbogen oben, Schulter am MBS, Handgelenk mit freiem LEE auf MBS-Höhe zur Kamera hin.
-   Unter allen 1024 Kombinationen (Vorzeichen SR..EP, Halbdrehung SR/SY/SP, 8 Rollwinkel) trifft diese den
-   Ellbogen auf 4 % und das Handgelenk auf 1,3 % der Bildbreite; die alte Wahl legte den Ellbogen hoch über
-   den Kamerakopf und den Unterarm waagrecht nach Steuerbord. Die Posen vom 14.10. (Node 2) und 19.10.
-   (PDGF3, LEE A, Gelenke nach Hardware benannt) bleiben frei von der Station. Die Handgelenk-Vorzeichen
-   sind damit nicht bestimmt (in der Pose vom 11.11. stehen alle drei auf 0) und bleiben +. */
-const SSRMS_CONV = { s: [1, 1, -1, 1, 1, 1, 1], o: [180, 0, 0, 0, 0, 0, 0] };
+   v1.18: aus NASA DOUG (Flugpaket Stage 75-7, isp_ssrms_station_mapping.tcl), dem Robotik-Grafikwerkzeug
+   der Besatzung, das mit denselben Telemetriewerten läuft, die ISSLive veröffentlicht. DOUG setzt die
+   Knoten SR, −SY, −SP, −EP, −WP, −WY, +WR auf eine Kette, die bei allen Winkeln 0 gestreckt entlang +X des
+   Basis-LEE liegt; das Basis-LEE fällt mit dem Greifpunktrahmen zusammen. Auf das Rig dieses Modells
+   übertragen ergibt das die Werte unten: Spitzenposition auf 3 mm und Spitzenrahmen exakt gleich dem
+   LEE2-Rahmen von DOUG über zufällige Posen (WR-Offset −90°, damit ein gegriffener Greifpunkt richtig sitzt).
+   Ersetzt die aus Livebildern geschätzte Wahl von v1.17 (SP-Vorzeichen umgekehrt, PDGF3-Roll 0°), die nur
+   wegen des falschen Greifpunktrahmens passte. Herleitung: recherche/DOUG/DOUG_zero_configurations.md,
+   Prüfung: tests/test_doug.mjs. Feinkorrekturen pro Gelenk bleiben im Kalibrierfeld (CALIB.ssrms).
+   v117 bleibt im Kalibrierfeld wählbar (CALIB.armConv): Sie passt besser zum Livebild CP8 vom 10.11.2026,
+   was darauf hindeutet, dass die ISSLive-Gelenkwinkel nicht DOUGs internen Vorzeichen folgen (wie beim BGA).
+   Sie gehört zu den alten, nur gerollten MBS-Rahmen (MBS_LEGACY_ROLL). */
+const SSRMS_CONVS = {
+  doug: { s: [-1, 1, 1, 1, 1, 1, -1], o: [180, 0, 0, 0, 0, 0, -90] },
+  v117: { s: [1, 1, -1, 1, 1, 1, 1], o: [180, 0, 0, 0, 0, 0, 0] },
+};
+const SSRMS_CONV = { get s() { return (SSRMS_CONVS[CALIB.armConv] || SSRMS_CONVS.doug).s; }, get o() { return (SSRMS_CONVS[CALIB.armConv] || SSRMS_CONVS.doug).o; } };
 /* Kalibrierfeld (calib-panel.mjs, v1.17): Abweichungen von den festen Konventionen, die Tim am Livebild
    einstellt. Gespeichert in localStorage (iss.calib), exportierbar als JSON. Leer = Konventionen wie oben.
-   flip = Vorzeichen umkehren, off = zusätzlicher Nullpunkt in Grad, mbsRoll = Rollwinkel eines MBS-Greifpunkts
-   in Grad statt des gelernten Kandidaten, dextreRoll = Drehung von Dextre um die Achse seines Greifpunkts,
+   flip = Vorzeichen umkehren, off = zusätzlicher Nullpunkt in Grad, mbsRoll = zusätzliche Drehung eines
+   MBS-Greifpunkts um seine eigene Achse in Grad (auf dem DOUG-Rahmen), dextreRoll = Drehung von Dextre um die Achse seines Greifpunkts,
    cal = zusätzlicher Offset zu CAL (SARJ, BGA, TRRJ, Ku), delay = Anzeige um so viele s verzögert
    (Laufzeit des Videostreams). */
 const CALIB = (() => {
   const d = { delay: 0, ssrms: { flip: Array(7).fill(false), off: Array(7).fill(0) }, dextre: { flip: Array(15).fill(false), off: Array(15).fill(0) },
-    mbsRoll: {}, dextreRoll: 0, cal: {} };
-  try { const st = JSON.parse(localStorage.getItem('iss.calib') || 'null'); if (st) for (const k of Object.keys(d)) if (st[k] != null) d[k] = st[k]; } catch (e) {}
+    mbsRoll: {}, dextreRoll: 0, cal: {}, armConv: 'doug' };
+  try { const st = JSON.parse(localStorage.getItem('iss.calib') || 'null'); if (st) for (const k of Object.keys(d)) if (st[k] != null) d[k] = st[k];
+    // v1.18: Canadarm2-Korrekturen und MBS-Rollwinkel bezogen sich auf die alte Konvention und gelten nicht mehr.
+    if (st && st.conv !== 'doug') { d.ssrms = { flip: Array(7).fill(false), off: Array(7).fill(0) }; d.mbsRoll = {}; } } catch (e) {}
+  d.conv = 'doug';
   return d;
 })();
 // Telemetriewinkel a des Gelenks i -> Rig-Winkel in Radiant (über SSRMS_CONV und das Kalibrierfeld).
@@ -2042,7 +1957,7 @@ function liveJointsRaw() {
    Kette von der Basis aus wie bei einer LEE-B-Basis gezeichnet (leeA markiert das echte Ende). */
 function liveJoints() {
   const J = liveJointsRaw();
-  if (J.baseEnd === 0 && mssConvention() === 'B') { J.baseEnd = 5; J.leeA = true; }
+  if (J.baseEnd === 0) { J.baseEnd = 5; J.leeA = true; }
   return J;
 }
 
@@ -2184,11 +2099,13 @@ function stepCmd(dt) {
     if(LINK.mqtt?.connected)LINK.mqtt.publish(topicRoot()+'/virtual/state',JSON.stringify({...m.snapshot(),epoch:CMD.epoch,orbit:ORB.s,joints:st,slider_assist:CMD.sliderAssist}),{qos:0});
   }
 }
-/* Arbeitsplätze des Transporters: Position entlang des Trägers in m (+Y Steuerbord). Gemessen sind
-   WS4 (+2,87 m, ISSLive am 19.10. und 10.11.2026) und WS5 (−5,26 m, 14.10.2026). Die übrigen Werte
-   sind aus der Teilung der Träger geschätzt und dienen nur der virtuellen Telemetrie im Befehlsmodus. */
-const MT_WORKSITES = { 1: 23.3, 2: 19.1, 3: 11.0, 4: 2.87, 5: -5.26, 6: -13.4, 7: -19.1, 8: -23.3 };
+/* Arbeitsplätze des Transporters: Position entlang des Trägers in m (+Y Steuerbord), aus NASA DOUG
+   (auszuege/mt_worksites.txt). ISSLive bestätigt WS4 (+2,87 m, 19.10. und 10.11.2026) und WS5
+   (−5,258 m, 14.10.2026) auf den Zentimeter. */
+const MT_WORKSITES = { 1: 21.693, 2: 16.490, 3: 7.974, 4: 2.870, 5: -5.258, 6: -7.941, 7: -16.535, 8: -21.693 };   // v1.18: NASA DOUG POSITION MT (Stage 75-7)
 // Nummer des Arbeitsplatzes, der der Transporterposition y (m) am nächsten liegt.
+// S-Band-Azimut: Nullpunkt des Rigs liegt 45° neben dem von DOUG (SASA_ROT_2), v1.18.
+const SBAND_AZ0 = 45;
 const mtWorksite = y => +Object.entries(MT_WORKSITES).sort((a, b) => Math.abs(a[1] - y) - Math.abs(b[1] - y))[0][0];
 // Virtuelle Sitzung als JSON-Datei herunterladen.
 function exportVirtual() {
@@ -3225,18 +3142,19 @@ function applyJoints(J) {
   P.mt.position.y = J.mt;
   MODEL.ssrms.forEach((j, i) => { j.rotation.set(0, 0, 0); j.rotation[SSRMS_AX[i]] = ssrmsRig(J.arm[i], i); });
   P.sgant.rotation.y = (J.sgant || 0) * D2R;P.kuCross.rotation.x=-(J.kuCross||0)*D2R;
-  for(let i=0;i<2;i++){P['sbandAz'+i].rotation.z=(J.sband?.[2*i]||0)*D2R;P['sbandEl'+i].rotation.set(-(J.sband?.[2*i+1]||0)*D2R,0,0);}
+  for(let i=0;i<2;i++){P['sbandAz'+i].rotation.z=((J.sband?.[2*i]||0)+SBAND_AZ0)*D2R;P['sbandEl'+i].rotation.set(-(J.sband?.[2*i+1]||0)*D2R,0,0);}
+  // Dextre-Gelenke (DOUG-Knoten, Grad) vor der Lage, weil das Körperrollen den oberen Greifpunkt bewegt.
+  setDougJoint(MODEL.dextreBody,dextreRig(J.dextre?.[14],14)/D2R);
+  MODEL.dextre.forEach((joints,side)=>joints.forEach((joint,i)=>setDougJoint(joint,dextreRig(J.dextre?.[side*7+i],side*7+i)/D2R)));
   {const m=MODEL.dextreMount,f=MODEL.anchors[J.dextreBase];
-   // 19 = Dextre vom freien LEE von Canadarm2 gegriffen: Dextre hängt mit seinem oberen
-   // Greifpunkt (3,9 m über dem eigenen Fuß-LEE) am freien Armende.
+   // 19 = Dextre vom freien LEE von Canadarm2 gegriffen: Dextre hängt mit seinem oberen Greifpunkt
+   // (SPDM_PDGF) am freien Armende; der Fuß folgt aus Körperrollen und Rumpflänge (DOUG).
    const tip=J.dextreBase===19?(J.baseEnd===0?MODEL.armBase:MODEL.armTip):null;
-   if(tip){if(m.parent!==tip){tip.add(m);m.quaternion.identity();}m.position.set(0,-3.9,0);}
-   else if(f&&J.dextreBase!==J.baseLoc){if(m.parent!==f){f.add(m);m.position.set(0,0,0);m.quaternion.identity();}}
-   else if(m.parent!==MODEL.dextreDefault.parent){const d=MODEL.dextreDefault;d.parent.add(m);m.position.copy(d.position);m.quaternion.copy(d.quaternion);}
-   // Kalibrierfeld: Drehung um die Achse des Greifpunkts (+Y), nur am Greifpunkt oder am Arm.
-   if(m.parent!==MODEL.dextreDefault.parent)m.quaternion.setFromAxisAngle(DEXTRE_UP,(+CALIB.dextreRoll||0)*D2R);}
-  MODEL.dextreBody.rotation.y=dextreRig(J.dextre?.[14],14);
-  MODEL.dextre.forEach((joints,side)=>joints.forEach((joint,i)=>{joint.rotation[DEXTRE_AX[i]]=dextreRig(J.dextre?.[side*7+i],side*7+i);}));
+   if(tip){if(m.parent!==tip)tip.add(m);m.position.set(0,0,0);m.quaternion.identity();m.updateMatrixWorld(true);
+     const rel=m.matrixWorld.clone().invert().multiply(MODEL.dextrePdgf.matrixWorld).invert();rel.decompose(m.position,m.quaternion,new THREE.Vector3());
+     if(+CALIB.dextreRoll)m.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(DEXTRE_UP,(+CALIB.dextreRoll)*D2R));}
+   else{const p=f&&J.dextreBase!==J.baseLoc?f:MODEL.dextreDefault.parent;if(m.parent!==p){p.add(m);m.position.set(0,0,0);}
+     m.quaternion.setFromAxisAngle(DEXTRE_UP,(DEXTRE_CLOCK+(+CALIB.dextreRoll||0))*D2R);}}
   MODEL.radiators.forEach((panels,i)=>{
     const fold=Math.acos(clamp(J.radDeploy?.[i]??1,0,1));
     panels.forEach((h,j)=>h.rotation.y=(j?2*(j%2?-1:1):1)*fold);
@@ -3424,24 +3342,6 @@ function frame(nowP) {
       const r = predictJoints(J, sunB, new THREE.Vector3(0, 0, 1).applyQuaternion(inv), D.eclipse);
       if (r.what.length) { J = r.J; D.predicted = { what: r.what, gap }; }
     } else if (effectiveSignal(now) === 'AOS') { learnTracking(J, sunB, D.eclipse); if (checkTrrjSense(sunB, D.eclipse, now)) J = liveJoints(); }
-  }
-  // Nur aus einer vollständigen Pose lernen, die 3 s stabil war: Der Schnappschuss kommt
-  // in Teilen, und eine halb aktualisierte Pose (etwa Armgelenke ohne MT-Position) würde
-  // richtige Hypothesen endgültig ausschließen.
-  const MSS_NEED = [...SSRMS_PUI, 'CSASSRMS002', 'CSASSRMS003', 'CSAMT000001'];
-  if (!CMD.active && LINK.src !== 'sim' && MSS_NEED.every(p => isFinite(tv(p))) && (!TM.has('CSASPDM0003') || isFinite(tv('CSASPDM0002')))) {
-    const raw = liveJointsRaw(), key = [raw.baseLoc, raw.baseEnd, raw.dextreBase, raw.mt.toFixed(2), ...raw.arm.map(v => v.toFixed(2)), ...raw.dextre.map(v => v.toFixed(1))].join(',');
-    if (key !== MSS_RT.seenKey) { MSS_RT.seenKey = key; MSS_RT.seenAt = nowP; }
-    if (key !== MSS_RT.lastKey && nowP - MSS_RT.seenAt > 3000 && nowP - MSS_RT.lastTry > 2000) {
-      MSS_RT.lastTry = nowP;
-      const r = learnMssFromPose(raw);
-      if (!r?.notReady) MSS_RT.lastKey = key;
-      if (r?.changed && MODEL.collision) MODEL.collision.lastKey = null;     // Greifpunktplatzierung geändert: neu prüfen
-      if (r?.changed) logEvent(`Canadarm2 calibration updated from the live pose: ${mssCalLabel(liveJoints()) || 'conventions confirmed'}`, 'ok');
-      else if (r && r.consistent === false) logEvent('Live Canadarm2 pose collides under every fixture/joint hypothesis: model arm geometry differs from the real arm here', 'warn');
-      J = liveJoints();
-      if (D.predicted) { const inv = S.att.quaternion.clone().invert(); J = predictJoints(J, sunL.clone().applyQuaternion(inv), new THREE.Vector3(0, 0, 1).applyQuaternion(inv), D.eclipse).J; }
-    }
   }
   applyJoints(J); perf('orbit+joints');
 
@@ -3780,7 +3680,7 @@ function setLanguage(lang) {
   ISSWorkspace.relang(); logEvent(t('Language: {0}', I18N.LANGS[lang]));
 }
 /* ---------- Launcher-Anbindung (Heartbeat + Beenden) ---------- */
-const PAGE_VERSION = '1.17';      // muss mit VERSION in launcher.py übereinstimmen
+const PAGE_VERSION = '1.18';      // muss mit VERSION in launcher.py übereinstimmen
 function initLauncher() {
   if (!/^https?:$/.test(location.protocol)) return;
   // Ein neuerer Launcher ersetzt den alten; ein offener Tab lädt sich dann selbst neu, statt
@@ -3801,7 +3701,7 @@ function initLauncher() {
   };
 }
 init();
-window.ISS = { get EXTCAM() { return EXTCAM; }, get CALIB_UI() { return CALIB_UI; }, CALIB, resetPayloads, PL, updatePayloads, placeMbsFixture, applyJoints, liveJoints, mssConvention, PERF, setLanguage, setVehicleEvents, refreshVehicles, VV, MSS_CAL, mbsChoices, liveJointsRaw, learnMssFromPose, gmstRad, propagate, S, MODEL, CMD, TM, ORB, CAL, LINK, NASA_ORBIT, ingest, updateOrbit, switchSource, enterCmd, exitCmd, commandVirtual, stepCmd, autotrack };    // Handle für die Entwicklerkonsole
+window.ISS = { get EXTCAM() { return EXTCAM; }, get CALIB_UI() { return CALIB_UI; }, CALIB, resetPayloads, PL, updatePayloads, applyJoints, liveJoints, PERF, setLanguage, setVehicleEvents, refreshVehicles, VV, liveJointsRaw, gmstRad, propagate, S, MODEL, CMD, TM, ORB, CAL, LINK, NASA_ORBIT, ingest, updateOrbit, switchSource, enterCmd, exitCmd, commandVirtual, stepCmd, autotrack };    // Handle für die Entwicklerkonsole
 
 </script>
 </body>

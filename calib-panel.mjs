@@ -62,11 +62,12 @@ export function setupCalibPanel({ CALIB, CAL, SSRMS_CONV, EXTCAM, MBS_IDS, apply
       <label>${t('Show telemetry from')} <input type="number" min="0" max="300" step="1" data-k="delay" value="${num(CALIB.delay)}"> ${t('s ago')}</label>
       <p class="note">${t('Live video usually runs 20 to 60 s behind the telemetry. The solar arrays turn about 4° per minute.')}</p></details>
     <details open><summary>Canadarm2 (SSRMS)</summary>
+      <label>${t('Convention')} <select data-armconv>${[['doug', 'NASA DOUG'], ['v117', t('v1.17 (fitted to the CP8 frame of 10 Nov)')]].map(([v, n]) => `<option value="${v}"${(CALIB.armConv || 'doug') === v ? ' selected' : ''}>${n}</option>`).join('')}</select></label>
       <p class="note">${t('Model angle = sign × telemetry + offset. Built-in sign/offset:')} ${SSRMS_CONV.s.map((s, i) => `${SSRMS_J[i]} ${s < 0 ? '−' : '+'}${SSRMS_CONV.o[i] ? '/' + SSRMS_CONV.o[i] : ''}`).join(' ')}</p>
       <table>${SSRMS_J.map((n, i) => jointRow('ssrms', i, n, SSRMS_PUI[i])).join('')}</table></details>
     <details><summary>${t('MBS grapple fixtures')}</summary>
-      <p class="note">${t('Roll of the fixture the arm is based on, in degrees. Empty = learned from live poses.')}</p>
-      <table>${MBS_IDS.map(id => `<tr><td>PDGF ${id}</td><td><input type="number" step="45" data-mbs="${id}" value="${CALIB.mbsRoll[id] ?? ''}" placeholder="auto"></td></tr>`).join('')}</table></details>
+      <p class="note">${t('Extra turn of the fixture the arm is based on, about its own axis, in degrees. 0 = NASA DOUG frame.')}</p>
+      <table>${MBS_IDS.map(id => `<tr><td>PDGF ${id}</td><td><input type="number" step="1" data-mbs="${id}" value="${CALIB.mbsRoll[id] ?? ''}" placeholder="0"></td></tr>`).join('')}</table></details>
     <details><summary>Dextre (SPDM)</summary>
       <table>${DEXTRE_PUI.map((p, i) => jointRow('dextre', i, i === 14 ? t('Body roll') : DEXTRE_NAME(i), p)).join('')}
       <tr><td>${t('Mount roll')}</td><td></td><td><input type="number" step="15" data-k="dextreRoll" value="${num(CALIB.dextreRoll)}"></td><td></td></tr></table></details>
@@ -95,6 +96,7 @@ export function setupCalibPanel({ CALIB, CAL, SSRMS_CONV, EXTCAM, MBS_IDS, apply
   function importObj(o) {
     const c = o.calib || o;
     for (const k of ['delay', 'dextreRoll']) if (c[k] != null) CALIB[k] = num(c[k]);
+    if (['doug', 'v117'].includes(c.armConv)) CALIB.armConv = c.armConv;
     for (const g of ['ssrms', 'dextre']) if (c[g]) {
       if (Array.isArray(c[g].flip)) c[g].flip.forEach((x, i) => { if (i < CALIB[g].flip.length) CALIB[g].flip[i] = !!x; });
       if (Array.isArray(c[g].off)) c[g].off.forEach((x, i) => { if (i < CALIB[g].off.length) CALIB[g].off[i] = num(x); });
@@ -115,6 +117,7 @@ export function setupCalibPanel({ CALIB, CAL, SSRMS_CONV, EXTCAM, MBS_IDS, apply
     else if (d.flip) { const [g, i] = d.flip.split(':'); CALIB[g].flip[+i] = e.target.checked; }
     else if (d.off) { const [g, i] = d.off.split(':'); CALIB[g].off[+i] = num(e.target.value); }
     else if (d.mbs) { if (e.target.value === '') delete CALIB.mbsRoll[d.mbs]; else CALIB.mbsRoll[d.mbs] = num(e.target.value); }
+    else if (d.armconv !== undefined) { CALIB.armConv = e.target.value; changed(); render(); return; }
     else if (d.cal) CALIB.cal[d.cal] = num(e.target.value);
     else if (d.cam) { const v = camView(); if (v) { v[d.cam] = num(e.target.value); EXTCAM.save?.(); } return; }
     else return;
@@ -140,7 +143,7 @@ export function setupCalibPanel({ CALIB, CAL, SSRMS_CONV, EXTCAM, MBS_IDS, apply
       catch (err) { logEvent(t('Calibration import failed: {0}', err.message), 'warn'); }
     } else if (a === 'reset') {
       if (!confirm(t('Reset all calibration values to the built-in defaults?'))) return;
-      importObj({ calib: { delay: 0, dextreRoll: 0, ssrms: { flip: Array(7).fill(false), off: Array(7).fill(0) },
+      importObj({ calib: { delay: 0, dextreRoll: 0, armConv: 'doug', ssrms: { flip: Array(7).fill(false), off: Array(7).fill(0) },
         dextre: { flip: Array(15).fill(false), off: Array(15).fill(0) }, mbsRoll: {}, cal: {} } });
       const v = camView(); if (v) { for (const [k] of CAM_KEYS) delete v[k]; EXTCAM.save?.(); render(); }
     }

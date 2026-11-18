@@ -44,14 +44,15 @@ const ETVCG = ['sd', 'hd'];
 export const CAMERAS = [
   // feed: welcher Livestream diese Kamera zeigt (FEEDS); der NASA-Stream „Live Video“ wechselt selbst
   // zwischen den Außenkameras, welche gerade läuft, steht nicht in der Telemetrie.
+  // v1.18: Lage von CP3, CP8, CP9 und CP13 = Augpunkte aus NASA DOUG (Stage 75-7), Fußpunkte geschätzt.
   // id, Name, Gruppe, Bauform, Befestigung (root = Stationssystem, sonst Knoten in MODEL), Lage, Fußpunkt
   // des Trägerrohrs (base), Blickziel im Stationssystem bzw. Blickrichtung lokal, Optiken, schwenkbar
-  { id: 'cp8', feed: 'nasaLive', name: 'CP8 · P1 outboard, zenith', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [1.0, -19.5, -3.2], base: [1.0, -19.5, -1.4], target: [1.5, 0, -0.5], optics: ETVCG, ptu: true,
+  { id: 'cp8', feed: 'nasaLive', name: 'CP8 · P1 outboard, zenith', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.04, -19.39, -4.05], base: [0.04, -19.39, -1.6], target: [1.5, 0, -0.5], optics: ETVCG, ptu: true,
     note: 'Looks starboard along the truss: Kibo, Harmony with Dragon, MBS, Z1' },
-  { id: 'cp9', feed: 'nasaLive', name: 'CP9 · P1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [1.9, -19.2, 3.2], base: [1.6, -19.2, 2.1], target: [6, 0, 5], optics: ETVCG, ptu: true },
-  { id: 'cp3', feed: 'nasaLive', name: 'CP3 · S1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [1.9, 19.2, 3.2], base: [1.6, 19.2, 2.1], target: [6, 0, 5], optics: ETVCG, ptu: true },
-  { id: 'cp13', feed: 'nasaLive', name: 'CP13 · Destiny, zenith starboard', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [-2.0, 1.4, 2.85], base: [-2.0, 1.4, 3.9], target: [-20, 8, 1], optics: ETVCG, ptu: true,
-    note: 'Position approximate: behind S0, the truss blocks the view forward' },
+  { id: 'cp9', feed: 'nasaLive', name: 'CP9 · P1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.17, -19.39, 4.06], base: [0.17, -19.39, 1.8], target: [6, 0, 5], optics: ETVCG, ptu: true },
+  { id: 'cp3', feed: 'nasaLive', name: 'CP3 · S1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.93, 18.50, 3.63], base: [0.93, 18.50, 1.8], target: [6, 0, 5], optics: ETVCG, ptu: true },
+  { id: 'cp13', feed: 'nasaLive', name: 'CP13 · Destiny, zenith starboard', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [5.38, 3.91, 3.51], base: [5.38, 2.96, 3.83], target: [-20, 8, 1], optics: ETVCG, ptu: true,
+    note: 'Position from NASA DOUG (Stage 75-7)' },
   { id: 'hd2', feed: 'nasaHd', name: 'Harmony forward HD camera', group: 'NASA HD', kind: 'box', mount: 'root', pos: [12.5, -1.6, 3.1], base: [12.3, -1.3, 3.25], target: [40, 0, 14], optics: ['n2hd'], ptu: false,
     note: 'Looks forward past IDA-2; source of the NASA high-definition views' },
   { id: 'senDock', feed: 'sen', name: 'Sen SpaceTV-1 · docking port', group: 'Sen', kind: 'lens', mount: 'root', pos: [14.2, 7.0, 4.3], target: [16.09, 0, 5.56], optics: ['senDock'], ptu: false },
@@ -69,7 +70,7 @@ export const CAMERAS = [
   // Stationssystem) im Kalibrierfeld; Grundstellung vorn an Harmony, Blick in Flugrichtung.
   { id: 'custom', feed: 'nasaLive', name: 'Custom camera (place it in Calibrate)', group: 'Own', kind: 'box', mount: 'root', pos: [10, 4, -3], target: [60, 4, 2], optics: ['sd', 'hd'], ptu: true, custom: true,
     note: 'Set its position in Calibrate (x forward, y starboard, z nadir), then pan, tilt and zoom here' },
-  { id: 'dextreHead', feed: 'nasaLive', name: 'Dextre · body camera', group: 'MSS', kind: 'box', mount: 'dextreBody', pos: [0, 3.5, 0.3], dir: [0, 0, 1], up: [0, 1, 0], optics: ['mss'], ptu: true },
+  { id: 'dextreHead', feed: 'nasaLive', name: 'Dextre · body camera', group: 'MSS', kind: 'box', mount: 'dextreBodyY', pos: [0, 1.9, 0.3], dir: [0, 0, 1], up: [0, 1, 0], optics: ['mss'], ptu: true },
   { id: 'mbs', feed: 'nasaLive', name: 'MBS · camera', group: 'MSS', kind: 'box', mount: 'pivots.mt', pos: [3.3, 2.0, -1.5], dir: [1, 0, 0.2], up: [0, 0, -1], optics: ['mss'], ptu: true },
 ];
 

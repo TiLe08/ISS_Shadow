@@ -2,6 +2,34 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.18: Nullstellungen aus NASA DOUG und SSP 30219 (17.11., in Arbeit)
+
+- **NASA DOUG** (Robotik-Grafikwerkzeug der Besatzung, öffentliches Flugpaket Stage 75-7 vom 16.9.2026)
+  enthält die vollständigen Kinematikketten und die Abbildung Telemetrie -> Gelenk. Übernommen:
+  - MBS-Greifpunkte PDGF1-4 mit ihren schrägen Einbaurahmen (`MBS_AXES`). Die acht Rollkandidaten und das
+    Lernen aus Kollisionen der Live-Posen entfallen; gespeicherte Lernstände (`iss.cal.mss*`) werden gelöscht.
+  - Canadarm2: DOUG-Abbildung SR, −SY, −SP, −EP, −WP, −WY, +WR, alle 0 = gestreckter Arm, im Modell
+    `SSRMS_CONVS.doug` (Spitze auf 3 mm, Spitzenrahmen exakt; `tests/test_doug.mjs`). Bei LEE A als Basis
+    heißen die Gelenke immer vom Basisende aus.
+  - MT-Arbeitsplätze WS1-8 (ISSLive bestätigt WS4 und WS5 auf den Zentimeter), Lage der S-Band-Antennen
+    und Azimut-Nullpunkt +45°, Augpunkte der Kameras CP3, CP8, CP9 und CP13.
+  - Dextre: Körper und beide Arme mit DOUGs Kette (SPDM.str) neu aufgebaut, Gelenke ohne Vorzeichenwechsel
+    (`setDougJoint`). Beleg: Die ISSLive-Winkel beider Arme vom 19.10. sind genau DOUGs Parkstellung. Ohne
+    Basis-Telemetrie steht Dextre auf MBS PDGF2; am Canadarm2 hängt es an seinem oberen Greifpunkt.
+  - Bestätigt ohne Änderung: SARJ, TRRJ, Ku-Band. BGA: DOUG liegt wie SSP 30219 45° neben ISSLive, `CAL` bleibt.
+- **Offen:** Das Livebild CP8 vom 10.11. (Kamera an Dragon und S-Band-Schüssel eingepasst) passt besser
+  zur v1.17-Armkonvention als zu DOUG. Das Kalibrierfeld kann deshalb zwischen „NASA DOUG“ (Standard)
+  und „v1.17“ umschalten; v1.17 nutzt dabei die alten, nur gerollten MBS-Rahmen. Bisher gespeicherte
+  Canadarm2-Korrekturen und MBS-Rollwinkel im Kalibrierfeld werden einmalig zurückgesetzt.
+
+- **SSP 30219 Rev. K** (ISS-Bezugssysteme, NASA, 1.2.2019, Bild 4.0-8) legt Nullpunkt und Drehsinn von
+  SARJ (alpha), BGA (beta) und TRRJ (gamma) fest. SARJ und TRRJ im Modell stimmen damit genau überein
+  (alpha_port = -alpha_stbd, alpha = 0: Zellseite nach Zenit; gamma = 0: Radiatoren in der X-Y-Ebene).
+  Die BGA-Formeln der Norm liegen 45° neben den ISSLive-Kanälen; die Livedaten vom 20.10. (alle acht Flügel
+  genau zur Sonne, Skalarprodukt 1,000 statt 0,71 mit der Norm) bestätigen die bisherige Tabelle `CAL`.
+  Neuer Test `tests/test_ssp30219.mjs`. Für Canadarm2, Dextre und die Antennen enthält die Norm nur
+  Bezugssysteme, keine Gelenkwinkel.
+
 # v1.17: Canadarm2 an Livebildern ausgerichtet, Kalibrierfeld, Kamerafenster verschiebbar (11.11./12.11.)
 
 - **Canadarm2 stand falsch.** Mit der am 11.11.2026 aufgezeichneten Pose (MBS PDGF3, LEE B) zeigte der

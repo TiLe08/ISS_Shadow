@@ -245,6 +245,8 @@ Hardware oder vom Betriebsbasis-Ende aus benennt, wenn LEE A die Basis ist, ist 
 dokumentiert. Beides wurde aus Live-Posen gelernt (echte Posen kollidieren nie). Seit v1.10 kommen
 die Ecken aus IGOAL; gelernt wird nur noch der Rollwinkel (8 Kandidaten je Greifpunkt) und die
 Konvention (2 Kandidaten). Gespeichert wird im Browser unter `iss.cal.mss3`.
+Seit v1.18 stehen beide fest (NASA DOUG): schräg eingebaute Greifpunktrahmen `MBS_AXES`, Gelenke immer
+vom Basisende aus benannt. Das Lernen entfällt.
 
 ## Quellen
 

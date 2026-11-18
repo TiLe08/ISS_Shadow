@@ -138,7 +138,8 @@ export class CollisionMonitor {
     if(fa.torso&&fb.dj12||fb.torso&&fa.dj12)return true;
     if(fa.dlee&&fb.torso||fb.dlee&&fa.torso)return true;
     if(ga[0]==='arm'&&gb[0]==='arm'&&Math.abs(+ga[1]-+gb[1])<=1)return true;
-    if(ga[0]===gb[0]&&ga[0].startsWith('dextre')&&Math.abs(+ga[1]-+gb[1])<=1)return true;
+    // Dextre (DOUG-Geometrie): Schulter- (SR, SY, SP) und Handgelenkgruppe (WP, WY, WR) sitzen dicht beieinander.
+    if(ga[0]===gb[0]&&ga[0].startsWith('dextre')){const i=+ga[1],j=+gb[1];if(Math.abs(i-j)<=1||i<=2&&j<=2||i>=4&&j>=4)return true;}
     // Gelenkhülsen, Schienenwagen und Andockflächen berühren sich absichtlich.
     if(fa.contact||fb.contact)return true;
     if((ga[0]==='sarj'&&gb[0]==='bga'||gb[0]==='sarj'&&ga[0]==='bga')&&ga[1]===gb[1])return true;
