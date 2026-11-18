@@ -783,12 +783,12 @@ export function buildStation(cfg = {}) {
   cyl(root, 'x', 0.5, 0.28, 0.28, [-25.84, 0.25, 11.95], 'arm', 'ERA elbow', { segs: 10 });
   for (const z of [7.0, 16.85]) cyl(root, 'x', 0.55, 0.3, 0.3, [-25.79, z > 12 ? 0.5 : 0, z], 'arm', 'ERA end effector / base', { segs: 10 });
 
-  /* --- Andockports (IGOAL-Schnittstellenebenen): Jeder Fahrzeugtyp, den ein Port aufnehmen kann, wird
+  /* --- Andockports (IGOAL-Schnittstellenebenen; clock = Drehung um die Andockachse): Jeder Fahrzeugtyp, den ein Port aufnehmen kann, wird
      einmal unsichtbar gebaut; die Bildschleife zeigt den, der dort angedockt ist --- */
   const PORTS = {
     smAft: { pos: [-35.73, 0, ZR], dir: [-1, 0, 0] }, mrm1: { pos: [-11.14, 0, 11.24], dir: [0, 0, 1] },
     mrm2: { pos: [-23.69, 0, -1.03], dir: [0, 0, -1] }, prichal: { pos: [-23.69, 0, 21.83], dir: [0, 0, 1] },
-    ida2: { pos: [16.09, 0, Z + 0.71], dir: [1, 0, 0] }, ida3: { pos: [N2X + 0.70, 0, -0.17], dir: [0, 0, -1] },
+    ida2: { pos: [16.09, 0, Z + 0.71], dir: [1, 0, 0] }, ida3: { pos: [N2X + 0.70, 0, -0.17], dir: [0, 0, -1], clock: 90 },
     unityNadir: { pos: [N1X, 0, Z + 2.22], dir: [0, 0, 1] }, harmonyNadir: { pos: [N2X, 0, Z + 2.22], dir: [0, 0, 1] },
   };
   MODEL.vvG = {}; MODEL.vvCur = {};
@@ -797,6 +797,9 @@ export function buildStation(cfg = {}) {
     for (const type of cfg.vehicleTypes?.[port] || []) {
       const g = type === 'soyuz' || type === 'progress' ? soyuzLike(type) : usosVehicle(type); g.position.set(...p.pos);
       g.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), new THREE.Vector3(...p.dir));
+      // Drehung um die Andockachse (Grad): Harmony zenit nach Livebild CP8 vom 18.11.2026, die geöffnete
+      // Nasenkappe des Dragon zeigt nach Backbord (-Y).
+      if (p.clock) g.rotateX(p.clock * Math.PI / 180);
       const lb = addLabel(g, cfg.vehicleLabel?.(type, port) || type, 'vv'); if (lb) lb.position.set(4, 0, 0); g.userData.label = lb;
       if (port === 'smAft') { const pl = plume(9, 1.8); pl.position.set(g.userData.aft, 0, 0); g.add(pl); g.userData.plume = pl; }
       const key = port + ':' + type; g.traverse(o => { if (o.isMesh) o.userData.vvKey = key; });

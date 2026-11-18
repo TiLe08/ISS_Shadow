@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ISS Digital Shadow v1.18.2</title>
+<title>ISS Digital Shadow v1.18.3</title>
 <!--
   iss_twin.html: Hauptseite von ISS Shadow (digitaler Schatten / Zwilling der ISS).
 
@@ -445,7 +445,7 @@ tr.fresh td.v{color:var(--ok)}
             <div class="ddl">Overlays</div>
             <div class="seg" id="optSeg" role="group" aria-label="Overlays">
               <button data-v="labels" aria-pressed="true" title="Module and vehicle names">ISS labels</button>
-              <button id="camMarksToggle" aria-pressed="true" title="Markers and names of all external cameras">Cameras</button>
+              <button id="camMarksToggle" aria-pressed="false" title="Markers and names of all external cameras">Cameras</button>
               <button data-v="axes" aria-pressed="false" title="Body axes: +X velocity, +Y starboard, +Z nadir">Axes</button>
               <button data-v="sunvec" aria-pressed="true" title="Direction to the Sun">Sun</button>
             </div>
@@ -3680,7 +3680,7 @@ function setLanguage(lang) {
   ISSWorkspace.relang(); logEvent(t('Language: {0}', I18N.LANGS[lang]));
 }
 /* ---------- Launcher-Anbindung (Heartbeat + Beenden) ---------- */
-const PAGE_VERSION = '1.18.2';      // muss mit VERSION in launcher.py übereinstimmen
+const PAGE_VERSION = '1.18.3';      // muss mit VERSION in launcher.py übereinstimmen
 function initLauncher() {
   if (!/^https?:$/.test(location.protocol)) return;
   // Ein neuerer Launcher ersetzt den alten; ein offener Tab lädt sich dann selbst neu, statt
