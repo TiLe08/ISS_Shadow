@@ -281,7 +281,8 @@ function solarWing(parent, dirSign, name, irosa, sys, lateIrosa) {
   const w = new THREE.Group(); parent.add(w);
   const L = 32.7, root = 1.2, zc = dirSign * (root + L / 2), z = v => dirSign * v;
   cyl(w, 'z', 1.1, 0.5, 0.5, [0, 0, z(0.55)], 'white', name + ' mast canister', { sys, segs: 14, rings: 0 });
-  for (const y of [-3.45, 3.45]) box(w, 0.5, 4.6, 0.42, [0, y, z(root - 0.3)], 'white', name + ' blanket box', { sys });
+  // Stauboxen schließen innen an den Mastbehälter und außen an die Zellbahn an.
+  for (const y of [-3.1, 3.1]) box(w, 0.5, 5.3, 0.42, [0, y, z(root - 0.21)], 'white', name + ' blanket box', { sys });
   // Ausfahrmast: dreieckiger Gittermast. Hüllkörper für Holo und Kollision, Stäbe für Solid.
   const mast = cyl(w, 'z', L, 0.36, 0.36, [0, 0, zc], 'truss', name + ' mast', { segs: 3, longs: 3, rings: 14, sys, proxy: true });
   const tri = [0, 1, 2].map(i => [0.36 * Math.sin(i * 2 * Math.PI / 3), 0.36 * Math.cos(i * 2 * Math.PI / 3)]), ms = [], N = 22;
@@ -324,6 +325,9 @@ function iea(sarjPivot, yRel, side, chans, irosaSet, lateIrosa) {
     // jeweils 0,66 m zur Seite versetzt.
     const off = side > 0 ? (k ? [0.66, 2.04] : [-0.66, -2.75]) : (k ? [-0.66, 2.74] : [0.66, -2.035]);
     const piv = new THREE.Group(); piv.position.set(off[0], 0, off[1]); g.add(piv);
+    // Beta-Gelenk (BGA): Gehäuse von der IEA-Seitenfläche (z ±1,5) bis zum drehenden Mastbehälter.
+    const len = Math.abs(off[1]) - 1.5;
+    cyl(g, 'z', len, 0.55, 0.55, [off[0], 0, Math.sign(off[1]) * (1.5 + len / 2)], 'truss', 'BGA ' + ch, { sys: 'eps:' + ch, segs: 14, rings: 0 });
     MODEL.pivots['bga' + ch] = piv;
     solarWing(piv, dirSign, 'SAW ' + ch, irosaSet.has(ch), 'eps:' + ch, lateIrosa);
   });
@@ -508,6 +512,7 @@ function buildDextre(mt) {
   // Modellachsen am Körper (y entlang des Rumpfs) für Kameras und Beschriftungen.
   const bodyY = new THREE.Group(); bodyY.quaternion.setFromRotationMatrix(DOUG_AXES.clone().transpose()); body.add(bodyY); MODEL.dextreBodyY = bodyY;
   box(bodyY, 0.9, 1.6, 0.9, [0, 0.6, 0], 'arm', 'Dextre torso (upper)', o);   // endet unter dem oberen Greifpunkt
+  cyl(bodyY, 'y', 0.345, 0.14, 0.14, [0, 1.5725, 0], 'arm', 'Dextre PDGF stand', { ...o, segs: 10, rings: 0 });   // trägt den Greifpunkt (68,7 Zoll)
   // Oberer Greifpunkt (SPDM_PDGF), an dem Canadarm2 Dextre trägt; Modellachsen wie die übrigen Greifpunkte.
   const pdgf = dougNode(body, [68.7, 0, 0], [0, 0, -45]); const pdgfY = new THREE.Group(); pdgfY.quaternion.setFromRotationMatrix(DOUG_AXES.clone().transpose()); pdgf.add(pdgfY); MODEL.dextrePdgf = pdgfY;
   cyl(pdgf, 'x', 0.15, 0.32, 0.32, [0.08, 0, 0], 'gold', 'Dextre PDGF (top)', { ...o, segs: 16, rings: 0 });
@@ -611,13 +616,16 @@ export function buildStation(cfg = {}) {
   box(root, 4.7, 5.4, 0.9, [11.95, -16.0, 5.55], 'truss', 'Kibo Exposed Facility');
   cyl(root, 'y', 0.75, 0.5, 0.5, [N2X, -13.75, Z - 0.9], 'module', 'Kibo JEM airlock');
   [[-1.2, 0], [1.2, 0], [-1.2, 1], [1.2, 1]].forEach(([dx, s], i) => box(root, 1.8, 1.8, 1.5, [11.95 + dx, -14.8 - s * 2.4, 6.85], i % 2 ? 'white' : 'gold', 'JEM-EF payload'));
-  // JEM-Roboterarm (JEMRMS, 10 m), über der Luftschleuse am Endschott; ohne öffentliche Telemetrie,
-  // deshalb in einer festen Parkstellung über der Exposed Facility gezeichnet.
+  // JEM-Roboterarm (JEMRMS, 10 m), Basis über der Luftschleuse am Endschott; ohne öffentliche Telemetrie,
+  // deshalb in einer festen, gefalteten Parkstellung auf der Zenitseite des Druckmoduls (genähert).
   { const o = { ...D, segs: 10 }, bx = N2X - 0.9, by = -13.55, bz = Z - 1.75;
+    const top = x => Z - Math.sqrt(2.2 ** 2 - (x - N2X) ** 2);   // Zenitfläche des Moduls bei x
+    const elbow = [bx, -9.2, top(bx) - 0.22], wrist = [bx + 1.35, -12.9, top(bx + 1.35) - 0.13];
     cyl(root, 'y', 0.5, 0.26, 0.26, [bx, by - 0.25, bz], 'arm', 'JEMRMS base (no public telemetry)', o);
-    tube(root, [bx, by - 0.5, bz], [bx + 0.2, by - 4.3, bz - 1.5], 0.13, 0.13, 'arm', 'JEMRMS boom 1 (no public telemetry)', o);
-    tube(root, [bx + 0.2, by - 4.3, bz - 1.5], [bx + 1.6, by - 1.0, bz - 2.6], 0.13, 0.13, 'arm', 'JEMRMS boom 2 (no public telemetry)', o);
-    sph(root, 0.22, [bx + 0.2, by - 4.3, bz - 1.5], 'arm', 'JEMRMS elbow (no public telemetry)', D); }
+    tube(root, [bx, by - 0.25, bz - 0.26], elbow, 0.13, 0.13, 'arm', 'JEMRMS boom 1 (no public telemetry)', o);
+    tube(root, elbow, wrist, 0.13, 0.13, 'arm', 'JEMRMS boom 2 (no public telemetry)', o);
+    sph(root, 0.22, elbow, 'arm', 'JEMRMS elbow (no public telemetry)', D);
+    box(root, 0.35, 0.5, 0.3, [wrist[0], wrist[1] - 0.25, wrist[2]], 'arm', 'JEMRMS wrist (no public telemetry)', D); }
   tube(root, [-7.71, 0, Z], [-10.0, 0, ZR], 1.25, 1.0, 'pma', 'PMA-1');
   pmod(root, 'y', -8.83, -2.15, 2.2, [N1X, Z], 'module', 'Tranquility (Node 3)', { label: 'Tranquility', sys: 'n3', capA: true });
   // Cupola: sechs Seitenfenster und ein rundes Nadirfenster, Blenden offen gezeichnet.
@@ -697,7 +705,7 @@ export function buildStation(cfg = {}) {
   carrier('ELC-3', -24.04, -1); carrier('ELC-1', -24.42, 1);
   // S-Band-Antennen (SASA) auf der Zenitseite von S1/P1; Lage der Antennenköpfe aus NASA DOUG (v1.18).
   [[0.08, 8.16, -3.96], [0.08, -9.16, -3.96]].forEach((p, i) => {
-    cyl(root, 'z', 2.3, 0.08, 0.08, [p[0], p[1], -2.8], 'truss', 'S-band SASA mast', { segs: 8 });
+    cyl(root, 'z', 3.7, 0.08, 0.08, [p[0], p[1], -2.1], 'truss', 'S-band SASA mast', { segs: 8 });   // von der Zenitfläche des Trägers (z −0,25) bis zum Antennenkopf
     const az = new THREE.Group(); az.position.set(...p); root.add(az);
     const el = new THREE.Group(); az.add(el); MODEL.pivots['sbandAz' + i] = az; MODEL.pivots['sbandEl' + i] = el;
     cyl(el, 'z', 0.25, 0.45, 0.12, [0, 0, -0.12], 'white', 'S-band antenna ' + (i + 1), { sys: 'ct', segs: 18, rings: 0 });   // Hauptstrahl −Z bei az = el = 0
@@ -788,7 +796,7 @@ export function buildStation(cfg = {}) {
   const PORTS = {
     smAft: { pos: [-35.73, 0, ZR], dir: [-1, 0, 0] }, mrm1: { pos: [-11.14, 0, 11.24], dir: [0, 0, 1] },
     mrm2: { pos: [-23.69, 0, -1.03], dir: [0, 0, -1] }, prichal: { pos: [-23.69, 0, 21.83], dir: [0, 0, 1] },
-    ida2: { pos: [16.09, 0, Z + 0.71], dir: [1, 0, 0] }, ida3: { pos: [N2X + 0.70, 0, -0.17], dir: [0, 0, -1], clock: 90 },
+    ida2: { pos: [16.09, 0, Z + 0.71], dir: [1, 0, 0] }, ida3: { pos: [N2X + 0.70, 0, -0.17], dir: [0, 0, -1], clock: 180 },
     unityNadir: { pos: [N1X, 0, Z + 2.22], dir: [0, 0, 1] }, harmonyNadir: { pos: [N2X, 0, Z + 2.22], dir: [0, 0, 1] },
   };
   MODEL.vvG = {}; MODEL.vvCur = {};
@@ -797,8 +805,8 @@ export function buildStation(cfg = {}) {
     for (const type of cfg.vehicleTypes?.[port] || []) {
       const g = type === 'soyuz' || type === 'progress' ? soyuzLike(type) : usosVehicle(type); g.position.set(...p.pos);
       g.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), new THREE.Vector3(...p.dir));
-      // Drehung um die Andockachse (Grad): Harmony zenit nach Livebild CP8 vom 18.11.2026, die geöffnete
-      // Nasenkappe des Dragon zeigt nach Backbord (-Y).
+      // Drehung um die Andockachse (Grad): Harmony zenit nach Livebild CP8 und Tims Abgleich vom 18.11.2026,
+      // die geöffnete Nasenkappe des Dragon zeigt nach achtern (-X).
       if (p.clock) g.rotateX(p.clock * Math.PI / 180);
       const lb = addLabel(g, cfg.vehicleLabel?.(type, port) || type, 'vv'); if (lb) lb.position.set(4, 0, 0); g.userData.label = lb;
       if (port === 'smAft') { const pl = plume(9, 1.8); pl.position.set(g.userData.aft, 0, 0); g.add(pl); g.userData.plume = pl; }
