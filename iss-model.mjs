@@ -496,6 +496,9 @@ export const DEXTRE_CLOCK = 0;
 function buildDextre(mt) {
   // Ohne Basis-Telemetrie steht Dextre auf MBS PDGF2 (id 8), wie am 19./20.10.2026 gemeldet.
   const home = MODEL.anchors[8], mount = new THREE.Group(); home.add(mount);
+  // Eigene Kollisionsgruppe: Dextre erbt sonst die Gruppe des Trägers (MBS oder Handgelenk von Canadarm2),
+  // und Überlappungen mit dem Arm würden nach dem Umhängen übersehen oder veraltet gemeldet.
+  mount.userData.collisionGroup = 'dextreBody';
   MODEL.dextreMount = mount; MODEL.dextreDefault = { parent: home, position: new THREE.Vector3(), quaternion: new THREE.Quaternion() };
   const o = { sys: 'ssrms' };
   cyl(mount, 'y', 0.9, 0.3, 0.3, [0, 0.45, 0], 'arm', 'Dextre LEE (base)', { ...o, segs: 12 });
@@ -504,14 +507,13 @@ function buildDextre(mt) {
   const body = dougNode(ee, [65, 0, 0], [0, 0, -45]); body.userData.field = 'roll'; MODEL.dextreBody = body;   // Körperrollen
   // Modellachsen am Körper (y entlang des Rumpfs) für Kameras und Beschriftungen.
   const bodyY = new THREE.Group(); bodyY.quaternion.setFromRotationMatrix(DOUG_AXES.clone().transpose()); body.add(bodyY); MODEL.dextreBodyY = bodyY;
-  box(bodyY, 0.9, 2.1, 0.9, [0, 0.75, 0], 'arm', 'Dextre torso (upper)', o);
+  box(bodyY, 0.9, 1.6, 0.9, [0, 0.6, 0], 'arm', 'Dextre torso (upper)', o);   // endet unter dem oberen Greifpunkt
   // Oberer Greifpunkt (SPDM_PDGF), an dem Canadarm2 Dextre trägt; Modellachsen wie die übrigen Greifpunkte.
-  const pdgf = dougNode(body, [68.7, 0, 0], [0, 0, -45]); const pdgfY = new THREE.Group(); pdgfY.quaternion.setFromRotationMatrix(DOUG_AXES); pdgf.add(pdgfY); MODEL.dextrePdgf = pdgfY;
+  const pdgf = dougNode(body, [68.7, 0, 0], [0, 0, -45]); const pdgfY = new THREE.Group(); pdgfY.quaternion.setFromRotationMatrix(DOUG_AXES.clone().transpose()); pdgf.add(pdgfY); MODEL.dextrePdgf = pdgfY;
   cyl(pdgf, 'x', 0.15, 0.32, 0.32, [0.08, 0, 0], 'gold', 'Dextre PDGF (top)', { ...o, segs: 16, rings: 0 });
-  box(bodyY, 0.5, 0.5, 0.5, [0, 1.95, 0.45], 'gold', 'Dextre torso head (cameras)', o);
+  box(bodyY, 0.4, 0.4, 0.4, [0, 1.1, 0.65], 'gold', 'Dextre torso head (cameras)', o);
   const b1 = dougNode(body, [68.7, 0, 0], [90, -45, -180]);
   tube(b1, [0, -46.9 * DIN, 46.9 * DIN], [0, 46.9 * DIN, 46.9 * DIN], 0.2, 0.2, 'arm', 'Dextre torso shoulder beam', o);
-  tube(b1, [0, 0, 0], [0, 0, 46.9 * DIN], 0.2, 0.2, 'arm', 'Dextre torso shoulder beam', o);
   MODEL.dextre = []; MODEL.dextreTools = [];
   DEXTRE_ARMS.forEach((arm, side) => {
     const nm = i => 'Dextre arm ' + (side + 1) + ' joint ' + (i + 1), J = [];

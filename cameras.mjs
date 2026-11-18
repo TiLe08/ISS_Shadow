@@ -44,14 +44,15 @@ const ETVCG = ['sd', 'hd'];
 export const CAMERAS = [
   // feed: welcher Livestream diese Kamera zeigt (FEEDS); der NASA-Stream „Live Video“ wechselt selbst
   // zwischen den Außenkameras, welche gerade läuft, steht nicht in der Telemetrie.
-  // v1.18: Lage von CP3, CP8, CP9 und CP13 = Augpunkte aus NASA DOUG (Stage 75-7), Fußpunkte geschätzt.
+  // v1.18: Lage von CP3, CP8, CP9 und CP13 = Augpunkte aus NASA DOUG (Stage 75-7); Fußpunkte auf der
+  // Modellhülle (Träger bzw. Destiny) in Richtung des Trägerrohrs, damit kein Kamerakopf frei schwebt.
   // id, Name, Gruppe, Bauform, Befestigung (root = Stationssystem, sonst Knoten in MODEL), Lage, Fußpunkt
   // des Trägerrohrs (base), Blickziel im Stationssystem bzw. Blickrichtung lokal, Optiken, schwenkbar
-  { id: 'cp8', feed: 'nasaLive', name: 'CP8 · P1 outboard, zenith', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.04, -19.39, -4.05], base: [0.04, -19.39, -1.6], target: [1.5, 0, -0.5], optics: ETVCG, ptu: true,
+  { id: 'cp8', feed: 'nasaLive', name: 'CP8 · P1 outboard, zenith', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.04, -19.39, -4.05], base: [0.04, -19.39, -1.4], target: [1.5, 0, -0.5], optics: ETVCG, ptu: true,
     note: 'Looks starboard along the truss: Kibo, Harmony with Dragon, MBS, Z1' },
-  { id: 'cp9', feed: 'nasaLive', name: 'CP9 · P1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.17, -19.39, 4.06], base: [0.17, -19.39, 1.8], target: [6, 0, 5], optics: ETVCG, ptu: true },
-  { id: 'cp3', feed: 'nasaLive', name: 'CP3 · S1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.93, 18.50, 3.63], base: [0.93, 18.50, 1.8], target: [6, 0, 5], optics: ETVCG, ptu: true },
-  { id: 'cp13', feed: 'nasaLive', name: 'CP13 · Destiny, zenith starboard', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [5.38, 3.91, 3.51], base: [5.38, 2.96, 3.83], target: [-20, 8, 1], optics: ETVCG, ptu: true,
+  { id: 'cp9', feed: 'nasaLive', name: 'CP9 · P1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.17, -19.39, 4.06], base: [0.17, -19.39, 1.4], target: [6, 0, 5], optics: ETVCG, ptu: true },
+  { id: 'cp3', feed: 'nasaLive', name: 'CP3 · S1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.93, 18.50, 3.63], base: [0.93, 18.50, 1.38], target: [6, 0, 5], optics: ETVCG, ptu: true },
+  { id: 'cp13', feed: 'nasaLive', name: 'CP13 · Destiny, zenith starboard', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [5.38, 3.91, 3.51], base: [5.38, 2.02, 4.15], target: [-20, 8, 1], optics: ETVCG, ptu: true,
     note: 'Position from NASA DOUG (Stage 75-7)' },
   { id: 'hd2', feed: 'nasaHd', name: 'Harmony forward HD camera', group: 'NASA HD', kind: 'box', mount: 'root', pos: [12.5, -1.6, 3.1], base: [12.3, -1.3, 3.25], target: [40, 0, 14], optics: ['n2hd'], ptu: false,
     note: 'Looks forward past IDA-2; source of the NASA high-definition views' },
@@ -68,9 +69,7 @@ export const CAMERAS = [
     note: 'Looks along the boom to the wrist and LEE A' },
   // Eigene Kamera: für Bilder, die keiner bekannten Einbaustelle zuzuordnen sind. Lage px/py/pz (m,
   // Stationssystem) im Kalibrierfeld; Grundstellung vorn an Harmony, Blick in Flugrichtung.
-  { id: 'custom', feed: 'nasaLive', name: 'Custom camera (place it in Calibrate)', group: 'Own', kind: 'box', mount: 'root', pos: [10, 4, -3], target: [60, 4, 2], optics: ['sd', 'hd'], ptu: true, custom: true,
-    note: 'Set its position in Calibrate (x forward, y starboard, z nadir), then pan, tilt and zoom here' },
-  { id: 'dextreHead', feed: 'nasaLive', name: 'Dextre · body camera', group: 'MSS', kind: 'box', mount: 'dextreBodyY', pos: [0, 1.9, 0.3], dir: [0, 0, 1], up: [0, 1, 0], optics: ['mss'], ptu: true },
+  { id: 'dextreHead', feed: 'nasaLive', name: 'Dextre · body camera', group: 'MSS', kind: 'box', mount: 'dextreBodyY', pos: [0, 1.1, 0.9], dir: [0, 0, 1], up: [0, 1, 0], optics: ['mss'], ptu: true },
   { id: 'mbs', feed: 'nasaLive', name: 'MBS · camera', group: 'MSS', kind: 'box', mount: 'pivots.mt', pos: [3.3, 2.0, -1.5], dir: [1, 0, 0.2], up: [0, 0, -1], optics: ['mss'], ptu: true },
 ];
 
@@ -332,7 +331,6 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
   // Kamerakopf des Modells mit.
   function pose(id, out) {
     const { g, head } = byId[id], v = view(id);
-    if (camOf(id).custom) { const d = camOf(id).pos, q = (x, i) => Number.isFinite(x) ? x : d[i]; g.position.set(q(v.px, 0), q(v.py, 1), q(v.pz, 2)); g.updateMatrixWorld(true); }
     head.rotation.set(v.tilt * Math.PI / 180, -v.pan * Math.PI / 180, 0, 'YXZ'); head.updateWorldMatrix(true, false);
     out.matrixWorld.copy(head.matrixWorld); out.matrixWorld.decompose(out.position, out.quaternion, out.scale);
     // Feinjustage aus dem Kalibrierfeld (calib-panel.mjs): Versatz in m entlang rechts/oben/hinten der Kamera,

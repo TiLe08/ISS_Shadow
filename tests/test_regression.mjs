@@ -267,4 +267,19 @@ $('#cMin').click();assert.ok($('#cmdp').classList.contains('min'));assert.ok($('
 const cw=t.LAYOUT.cw;$('#cmdGrip').dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));assert.ok(t.LAYOUT.cw>=cw,'Dragging the left edge left widens the command window');
 t.exitCmd();assert.ok(!$('#ov').classList.contains('cmd-open'));
 dom.window.close();
+// v1.18: Dextre am freien LEE von Canadarm2 (Pose vom 18.11.2026, Basis MBS PDGF1, Dextre-Basis 19): Dextre
+// hängt koaxial unter dem LEE, sein oberer Greifpunkt fällt mit der Armspitze zusammen, nichts überlappt.
+// Derselbe Monitor prüft vorher Dextre auf dem MBS, damit veraltete Gruppen nach dem Umhängen auffallen.
+{t.TM.clear();const mon2=new CollisionMonitor(t.MODEL,root);t.applyJoints(t.liveJoints());mon2.scan();
+ const tm={CSASSRMS002:7,CSASSRMS003:5,CSASSRMS004:11.959,CSASSRMS005:-154.455,CSASSRMS006:-152.547,CSASSRMS007:-133.472,CSASSRMS008:-96.222,CSASSRMS009:-3.215,CSASSRMS010:242.01,CSAMT000001:287.02,CSASPDM0002:19};
+ [-50,-40,80,30,-80,-120,-50,-120,-40,-80,-60,40,-120,-20,60].forEach((v,i)=>tm['CSASPDM'+String([3,4,5,6,7,8,9,11,12,13,14,15,16,17,20][i]).padStart(4,'0')]=v);
+ for(const [k,v] of Object.entries(tm))t.ingest(k,v,NaN,Date.now(),'SIM');
+ t.applyJoints(t.liveJoints());root.updateMatrixWorld(true);
+ const M=t.MODEL,wp=o=>o.getWorldPosition(new THREE.Vector3()),ya=o=>new THREE.Vector3(0,1,0).applyQuaternion(o.getWorldQuaternion(new THREE.Quaternion()));
+ assert.equal(M.dextreMount.parent,M.armTip,'Dextre hangs on the free LEE');
+ assert.ok(wp(M.dextrePdgf).distanceTo(wp(M.armTip))<1e-3,'Dextre top PDGF at the arm tip');
+ assert.ok(ya(M.dextreMount).dot(ya(M.armTip))>0.999,'Dextre coaxial with the LEE');
+ const hits=mon2.scan().filter(h=>/Dextre/.test(h.a.name+h.b.name));
+ assert.equal(hits.length,0,'Dextre on the arm clear: '+hits.map(h=>h.a.name+' / '+h.b.name));
+ t.TM.clear();}
 console.log('PASS v1.0: live 14 Oct snapshot (conventions vs Sun, flown pose clear, units, timestamp epoch), S3/P3 carriers, Dextre/ERA attachment, full alpha/beta clearance, overlay ownership, splitters, command time header, chunked warp');

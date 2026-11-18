@@ -2,7 +2,17 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
-# v1.18: Nullstellungen aus NASA DOUG und SSP 30219 (17.11., in Arbeit)
+# v1.18.1: Dextre am Canadarm2, Überlappungsmonitor, Kameramasten (18.11.)
+
+- **Dextre hing quer durch das LEE**, wenn Canadarm2 es trägt (Basis 19): Der obere Greifpunkt von Dextre
+  hatte vertauschte Achsen. Jetzt hängt Dextre koaxial unter dem LEE (neuer Test mit der Pose vom 18.11.).
+- **Überlappungsmonitor:** Er merkte sich die Kollisionsgruppe jedes Teils beim ersten Prüfen. Nach dem
+  Umhängen von Dextre ans Armende galten veraltete Gruppen (falsche oder übersehene Meldungen). Dextre hat
+  jetzt eine eigene Gruppe.
+- Kameramasten von CP3, CP8, CP9 und CP13 reichen bis zur Modellhülle; CP13 schwebte frei vor Destiny.
+- Die eigene, frei platzierbare Kamera entfällt.
+
+# v1.18: Nullstellungen aus NASA DOUG und SSP 30219 (17.11.)
 
 - **NASA DOUG** (Robotik-Grafikwerkzeug der Besatzung, öffentliches Flugpaket Stage 75-7 vom 16.9.2026)
   enthält die vollständigen Kinematikketten und die Abbildung Telemetrie -> Gelenk. Übernommen:
