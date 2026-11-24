@@ -32,6 +32,17 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
   Gerechnet wird nur bei offenem Panel, einmal pro Sekunde.
 - Neue Tests `tests/test_proxops.mjs`, `tests/test_tle.py`.
 
+# Kamerafenster: größeres Sichtfeld, feinere Regler (18.11.)
+
+- **Sichtfeld** lässt sich jetzt für jede Kamera von 0,5° bis 150° (senkrecht) einstellen, auch über den
+  Zoombereich der Optik hinaus und auch bei der Sen-Nadirkamera. Der Regler läuft logarithmisch, damit lange
+  Brennweiten genauso fein gehen wie kurze. Der Zoombereich der Optik steht im Hinweis; ein Wert außerhalb
+  wird orange angezeigt.
+- **Schwenk, Neigung, Rollen, Sichtfeld** haben je ein Zahlenfeld (Eingabe auf 0,01° genau). Pfeiltasten und
+  Mausrad auf Regler oder Zahlenfeld: 0,1°, mit Umschalt 1°, mit Alt 0,01°. Schwenk und Rollen laufen über
+  ±180° herum.
+
+
 # v1.19: Laufende Aktivitäten, Quest-Luke nach innen (18.11.)
 
 - Neues Panel **Current activities** (rechte Leiste und Standard-Dashboard, `activities.js`): zeigt, was gerade
