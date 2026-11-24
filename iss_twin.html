@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ISS Digital Shadow v1.18.4</title>
+<title>ISS Digital Shadow v1.19</title>
 <!--
   iss_twin.html: Hauptseite von ISS Shadow (digitaler Schatten / Zwilling der ISS).
 
@@ -26,6 +26,7 @@
 <script src="i18n.js"></script>
 <script src="widgets.js"></script>
 <script src="workspace.js"></script>
+<script src="activities.js"></script>
 <link rel="stylesheet" href="virtual-controls.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -152,6 +153,14 @@ body.resizing iframe,body.resizing canvas{pointer-events:none}
 .ev span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ev em{font-style:normal;font-size:9.5px;color:var(--dim)}
 .ev.eva b{color:var(--acc2)}
+/* ---- Laufende Aktivitäten ---- */
+.act{display:grid;grid-template-columns:30px minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:6px;font-size:10.5px;padding:3px 0;border-bottom:1px solid var(--line)}
+.act b{grid-row:1/3;font:600 9px/1 var(--f-mono);color:var(--acc);border:1px solid var(--line2);padding:3px 0;text-align:center;align-self:center}
+.act span{grid-column:2;grid-row:1;min-width:0}
+.act em{grid-column:2/4;font-style:normal;font-size:9.5px;color:var(--dim)}
+.act i{grid-column:3;grid-row:1;font-style:normal;font-size:9px;color:var(--mute);text-transform:uppercase}
+.act.now i{color:var(--ok)}.act.soon i{color:var(--warn)}
+.act.eva b{color:var(--acc2);border-color:color-mix(in srgb,var(--acc2) 55%,transparent)}
 /* ---- Kanalmenü ---- */
 .menu{position:fixed;z-index:40;min-width:220px;max-width:320px;background:var(--panel-solid);border:1px solid var(--acc);box-shadow:0 8px 26px rgba(0,0,0,.5);padding:4px;display:flex;flex-direction:column}
 .menu .mh{padding:4px 6px 6px;border-bottom:1px solid var(--line);margin-bottom:3px;display:flex;flex-direction:column;gap:2px}
@@ -919,7 +928,7 @@ function vvAt(t) {
 // zusätzliche Daten (Station, Crew, kommende Ereignisse/Starts). via: Herkunft für die Anzeige.
 // Gibt false zurück, wenn keine verwertbaren Ereignisse dabei sind.
 function setVehicleEvents(js, via) {
-  for (const k of ['station', 'upcoming_events', 'upcoming_launches']) if (js?.[k]) { VV.extra[k] = js[k]; VV.extraAt = Date.now(); }
+  for (const k of ['station', 'upcoming_events', 'upcoming_launches', 'spacewalks']) if (js?.[k]) { VV.extra[k] = js[k]; VV.extraAt = Date.now(); }
   const list = parseDockingEvents(js?.events || js?.results, js?.launches || {});
   if (!list.length) return false;
   VV.list = list; VV.fetched = js.fetched || Date.now(); VV.via = via; VV.error = ''; return true;
@@ -949,7 +958,8 @@ async function refreshVehicles() {
 /* Ohne Launcher: Crew, Ereignisse und Starts direkt von LL2, 2 h zwischengespeichert. */
 async function refreshCrewDirect() {
   const base = LL2_URL.split('/docking_event/')[0], feeds = [['station', '/spacestation/4/?mode=detailed&format=json', ll2Station],
-    ['upcoming_events', '/event/upcoming/?program=17&limit=12&format=json', j => ll2Events(j.results)], ['upcoming_launches', '/launch/upcoming/?program=17&limit=8&mode=list&format=json', j => ll2Launches(j.results)]];
+    ['upcoming_events', '/event/upcoming/?program=17&limit=12&format=json', j => ll2Events(j.results)], ['upcoming_launches', '/launch/upcoming/?program=17&limit=8&mode=list&format=json', j => ll2Launches(j.results)],
+    ['spacewalks', '/spacewalks/?ordering=-start&limit=6&format=json', j => ll2Spacewalks(j.results)]];
   for (const [k, path, parse] of feeds) {
     let c = null; try { c = JSON.parse(localStorage.getItem('iss.ll2.' + k) || 'null'); } catch (e) {}
     if ((!c || Date.now() - c.fetched > 7200e3) && !(VV.retryAt > Date.now())) {
@@ -970,6 +980,9 @@ function ll2Station(j) {
       .sort((a, b) => a.priority - b.priority || String(a.name).localeCompare(b.name)) })) };
 }
 const ll2Events = r => (r || []).map(e => ({ name: e.name, type: nm(e.type), date: e.date, precision: nm(e.date_precision), location: e.location, description: (e.description || '').slice(0, 400), video: e.video_url, live: !!e.webcast_live }));
+// Außenbordeinsätze (LL2 /spacewalks/, geprüft 18.11.2026): Name, Beginn, Ende (leer, solange er läuft), EV-Crew.
+const ll2Spacewalks = r => (r || []).map(s => ({ name: s.name, start: s.start, end: s.end, location: s.location,
+  crew: (s.crew || []).map(c => ({ name: c.astronaut?.name, role: c.role?.role, agency: nm(c.astronaut?.agency) })) }));
 const ll2Launches = r => (r || []).map(l => ({ name: l.name, net: l.net, precision: nm(l.net_precision), status: l.status?.abbrev, status_name: nm(l.status), provider: l.lsp_name, mission: l.mission, type: l.mission_type, pad: l.pad, location: l.location }));
 const AGENCY_ABBR = [[/ROSCOSMOS|Russian/i, 'ROSCOSMOS'], [/National Aeronautics|NASA/i, 'NASA'], [/Canadian/i, 'CSA'], [/European/i, 'ESA'], [/Japan/i, 'JAXA'], [/Axiom/i, 'Axiom'], [/SpaceX/i, 'SpaceX'], [/Indian/i, 'ISRO'], [/United Arab|Mohammed bin Rashid/i, 'MBRSC']];
 const agencyAbbr = n => (AGENCY_ABBR.find(([re]) => re.test(n || '')) || [0, n || '-'])[1];
@@ -1008,6 +1021,24 @@ function updateCrew() {
   if (la.length) h += sub('Next launches to the ISS') + la.map(l => `<div class="ev" title="${esc((l.provider || '') + ' · ' + (l.location || ''))}"><b>${ll2When(l.net, l.precision)}</b><span>${esc(l.mission || l.name)}</span><em>${esc(l.status_name ? t(l.status_name) : l.status || '')} · ${esc(t(l.type || ''))} · ${relDays(l.net)}</em></div>`).join('');
   h += `<div class="note">${t('Source: Launch Library 2 (TheSpaceDevs); dates as precise as LL2 knows them.')}</div>`;
   box.innerHTML = h;
+}
+/* Laufende Aktivitäten (activities.js): EVA, Robotik, Verkehr, Solarflügel, Lage. Der Tracker tastet
+   die Gelenke alle 5 s ab; Telemetrie zählt nur bei echten Livewerten (nicht Sim, nicht virtuell). */
+const ACT = { track: globalThis.ISSActivities ? new ISSActivities.Tracker() : null, key: '', src: '' };
+const ACT_ICON = { eva: 'EVA', robotics: 'MSS', traffic: 'VV', arrays: 'PV', attitude: 'GNC' };
+function updateActivities(now = Date.now()) {
+  const box = $('#actBox'); if (!box || !globalThis.ISSActivities) return;
+  const telemetry = !CMD.active && LINK.src !== 'sim' && LINK.lastRx > 0;
+  if (ACT.src !== LINK.src + CMD.active) { ACT.src = LINK.src + CMD.active; ACT.track.reset(); }
+  if (telemetry) ACT.track.sample(now, p => tv(p));
+  const x = VV.extra, items = ISSActivities.derive({ now, t, telemetry, stale: LINK.sig === 'LOS', v: p => tv(p), text: p => chRead(p).text, track: ACT.track,
+    spacewalks: x.spacewalks, events: x.upcoming_events, dockings: VV.list || VV_FALLBACK, launches: x.upcoming_launches, portName: p => t(VV_PORT_NAME[p] || p || '-') });
+  const stateTxt = { now: t('now'), soon: t('soon'), recent: t('recent'), steady: t('ongoing') };
+  const info = items.filter(a => a.info); let h = items.filter(a => !a.info).map(a => `<div class="act ${a.cat} ${a.state}" title="${esc(a.src ? t('Source') + ': ' + a.src + (a.derived ? ' · ' + t('derived') : '') : '')}"><b>${ACT_ICON[a.cat]}</b><span>${esc(a.title)}</span><em>${esc(a.detail)}</em><i>${stateTxt[a.state]}</i></div>`).join('');
+  h += info.map(a => `<div class="note"><b>${esc(a.title)}:</b> ${esc(a.detail)}</div>`).join('');
+  if (!items.length) h = `<div class="note">${t('Nothing unusual right now: no spacewalk, robotics motion or vehicle traffic.')}</div>`;
+  h += `<div class="note">${telemetry ? t('Motion is detected from ISSLive over the last 2 min; spacewalks and traffic from Launch Library 2.') : t('Telemetry-based activities need live ISSLive data; Launch Library 2 items are shown.')}</div>`;
+  if (h !== ACT.key) { ACT.key = h; box.innerHTML = h; }
 }
 // HTML-Escaping für eingefügte Texte.
 const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -1135,11 +1166,13 @@ function updatePayloads(J, now) {
 }
 // Verwirft gespeicherte Lagen abgesetzter Nutzlasten (Einstellungen / Konsole).
 function resetPayloads() { PL.st = { held: null, away: {} }; plSave(); }
-/* Quest-EV-Luke: offen, solange die Crewlock drucklos ist (siehe buildISS). */
+/* Quest-EV-Luke: offen, solange die Crewlock drucklos ist (siehe buildISS). Die Luke schwenkt nach
+   innen in die Crewlock, die Thermalabdeckung nach außen. */
 function updateHatches() {
   const h = MODEL.evHatch; if (!h) return;
   const p = V('AIRLOCK000049'), open = !CMD.active && LINK.src !== 'sim' && isFinite(p) && p < 5;
-  h.rotation.x = open ? -100 * D2R : 0; h.userData.open = open;
+  h.rotation.x = open ? 95 * D2R : 0; h.userData.open = open;
+  if (MODEL.evCover) MODEL.evCover.rotation.x = open ? -110 * D2R : 0;
 }
 /* Swesda-Flügel: Ein Gelenk je Flügel um Körper-Y richtet die Zellseite bei Sonnenlicht zur
    Sonne (vorhergesagt, keine Telemetrie); im Erdschatten bleiben sie stehen. */
@@ -2393,6 +2426,7 @@ function buildPanels() {
       <div class="chips" id="ports"></div>
       ${row('rMode', 'RS mode', '', '', 'RUSSEG000001')}${row('rKurs', 'Kurs range / rate', '', '', 'RUSSEG000005')}${row('rSudn', 'SUDN attitude mode', '', '', 'RUSSEG000025')}
       ${sub('Visiting vehicles')}<div id="vvList"></div><div class="note" id="vvSrc"></div>${tileSection('rs')}`) +
+    panelHTML('pAct', 'Current activities', 'OPS // NOW', `<div id="actBox"><div class="note">${t('Waiting for telemetry and Launch Library 2…')}</div></div>`) +
     panelHTML('pCrew', 'Crew & schedule', 'LL2 // EXPEDITION', `<div id="crewBox"><div class="note">${t('Waiting for Launch Library 2…')}</div></div>`) +
     panelHTML('pCt', 'Comms', 'C&T // CATO', `
       ${row('cKu', 'Ku SGANT elev / xel', '°', '', 'Z1000014')}${row('cSa', 'S-band SASA 1 az / el', '°', '', 'S1000004')}${row('cSb', 'S-band SASA 2 az / el', '°', '', 'P1000004')}
@@ -2588,6 +2622,7 @@ function updatePanels(D) {
   setV('cSa', `${fmt(V('S1000004'), 0)} / ${fmt(V('S1000005'), 0)}`, '°'); setV('cSb', `${fmt(V('P1000004'), 0)} / ${fmt(V('P1000005'), 0)}`, '°');
   setV('cLap', isFinite(V('USLAB000087')) ? String(V('USLAB000087')) : '---');
   updateCrew();
+  updateActivities();
 }
 const POWH = [], ALTH = [];
 
@@ -3680,7 +3715,7 @@ function setLanguage(lang) {
   ISSWorkspace.relang(); logEvent(t('Language: {0}', I18N.LANGS[lang]));
 }
 /* ---------- Launcher-Anbindung (Heartbeat + Beenden) ---------- */
-const PAGE_VERSION = '1.18.4';      // muss mit VERSION in launcher.py übereinstimmen
+const PAGE_VERSION = '1.19';      // muss mit VERSION in launcher.py übereinstimmen
 function initLauncher() {
   if (!/^https?:$/.test(location.protocol)) return;
   // Ein neuerer Launcher ersetzt den alten; ein offener Tab lädt sich dann selbst neu, statt
