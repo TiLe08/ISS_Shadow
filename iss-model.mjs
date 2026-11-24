@@ -658,10 +658,14 @@ export function buildStation(cfg = {}) {
     cyl(MODEL.bishop, 'y', 0.15, 0.32, 0.32, [0, -10.595, 0.75], 'gold', 'Bishop grapple fixture', { sys: 'bishop', segs: 16 }); }
   // Quest: Ausrüstungsschleuse (4 m) und Crewlock (2 m) mit vier Hochdrucktanks (2 × O2, 2 × N2).
   hull(root, 'y', [[2.15, 1.25], [2.6, 2.0], [4.75, 2.0], [5.0, 1.0], [7.63, 1.0], [7.63, 0]], [N1X, Z], 'module', 'Quest airlock', { sys: 'al', segs: 28 });
-  // EV-Luke der Crewlock (Scharnier oben). Offen gezeichnet, solange die Crewlock drucklos ist
-  // (AIRLOCK000049 < 5 mmHg), abgeleitet: ISSLive hat keinen Lukenkanal.
-  { const h = new THREE.Group(); h.position.set(N1X, 7.67, Z - 0.55); root.add(h); MODEL.evHatch = h;
-    cyl(h, 'y', 0.08, 0.52, 0.52, [0, 0, 0.55], 'white', 'Quest EV hatch', { sys: 'al', segs: 18, rings: 0 }); }
+  // EV-Luke der Crewlock, wie bei Quest gebaut: Die druckdichte Luke öffnet nach innen in die Crewlock
+  // (Kabinendruck presst sie in die Dichtung), davor sitzt eine nach außen aufklappende Thermalabdeckung.
+  // Beide offen gezeichnet, solange die Crewlock drucklos ist (AIRLOCK000049 < 5 mmHg), abgeleitet:
+  // ISSLive hat keinen Lukenkanal.
+  { const h = new THREE.Group(); h.position.set(N1X, 7.55, Z - 0.55); root.add(h); MODEL.evHatch = h;
+    cyl(h, 'y', 0.08, 0.5, 0.5, [0, 0, 0.55], 'white', 'Quest EV hatch (opens inward)', { sys: 'al', segs: 18, rings: 0 });
+    const c = new THREE.Group(); c.position.set(N1X, 7.67, Z - 0.55); root.add(c); MODEL.evCover = c;
+    cyl(c, 'y', 0.03, 0.54, 0.54, [0, 0, 0.55], 'white', 'Quest EV hatch thermal cover', { sys: 'al', segs: 18, rings: 0 }); }
   for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
     const p = [N1X + sx * 1.72, 3.7, Z + sz * 1.72];
     cyl(root, 'y', 1.1, 0.46, 0.46, p, 'white', 'High-pressure gas tank (' + (sz < 0 ? 'O2' : 'N2') + ')', { ...D, segs: 14, rings: 0, open: true });

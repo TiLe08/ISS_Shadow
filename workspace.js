@@ -24,12 +24,12 @@
   // bei jedem Fehler den Vorgabewert d, save schlägt still fehl.
   const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k) || 'null'); return v ?? d; } catch (e) { return d; } };
   const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
-  // Standard-Dashboard: Gruppen Station (3D, Karte, Crew), Energie, Lebenserhaltung und Lage,
+  // Standard-Dashboard: Gruppen Station (3D, Karte, laufende Aktivitäten, Crew), Energie, Lebenserhaltung und Lage,
   // jeweils mit einer passenden Darstellung pro Kanal.
   function defaultDash() {
     const ch = (p, view, size = 's') => ({ id: uid(), type: 'channel', p, view, size });
     return { groups: [
-      { id: uid(), title: t('Station'), widgets: [{ id: uid(), type: 'view3d', size: 'x' }, { id: uid(), type: 'map', size: 'w' }, { id: uid(), type: 'panel', panel: 'pCrew', size: 'l' }] },
+      { id: uid(), title: t('Station'), widgets: [{ id: uid(), type: 'view3d', size: 'x' }, { id: uid(), type: 'map', size: 'w' }, { id: uid(), type: 'panel', panel: 'pAct', size: 'l' }, { id: uid(), type: 'panel', panel: 'pCrew', size: 'l' }] },
       { id: uid(), title: t('Power'), widgets: [ch('S4000001', 'gauge'), ch('S6000004', 'gauge'), ch('P4000001', 'gauge'), ch('P6000004', 'gauge'), ch('S0000004', 'dial'), ch('S0000003', 'dial'), ch('S0000008', 'state'), ch('S0000009', 'state')] },
       { id: uid(), title: t('Life support'), widgets: [ch('NODE3000005', 'bar'), ch('NODE3000008', 'bar'), ch('NODE3000009', 'bar'), ch('NODE3000003', 'graph', 'm'), ch('USLAB000058', 'value'), ch('NODE3000001', 'value')] },
       { id: uid(), title: t('Attitude'), widgets: [ch('USLAB000010', 'bar'), ch('USLAB000012', 'state'), ch('USLAB000086', 'state'), ch('USLAB000026', 'graph', 'm')] },

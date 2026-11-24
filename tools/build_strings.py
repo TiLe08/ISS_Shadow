@@ -5,6 +5,7 @@ Jede Zeile einer strings-*.tsv: English|Deutsch|Español|Русский|Françai
   strings-ui.tsv       Beschriftungen der Oberfläche
   strings-status.tsv   Status- und Meldungstexte (Ereignisprotokoll, Tooltips)
   strings-command.tsv  Texte des Kommandofensters
+  strings-activities.tsv  Panel „Current activities“ (activities.js)
 Die Seite übersetzt zur Laufzeit mit t('English text') über i18n.js; fehlt ein Eintrag,
 erscheint der englische Text. Nach jeder Änderung an einer Tabelle neu erzeugen:
 Aufruf: python tools/build_strings.py"""

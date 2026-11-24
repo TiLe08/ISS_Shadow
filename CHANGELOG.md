@@ -2,7 +2,7 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
-# v1.19: An- und Abflug wie in echt, Nahbereichsradar (18.11.)
+# v1.20: An- und Abflug wie in echt, Nahbereichsradar (24.11.)
 
 - **An- und Abflug** (`proxops.mjs`): Ein Fahrzeug verschwindet beim Abdocken nicht mehr und taucht beim
   Andocken nicht mehr auf, es fliegt den Ablauf seiner Baureihe entlang der Portachse:
@@ -32,6 +32,24 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
   Gerechnet wird nur bei offenem Panel, einmal pro Sekunde.
 - Neue Tests `tests/test_proxops.mjs`, `tests/test_tle.py`.
 
+# v1.19: Laufende Aktivitäten, Quest-Luke nach innen (18.11.)
+
+- Neues Panel **Current activities** (rechte Leiste und Standard-Dashboard, `activities.js`): zeigt, was gerade
+  an der Station passiert.
+  - **EVA:** laufender oder gerade beendeter Außenbordeinsatz mit EV-Crew und Dauer aus dem neuen LL2-Feed
+    `/spacewalks/` (Ende leer = läuft), geplante EVAs der nächsten 48 h, Crewlock-Druck (drucklos = Luke offen,
+    Druckabfall / Wiederbefüllung), Stationsmodus „External ops“, RS-Modus EVA.
+  - **Robotik:** Canadarm2, Dextre und Mobile Transporter, wenn sich ihre Gelenke bzw. die Position in den
+    letzten 2 min bewegt haben (Schwellen geschätzt), mit Basis und gegriffener Nutzlast.
+  - **Verkehr:** Ankunft und Abflug in den nächsten 72 h, An- und Abdocken der letzten 6 h (LL2), gestartete
+    Fahrzeuge auf dem Weg, Kurs-Anflug (nur bei eingeschaltetem Kurs), Stationsmodus „Prox ops“.
+  - **Solarflügel/Radiatoren:** SARJ oder TRRJ nicht im Autotrack (hält / dreht), BGA drehen, sonst
+    „folgt der Sonne“ mit Drehrate. **Lage:** Lagemanöver, Bahnanhebung, freier Flug.
+  - Wo die Astronauten draußen sind, veröffentlicht keine Quelle (NASA, LL2, ISSLive); das Panel sagt das.
+- `vehicles.py` ruft dafür `/spacewalks/` alle 30 min ab (LL2-Budget jetzt etwa 5,5 von 15 Anfragen/h).
+- **Quest-EV-Luke:** Die druckdichte Luke öffnet wie in echt nach innen in die Crewlock; neu ist die nach außen
+  aufklappende Thermalabdeckung. Bisher klappte die Luke selbst nach außen.
+- Neuer Test `tests/test_activities.mjs`, Übersetzungen in `tools/strings-activities.tsv`.
 # v1.18.4: freischwebende Teile angebunden, Dragon C211 gedreht (18.11.)
 
 - Suche nach Teilen ohne Verbindung zur Station (Oberflächenpunkte im Abstand von 0,12 m): Vorher

@@ -1,0 +1,65 @@
+Current activities|Laufende Aktivitäten|Actividades en curso|Текущие операции|Activités en cours|現在の活動
+Waiting for telemetry and Launch Library 2…|Warte auf Telemetrie und Launch Library 2…|Esperando telemetría y Launch Library 2…|Ожидание телеметрии и Launch Library 2…|En attente de la télémétrie et de Launch Library 2…|テレメトリと Launch Library 2 を待機中…
+A vehicle is approaching or leaving|Ein Fahrzeug nähert sich oder legt ab|Un vehículo se acerca o se aleja|Корабль приближается или отходит|Un véhicule approche ou s'éloigne|機体が接近中または離脱中
+Arriving: {0}|Ankunft: {0}|Llegada: {0}|Прибытие: {0}|Arrivée : {0}|到着: {0}
+Attitude maneuver in progress|Lagemanöver läuft|Maniobra de actitud en curso|Выполняется разворот|Manœuvre d'attitude en cours|姿勢変更中
+Canadarm2 moving|Canadarm2 bewegt sich|Canadarm2 en movimiento|Canadarm2 движется|Canadarm2 en mouvement|Canadarm2 動作中
+Crewlock at vacuum, EV hatch open|Crewlock drucklos, EV-Luke offen|Crewlock en vacío, escotilla EV abierta|Шлюз разгерметизирован, люк EV открыт|Crewlock au vide, écoutille EV ouverte|クルーロック真空、EVハッチ開
+Crewlock below cabin pressure|Crewlock unter Kabinendruck|Crewlock por debajo de la presión de cabina|Давление в шлюзе ниже кабинного|Crewlock sous la pression cabine|クルーロック与圧未満
+Crewlock depressurising|Crewlock wird entleert|Despresurizando la crewlock|Сброс давления в шлюзе|Dépressurisation du crewlock|クルーロック減圧中
+Crewlock repressurising|Crewlock wird wieder befüllt|Represurizando la crewlock|Наддув шлюза|Repressurisation du crewlock|クルーロック再加圧中
+Crewlock {0} mmHg · crew can be outside|Crewlock {0} mmHg · Crew kann draußen sein|Crewlock {0} mmHg · la tripulación puede estar fuera|Шлюз {0} мм рт. ст. · экипаж может быть снаружи|Crewlock {0} mmHg · l'équipage peut être dehors|クルーロック {0} mmHg · 船外にいる可能性
+Crewlock {0} mmHg|Crewlock {0} mmHg|Crewlock {0} mmHg|Шлюз {0} мм рт. ст.|Crewlock {0} mmHg|クルーロック {0} mmHg
+Departing: {0}|Abflug: {0}|Salida: {0}|Отстыковка: {0}|Départ : {0}|離脱: {0}
+Dextre moving|Dextre bewegt sich|Dextre en movimiento|Dextre движется|Dextre en mouvement|Dextre 動作中
+Docked: {0}|Angedockt: {0}|Acoplado: {0}|Пристыкован: {0}|Amarré : {0}|ドッキング済み: {0}
+Docking at {0} in {1}|Andocken an {0} in {1}|Acoplamiento en {0} en {1}|Стыковка к {0} через {1}|Amarrage à {0} dans {1}|{0} へのドッキングまで {1}
+En route to the ISS: {0}|Unterwegs zur ISS: {0}|En camino a la ISS: {0}|В пути к МКС: {0}|En route vers l'ISS : {0}|ISSへ飛行中: {0}
+Joints {0}|Gelenke {0}|Articulaciones {0}|Шарниры {0}|Articulations {0}|関節 {0}
+Kurs approach active|Kurs-Anflug aktiv|Aproximación Kurs activa|Сближение по «Курсу»|Approche Kurs active|Kurs 接近中
+Mobile Transporter translating|Mobile Transporter fährt|Mobile Transporter desplazándose|Мобильный транспортёр движется|Mobile Transporter en translation|モービルトランスポーター移動中
+Motion is detected from ISSLive over the last 2 min; spacewalks and traffic from Launch Library 2.|Bewegungen aus ISSLive über die letzten 2 min; Außenbordeinsätze und Verkehr aus Launch Library 2.|Movimiento detectado con ISSLive en los últimos 2 min; salidas y tráfico de Launch Library 2.|Движение по ISSLive за последние 2 мин; выходы и трафик из Launch Library 2.|Mouvements détectés via ISSLive sur les 2 dernières min ; sorties et trafic via Launch Library 2.|動作は直近2分の ISSLive から検出、船外活動と交通は Launch Library 2 から
+Not published by NASA or any public API; only who is outside and the airlock state are known.|Weder NASA noch eine öffentliche API veröffentlicht sie; bekannt sind nur, wer draußen ist, und der Zustand der Schleuse.|No las publica la NASA ni ninguna API pública; solo se sabe quién está fuera y el estado de la esclusa.|Не публикуются ни NASA, ни открытыми API; известно только, кто снаружи, и состояние шлюза.|Ni la NASA ni aucune API publique ne les publient ; on sait seulement qui est dehors et l'état du sas.|NASA も公開APIも公表していない。分かるのは船外の人とエアロックの状態のみ
+Nothing unusual right now: no spacewalk, robotics motion or vehicle traffic.|Gerade nichts Besonderes: kein Außenbordeinsatz, keine Robotikbewegung, kein Verkehr.|Nada especial ahora: sin salida, sin movimiento robótico ni tráfico.|Сейчас ничего особенного: нет выхода, движения манипуляторов или трафика.|Rien de particulier : pas de sortie, de mouvement robotique ni de trafic.|現在特記事項なし: 船外活動、ロボット動作、交通なし
+Outside: {0}|Draußen: {0}|Fuera: {0}|Снаружи: {0}|Dehors : {0}|船外: {0}
+Positions of the crew outside|Positionen der Crew draußen|Posiciones de la tripulación fuera|Положение экипажа снаружи|Positions de l'équipage dehors|船外クルーの位置
+Range {0} m · rate {1} m/s|Abstand {0} m · Rate {1} m/s|Distancia {0} m · velocidad {1} m/s|Дальность {0} м · скорость {1} м/с|Distance {0} m · vitesse {1} m/s|距離 {0} m · 速度 {1} m/s
+Reboost or orbit correction|Bahnanhebung oder Bahnkorrektur|Elevación o corrección de órbita|Подъём или коррекция орбиты|Rehausse ou correction d'orbite|リブーストまたは軌道修正
+Russian segment in EVA mode|Russisches Segment im EVA-Modus|Segmento ruso en modo EVA|РС в режиме ВКД|Segment russe en mode EVA|ロシア区画 EVA モード
+Russian segment in proximity-operations mode|Russisches Segment im Annäherungsmodus|Segmento ruso en modo de proximidad|РС в режиме сближения|Segment russe en mode proximité|ロシア区画 近傍運用モード
+SARJ port {0}°/min · stbd {1}°/min|SARJ backbord {0}°/min · steuerbord {1}°/min|SARJ babor {0}°/min · estribor {1}°/min|SARJ левый {0}°/мин · правый {1}°/мин|SARJ bâbord {0}°/min · tribord {1}°/min|SARJ 左舷 {0}°/min · 右舷 {1}°/min
+Set for spacewalks and robotics outside|Gesetzt für Außenbordeinsätze und Robotik außen|Activado para salidas y robótica exterior|Для выходов и внешней робототехники|Activé pour les sorties et la robotique extérieure|船外活動・船外ロボット作業用
+Solar array wings rotating (BGA)|Solarflügel drehen (BGA)|Alas solares girando (BGA)|Крылья СБ вращаются (BGA)|Ailes solaires en rotation (BGA)|太陽電池翼回転中 (BGA)
+Solar arrays tracking the Sun|Solarflügel folgen der Sonne|Paneles solares siguiendo al Sol|СБ отслеживают Солнце|Panneaux solaires suivant le Soleil|太陽電池翼 太陽追尾中
+Source|Quelle|Fuente|Источник|Source|出典
+Spacewalk ended: {0}|Außenbordeinsatz beendet: {0}|Salida finalizada: {0}|Выход завершён: {0}|Sortie terminée : {0}|船外活動終了: {0}
+Spacewalk in progress: {0}|Außenbordeinsatz läuft: {0}|Salida en curso: {0}|Идёт выход: {0}|Sortie en cours : {0}|船外活動中: {0}
+Spacewalk planned: {0}|Außenbordeinsatz geplant: {0}|Salida prevista: {0}|Запланирован выход: {0}|Sortie prévue : {0}|船外活動予定: {0}
+Station mode: external operations|Stationsmodus: Außenarbeiten|Modo de estación: operaciones externas|Режим станции: внешние работы|Mode station : opérations externes|ステーションモード: 船外運用
+Station mode: proximity operations|Stationsmodus: Annäherung|Modo de estación: operaciones de proximidad|Режим станции: сближение|Mode station : opérations de proximité|ステーションモード: 近傍運用
+Telemetry-based activities need live ISSLive data; Launch Library 2 items are shown.|Aktivitäten aus Telemetrie brauchen Livewerte von ISSLive; Einträge aus Launch Library 2 werden gezeigt.|Las actividades de telemetría requieren datos en vivo de ISSLive; se muestran los de Launch Library 2.|Для телеметрических событий нужны живые данные ISSLive; показаны данные Launch Library 2.|Les activités issues de la télémétrie demandent des données ISSLive en direct ; celles de Launch Library 2 sont affichées.|テレメトリ由来の活動には ISSLive のライブデータが必要。Launch Library 2 の項目を表示
+US attitude control off, usually around dockings|US-Lageregelung aus, meist rund um Andockungen|Control de actitud de EE. UU. apagado, normalmente en acoplamientos|Управление ориентацией US выключено, обычно при стыковках|Contrôle d'attitude US coupé, souvent autour des amarrages|米区画姿勢制御オフ、主にドッキング前後
+Undocked: {0}|Abgedockt: {0}|Desacoplado: {0}|Отстыкован: {0}|Désamarré : {0}|離脱済み: {0}
+Undocking from {0} in {1}|Abdocken von {0} in {1}|Desacoplamiento de {0} en {1}|Отстыковка от {0} через {1}|Désamarrage de {0} dans {1}|{0} からの離脱まで {1}
+base {0}|Basis {0}|base {0}|база {0}|base {0}|基部 {0}
+duration {0}|Dauer {0}|duración {0}|длительность {0}|durée {0}|時間 {0}
+holding {0}°|hält {0}°|mantiene {0}°|держит {0}°|tient {0}°|{0}° で保持
+in {0}|in {0}|en {0}|через {0}|dans {0}|{0} 後
+last value before LOS|letzter Wert vor LOS|último valor antes de LOS|последнее значение до LOS|dernière valeur avant LOS|LOS 前の最終値
+launched {0} ago|vor {0} gestartet|lanzado hace {0}|запущен {0} назад|lancé il y a {0}|{0} 前に打上げ
+mode {0}|Modus {0}|modo {0}|режим {0}|mode {0}|モード {0}
+ongoing|laufend|en curso|идёт|en cours|継続中
+recent|kürzlich|reciente|недавно|récent|最近
+slewing {0}°/min|dreht {0}°/min|girando {0}°/min|поворот {0}°/мин|pivote {0}°/min|旋回 {0}°/min
+soon|bald|pronto|скоро|bientôt|まもなく
+station mode {0}|Stationsmodus {0}|modo de estación {0}|режим станции {0}|mode station {0}|ステーションモード {0}
+tip LEE holding a payload|Spitzen-LEE hält eine Nutzlast|el LEE de la punta sujeta una carga|концевой LEE держит груз|le LEE d'extrémité tient une charge|先端 LEE がペイロードを把持
+{0} cm in the last 2 min · worksite {1}|{0} cm in den letzten 2 min · Arbeitsplatz {1}|{0} cm en los últimos 2 min · lugar de trabajo {1}|{0} см за последние 2 мин · рабочее место {1}|{0} cm sur les 2 dernières min · poste {1}|直近2分で {0} cm · ワークサイト {1}
+{0} elapsed|{0} vergangen|{0} transcurrido|прошло {0}|{0} écoulé|{0} 経過
+{0} not in autotrack|{0} nicht im Autotrack|{0} no en autotrack|{0} не в автослежении|{0} pas en autotrack|{0} 自動追尾外
+{0} not sun-tracking|{0} folgt nicht der Sonne|{0} no sigue al Sol|{0} не отслеживает Солнце|{0} ne suit pas le Soleil|{0} 太陽追尾外
+{0} · {1} ago|{0} · vor {1}|{0} · hace {1}|{0} · {1} назад|{0} · il y a {1}|{0} · {1} 前
+Port SARJ|SARJ backbord|SARJ babor|Левый SARJ|SARJ bâbord|左舷 SARJ
+Starboard SARJ|SARJ steuerbord|SARJ estribor|Правый SARJ|SARJ tribord|右舷 SARJ
+Port radiator (TRRJ)|Radiator backbord (TRRJ)|Radiador babor (TRRJ)|Левый радиатор (TRRJ)|Radiateur bâbord (TRRJ)|左舷ラジエータ (TRRJ)
+Starboard radiator (TRRJ)|Radiator steuerbord (TRRJ)|Radiador estribor (TRRJ)|Правый радиатор (TRRJ)|Radiateur tribord (TRRJ)|右舷ラジエータ (TRRJ)
