@@ -9,6 +9,12 @@ import vehicles  # noqa: E402
 SAMPLE = json.loads((HERE / "ll2_docking_sample.json").read_text(encoding="utf-8"))
 N = sum(1 for e in SAMPLE["results"] if e["docking_location"]["spacestation"]["id"] == 4)
 EXTRA = json.loads((HERE / "ll2_station_sample.json").read_text(encoding="utf-8"))
+# Testdaten in der Form von LL2 /spacewalks/ (geprüft 18.11.2026, Werte für den Test gewählt); der erste Einsatz läuft noch (end leer).
+SPACEWALKS = {"count": 2, "results": [
+    {"id": 504, "name": "Expedition 75 EVA 7", "start": "2026-11-18T12:00:00Z", "end": None, "location": "International Space Station",
+     "crew": [{"role": {"role": "EV1"}, "astronaut": {"name": "Anil Menon", "agency": {"name": "NASA"}}},
+              {"role": {"role": "EV2"}, "astronaut": {"name": "Joshua Kutryk", "agency": {"name": "Canadian Space Agency"}}}]},
+    {"id": 503, "name": "Expedition 75 EVA 6", "start": "2026-11-05T13:36:00Z", "end": "2026-11-05T20:35:00Z", "location": "International Space Station", "crew": []}]}
 
 
 class FakeLL2:
@@ -23,6 +29,7 @@ class FakeLL2:
         if "/spacestation/" in url: return EXTRA["station"]
         if "/event/" in url: return EXTRA["events"]
         if "/launch/" in url: return EXTRA["launches"]
+        if "/spacewalks/" in url: return SPACEWALKS
         raise AssertionError(url)
 
 
@@ -41,7 +48,7 @@ class Vehicles(unittest.TestCase):
             s.step(); self.assertEqual(len(get.calls), 1, "one request per step")
             s.step(); self.assertEqual(len(get.calls), 1, f"requests are {vehicles.SPACING} s apart")
             run_all(s); snap = s.snapshot()
-            self.assertEqual(len(get.calls), 4, "docking, station, events, launches")
+            self.assertEqual(len(get.calls), 5, "docking, station, events, launches, spacewalks")
             self.assertTrue(snap["available"]); self.assertIsNone(snap["error"])
             self.assertEqual(len(snap["events"]), N, "Tiangong event dropped (station read from docking_location)")
             self.assertIn("space_station__id=4", get.calls[0])
@@ -54,7 +61,8 @@ class Vehicles(unittest.TestCase):
             self.assertEqual(snap["upcoming_launches"][0]["status"], "TBC")
             hourly = sum(3600 / every for _, every in vehicles.FEEDS.values())
             self.assertLess(hourly, 6, "well inside 15 requests/hour")
-            run_all(s); self.assertEqual(len(get.calls), 4, "nothing due before the refresh intervals")
+            sw = snap["spacewalks"][0]; self.assertIsNone(sw["end"]); self.assertEqual(sw["crew"][0], {"name": "Anil Menon", "role": "EV1", "agency": "NASA"})
+            run_all(s); self.assertEqual(len(get.calls), 5, "nothing due before the refresh intervals")
             # der Cache übersteht einen Neustart und verzögert die nächsten Abrufe (Ratenlimit)
             s2 = vehicles.VehicleService(d, base="http://ll2", get=FakeLL2()); s2.load_cache()
             snap2 = s2.snapshot()
