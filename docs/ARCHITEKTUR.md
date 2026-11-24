@@ -43,6 +43,8 @@ Protokollierung.
    │     │  logs/iss_tm_JJJJMMTT.csv, logs/commands.jsonl        │ │                       │
    │  ephemeris.py ◀─ NASA OEM (HTTPS) ─▶ iss/orbit, /__orbit    │ │                       │
    │  vehicles.py  ◀─ Launch Library 2 ─▶ /__vehicles            │ │                       │
+   │  streams.py   ◀─ YouTube, sen.com ─▶ /__streams             │ │                       │
+   │  tle.py       ◀─ CelesTrak (TLE)  ─▶ /__tle                 │ │                       │
    │  MQTT-Broker (amqtt) 1883 TCP / 9001 WebSocket              │ │                       │
    │  Webserver 8137 (liefert die Projektdateien aus)            │ │                       │
    └──────────────┬──────────────────────────────────────────────┘ │                       │
@@ -67,20 +69,27 @@ Protokollierung.
 | `iss-model.mjs` | Das prozedurale 3D-Modell: `MODEL`, Materialien für Holo und Solid, Bauteil-Fabrik, Druckmodule, Träger, Solarflügel, Radiatoren, Besuchsfahrzeuge, Canadarm2, Dextre (`buildStation`), Montagekonventionen (`solarNormal`, `radiatorNormal`) |
 | `model-checks.mjs` | Radiator-Zielwinkel und Kollisionsprüfung (Sweep-and-Prune, OBB, GJK); Detailteile (`decor`) sind ausgenommen |
 | `earth-tiles.mjs` | Erdkugel aus NASA-GIBS-Kacheln mit Detailstufen |
-| `planet-overlay.mjs` | Küstenlinien, Grenzen, Gradnetz und Ortsbeschriftungen (Radarmodus) |
+| `planet-overlay.mjs` | Küstenlinien, Grenzen, Gradnetz und Ortsbeschriftungen (Radarmodus der Erdkugel) |
+| `cameras.mjs` | Außenkameras als Modell mit den Kameraketten aus NASA DOUG (`DOUG_RIGS`, v1.21) und Kamerafenster: Livestream neben der Zwillingsansicht, Überlagerung, Schwenk/Neigung/Rollen/Sichtfeld je Kamera (`iss.cams`), Stream-Auswahl |
+| `calib-panel.mjs` | Kalibrierfeld im Kamerafenster (Knopf Calibrate): Nullpunkte, Vorzeichen, Videoverzögerung und Kameraversatz am Livebild einstellen, Export/Import |
+| `window-frame.mjs` | Verschieben und Größenänderung des Kamerafensters (`iss.camwin`) |
+| `activities.js` | Panel „Current activities“: EVA, Robotik, Verkehr, Solarflügel, Lage aus Telemetrie und LL2 (`window.ISSActivities`, v1.19) |
+| `proxops.mjs` | An- und Abflug der Besuchsfahrzeuge je Baureihe als Abstand entlang der Portachse über der Zeit (v1.20, Richtwerte) |
+| `radar.mjs` | Nahbereichsradar im LVLH-System aus CelesTrak-Bahnelementen (SGP4 mit satellite.js 6.0.1 vom CDN), Kurs-Abstand und modellierten An- und Abflügen (v1.20, experimentell) |
 | `assets/earth/` | Grundkacheln (Stufe 2) und Natural-Earth-Vektordaten |
 
 **In Python** (nur Standardbibliothek plus `paho-mqtt`, `lightstreamer-client-lib`, `amqtt`):
 
 | Datei | Aufgabe |
 |---|---|
-| `launcher.py` | Start mit einem Klick: Broker, Bridge, Fahrzeugdienst, Webserver, Browser; beendet sich bei EXIT oder Leerlauf |
+| `launcher.py` | Start mit einem Klick: Broker, Bridge, Bahn-, Fahrzeug-, Stream- und TLE-Dienst, Webserver, Browser; beendet sich bei EXIT oder Leerlauf |
 | `bridge.py` | ISSLive → MQTT, CSV-Protokoll, Zeitbasis, Watchdog, Quittierung von Kommandos; auch eigenständig nutzbar |
 | `ephemeris.py` | NASA-Bahnvorhersage (OEM) laden, prüfen, interpolieren, zwischenspeichern |
-| `vehicles.py` | Andockereignisse, Crew, Ereignisse und Starts aus Launch Library 2 |
+| `vehicles.py` | Andockereignisse, Crew, Ereignisplan, Starts und Außenbordeinsätze (`/spacewalks/`) aus Launch Library 2 |
 | `streams.py` | Laufende ISS-Livestreams von NASA (YouTube-Stream-Seite) und Sen (Schnittstelle von sen.com, sonst YouTube) ermitteln (`/__streams`), weil feste Video-Kennungen nach einiger Zeit privat werden |
-| `calib-panel.mjs` | Kalibrierfeld im Kamerafenster (Knopf Calibrate): Nullpunkte, Vorzeichen, Videoverzögerung und Kameraversatz am Livebild einstellen, Export/Import |
-| `cameras.mjs` | Außenkameras als Modell (anklickbar) und Kamerafenster: Livestream neben der Zwillingsansicht im Bildformat und Sichtfeld der gewählten Kamera, Überlagerung, Schwenk/Neigung/Zoom je Kamera (localStorage `iss.cams`), Stream-Auswahl mit Ausweichen bei gesperrten Videos |
+| `tle.py` | Bahnelemente der CelesTrak-Gruppen „stations“ und „last-30-days“ höchstens alle 2 h holen, Zwischenspeicher `cache/tle.json`, liefert `/__tle` für das Radar |
+| `tools/doug_cameras.mjs` | Rechnet die Kameraknoten des DOUG-Pakets in `DOUG_RIGS` (`cameras.mjs`) um |
+| `pruefwerkzeuge/camshot.mjs` | Zwillingsansicht einer Kamera mit Telemetrie aus einer JSON-Datei aufnehmen (Node, Playwright) |
 | `tools/export_viewer.mjs`, `tools/viewer_template.html` | Erzeugen `ISS_Model_Viewer_v1.3.html`: bauen das Modell wie die Seite, backen Geometrie, Materialien und Texturen ein und schreiben einen eigenständigen Viewer (Node.js) |
 | `tests/harness.mjs` | Gemeinsamer Aufbau aller JavaScript-Tests und des Viewer-Exports: lädt die Seite ohne WebGL in jsdom |
 | `tools/build_strings.py` | Erzeugt `i18n-strings.js` aus den Übersetzungstabellen |
@@ -143,6 +152,9 @@ Beispiel: Der Backbord-SARJ dreht sich, ISSLive sendet `S0000004`.
 | `MSS_CAL` | gelernte MSS-Kalibrierung (Rollwinkel der MBS-Greifpunkte, Gelenkkonvention) |
 | `MODEL` | 3D-Modell: alle Bauteile (`parts`), Drehpunkte (`pivots`), Greifpunkte (`anchors`), Canadarm2 (`ssrms`), Dextre, Fahrzeuge, Abgasstrahlen, Beschriftungen |
 | `CMD` | Kommandomodus: aktiv?, virtuelle Station (`sys`), virtueller Gelenkzustand (`st`), Sollwerte (`sp`), Zeitraffer, Pause, Armplan |
+| `PROX` | An- und Abflüge je Port (`active`), Vorschau, angelegte und freigegebene Frachter |
+| `RD` | Nahbereichsradar: SGP4-Bibliothek, Bahnelemente, Reichweite, Drehung, letztes Ergebnis |
+| `ACT` | Aktivitäten: Tracker für Gelenk- und Positionsänderungen |
 | `D` | „Daten dieses Bildes“: Geo-Position, Sonne, Erdschatten, Gelenke, Vorhersage; wird von `frame()` gefüllt und von den Panels gelesen |
 | `VV` | Besuchsfahrzeuge: LL2-Ereignisse, Herkunft, Crew-Daten |
 | `S` | Szene: Renderer, Kamera, Steuerung, LVLH-Gruppe, Erde, Lichter |
@@ -153,7 +165,7 @@ Für die Entwicklerkonsole stellt die Seite `window.ISS` bereit (u. a. `TM`, `MO
 
 ## Aufbau von `iss_twin.html`
 
-Die Datei ist groß (~4200 Zeilen), aber linear gegliedert. Die Abschnitte stehen als Banner-Kommentare
+Die Datei ist groß (~4000 Zeilen), aber linear gegliedert. Die Abschnitte stehen als Banner-Kommentare
 im Code und lassen sich per Suche finden:
 
 1. **Kopf:** klassische Skripte des Projekts, Bibliotheken vom CDN (Lightstreamer 9.2.3, MQTT.js 5,
@@ -165,7 +177,8 @@ im Code und lassen sich per Suche finden:
    - *Zeit + Astronomie:* Sternzeit, Sonnenrichtung, Stunden des Jahres, `feedLagH`.
    - *Bahn:* Zweikörper + J2, Luftwiderstand, RK4, Umrechnungen (ECI → geografisch, LVLH, Bahnelemente).
    - *3D-Modell:* Das Modell selbst steht in `iss-model.mjs`. In der Seite bleiben Farbschema,
-     iROSA-Zeitsteuerung, Besuchsfahrzeuge und LL2-Anbindung, Greifen, Luken, `buildISS()` (ruft
+     iROSA-Zeitsteuerung, Besuchsfahrzeuge und LL2-Anbindung, laufende Aktivitäten, An- und Abflug
+     (`proxops.mjs`), Nahbereichsradar (`radar.mjs`), Greifen, Luken, `buildISS()` (ruft
      `buildStation`) und die MSS-Kalibrierung.
    - *Szene:* Renderer, Erde (Shader, Kacheln, Overlay), Sterne, Sonne, Kamera-Voreinstellungen.
    - *Telemetrie:* Speicher, Zeitbasis, `ingest`, Quellen Lightstreamer/MQTT/Simulator, Watchdog,
@@ -202,7 +215,10 @@ Ausführlich in [MODELL_UND_KALIBRIERUNG.md](MODELL_UND_KALIBRIERUNG.md).
 | `iss.graphs` | angeheftete Kanäle im Graphs-Panel |
 | `iss.cal.trrj` | Drehsinn der Radiatorgelenke, falls die Prüfung im AUTOTRACK ihn korrigiert hat (v1.15) |
 | `iss.calib` | Kalibrierfeld: Videoverzögerung, Gelenk-Vorzeichen/-Offsets, Greifpunkt-Drehung, Zusatzoffsets (v1.17), Armkonvention `armConv` (v1.18) |
-| `iss.cams` | Kamerafenster: Schwenk, Neigung, Zoom und Kamerakopf je Kamera, gewählter Stream |
+| `iss.cams` | Kamerafenster: Schwenk, Neigung, Rollen, Sichtfeld und Kamerakopf je Kamera, gewählter Stream |
+| `iss.camwin` | Lage und Größe des Kamerafensters |
+| `iss.camMarks` | Kameramarkierungen in der Hauptansicht ein/aus |
+| `iss.tle` | Bahnelemente für das Radar, wenn ohne Launcher direkt von CelesTrak geladen |
 | `iss.payloads` | was Canadarm2 hält und wo abgesetzte Nutzlasten stehen; zurücksetzen mit `ISS.resetPayloads()` in der Konsole |
 | `iss.ll2`, `iss.ll2.*` | Zwischenspeicher der LL2-Antworten, wenn ohne Launcher gearbeitet wird |
 
