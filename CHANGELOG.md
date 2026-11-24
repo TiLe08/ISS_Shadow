@@ -2,6 +2,36 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.20: An- und Abflug wie in echt, Nahbereichsradar (24.11.)
+
+- **An- und Abflug** (`proxops.mjs`): Ein Fahrzeug verschwindet beim Abdocken nicht mehr und taucht beim
+  Andocken nicht mehr auf, es fliegt den Ablauf seiner Baureihe entlang der Portachse:
+  - Dragon/Starliner: Anflug über Wegpunkt 1 (220 m) und Wegpunkt 2 (20 m) mit Halten, Endanflug, weiches
+    und festes Ankoppeln. Abflug: Zurücksetzen, Abflugzündungen, Austritt aus der 200-m-Sicherheitskugel,
+    die **Nasenkappe schließt** (Drehung um ein Scharnier), danach wird das Fahrzeug ausgeblendet (18 min).
+  - Sojus/Progress: Umfliegen, Halten in etwa 180 m, Endanflug; Abflug mit Federn, Trennzündung nach 3 min.
+    Läuft Kurs, ersetzt der gemeldete Abstand (RUSSEG000005) den geschätzten.
+  - Cygnus/HTV-X werden **angelegt, nicht angedockt**: R-Bar-Anflug von unten bis zum Einfangpunkt 10 m
+    unter dem CBM, dort halten sie, bis Canadarm2 sie greift (CSASSRMS011 = CAPTURED); sie fliegen nie
+    selbst in den Port. Dann folgen sie dem Arm; lässt der Arm sie am CBM los, gelten sie sofort als
+    angelegt (auch bevor LL2 das Ereignis führt). Lässt er sie abseits los, ist das die Freigabe: Abflug
+    ab genau dieser Stelle, nach unten, dann ausgeblendet. Ohne Armtelemetrie warten sie am Einfangpunkt,
+    bis die Daten sie als angelegt führen.
+  - Zeitpunkte: abfallendes russisches Portflag (echte Zeit), LL2-Abdockzeit und, neu, der LL2-Ereignisplan
+    (minutengenaue Docking-/Undocking-Ereignisse, Abgleich über die Missionskennung, Port aus dem Text).
+    Nach einer geplanten Ankunft gilt das Fahrzeug bis zu 12 h als angedockt, bis LL2 das Ereignis führt.
+  - Wegpunkte und Zeiten sind Richtwerte aus Missionsabläufen (Schätzung, je Flug verschieden).
+  - Im Docking-Panel spielen **▶ Undock** und **▶ Dock** den Ablauf 30-fach beschleunigt als Vorschau ab
+    (nur Anzeige, kein Protokoll, z. B. für die Vorführung). `globalThis.ISS_PROX.activities()` liefert die
+    laufenden Abläufe für andere Teile der Seite.
+- **Nahbereichsradar** (neues Panel, experimentell, `radar.mjs`, `tle.py`): Objekte um die ISS im LVLH-System
+  (Ebene V-Bar/H-Bar, oben Zenit, ziehen zum Drehen), Reichweite automatisch oder 1 km bis 5000 km. Quellen:
+  CelesTrak-Bahnelemente (Gruppen stations und last-30-days, SGP4 mit satellite.js 6.0.1 vom CDN, auf
+  etwa 1 km genau), Kurs-Abstand als Ring, modellierte An- und Abflüge (orange). Angedockte Fahrzeuge werden
+  über den Namen oder über Abstand < 2 km bei < 1 m/s erkannt, Elementsätze älter als 3 Tage ausgeblendet.
+  Gerechnet wird nur bei offenem Panel, einmal pro Sekunde.
+- Neue Tests `tests/test_proxops.mjs`, `tests/test_tle.py`.
+
 # Kamerafenster: größeres Sichtfeld, feinere Regler (18.11.)
 
 - **Sichtfeld** lässt sich jetzt für jede Kamera von 0,5° bis 150° (senkrecht) einstellen, auch über den

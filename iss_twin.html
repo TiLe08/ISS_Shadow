@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ISS Digital Shadow v1.19</title>
+<title>ISS Digital Shadow v1.20</title>
 <!--
   iss_twin.html: Hauptseite von ISS Shadow (digitaler Schatten / Zwilling der ISS).
 
@@ -368,6 +368,10 @@ tr.fresh td.v{color:var(--ok)}
 .settings{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;padding:10px;font-size:11px}
 .settings input{background:var(--bg);border:1px solid var(--line2);padding:4px 6px;width:100%}
 .note{color:var(--dim);font-size:10.5px;line-height:1.45}
+canvas.radar{display:block;width:100%;height:220px;margin:6px 0;cursor:grab;touch-action:none}
+.vvb{background:transparent;border:1px solid var(--line2);color:var(--dim);font:600 9px/1 var(--f-disp);letter-spacing:.1em;padding:2px 5px;margin-left:4px;cursor:pointer;text-transform:uppercase}
+.vvb:hover{color:var(--acc);border-color:var(--acc)}
+.row .v.prox{color:var(--acc2)}
 .help{padding:10px 14px 14px;font-size:11.5px;line-height:1.55}.help p{margin:0 0 8px}.help ul{margin:0 0 10px;padding-left:18px}.help b{color:var(--acc);font-weight:500;margin-right:4px}.help li{margin-bottom:4px}
 .keys{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:6px 0 0}.keys dt{font-weight:600;color:var(--acc);border:1px solid var(--line2);padding:0 6px;text-align:center}.keys dd{margin:0}
 @media (max-width:2100px){.brand span{display:none}}
@@ -568,6 +572,8 @@ import { PlanetOverlay } from './planet-overlay.mjs';
 import { EarthTiles } from './earth-tiles.mjs';
 import { setupCameras } from './cameras.mjs';
 import { setupCalibPanel } from './calib-panel.mjs';
+import * as PROXOPS from './proxops.mjs';
+import * as RADAR from './radar.mjs';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
@@ -1042,7 +1048,86 @@ function updateActivities(now = Date.now()) {
 }
 // HTML-Escaping für eingefügte Texte.
 const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-/* Entscheidet, was zum Zeitpunkt t an jedem Port angedockt ist, und zeigt dessen Modell. */
+/* ---------- An- und Abflug (v1.19, proxops.mjs) ----------
+   Ein Fahrzeug verschwindet nicht mehr beim Abdocken und erscheint nicht beim Andocken, sondern fliegt
+   den Ablauf aus proxops.mjs: Abstand entlang der Portachse über der Zeit, beim Dragon die Nasenkappe.
+   Woher die Zeitpunkte kommen (in dieser Reihenfolge):
+   1. Russische Ports: das ISSLive-Portflag fällt ab -> Abflug ab diesem Augenblick (echte Zeit).
+      Kurs-Abstand (RUSSEG000005) ersetzt bei Sojus/Progress den geschätzten Abstand, solange Kurs läuft.
+   2. Launch Library 2, Andockereignisse: Abdockzeit in den letzten Minuten -> Abflug läuft.
+   3. Launch Library 2, Ereignisplan (upcoming_events) mit Zeitangabe auf die Minute: geplantes Abdocken
+      eines angedockten Fahrzeugs (Abgleich über Missionskennung) bzw. geplante Ankunft (Port aus dem Text,
+      sonst der erste freie passende Port). Nach einer geplanten Ankunft gilt das Fahrzeug bis zu 12 h als
+      angedockt, bis LL2 das Andockereignis führt. Planzeiten können sich verschieben; die Anzeige sagt
+      deshalb „laut Plan“.
+   Die Vorschau spielt einen Ablauf 30-fach beschleunigt ab, ohne Daten oder Protokoll zu verändern. */
+const PROX = { drop: {}, preview: null, active: {}, announced: {}, berthed: {}, release: {}, gone: {} };   // berthed/release: Schlüssel Port:Typ, aus der Armtelemetrie
+const PROX_MINUTE = /minute|second/i;
+const proxSettle = type => PROXOPS.SEQ[PROXOPS.FAMILY[type]]?.arrive.settle || 0;
+// Kurs-Abstand in m, wenn eines der beiden Kurs-Geräte arbeitet und der Wert plausibel ist, sonst NaN.
+function kursRange() {
+  if (CMD.active || LINK.src === 'sim') return NaN;
+  const on = V('RUSSEG000002') === 1 || V('RUSSEG000003') === 1, r = V('RUSSEG000005');
+  return on && isFinite(r) && r > 0 && r < 5000 ? r : NaN;
+}
+/* Plant die laufenden Abläufe zum Zeitpunkt at. cur (Ports -> angedocktes Fahrzeug) wird angepasst:
+   ein laut Plan abgedocktes Fahrzeug fällt heraus, ein laut Plan angekommenes kommt hinzu.
+   Ergebnis: { Port: { kind, v: {name, type}, t0 (ms, Ereigniszeit), src, plan } }. */
+function proxPlan(at, cur) {
+  const out = {}, list = VV.list || VV_FALLBACK, fam = v => PROXOPS.FAMILY[v.type];
+  const put = (port, x) => {
+    if (!port || !fam(x.v) || out[port]) return;
+    // Angelegtes Fahrzeug, das Canadarm2 schon am CBM losgelassen hat: angelegt, kein Anflug mehr.
+    const b = PROX.berthed[port + ':' + x.v.type];
+    if (x.kind === 'arrive' && b && b > x.t0 - PROXOPS.lead(fam(x.v)) * 1000) { cur[port] ||= { name: x.v.name, type: x.v.type, t0: x.t0, src: t('Canadarm2 berthing (arm telemetry)'), generic: false }; return; }
+    out[port] = x;
+  };
+  // 0. Freigabe durch Canadarm2 (Armtelemetrie): Abflug ab der Stelle, an der der Arm losgelassen hat.
+  for (const k of Object.keys(PROX.berthed)) if (at - PROX.berthed[k] > 24 * 3600e3) delete PROX.berthed[k];
+  for (const [k, r] of Object.entries(PROX.release)) {
+    const [port, type] = k.split(':');
+    PROX.gone[k] = r.t;                       // freigegeben: eine geplante Ankunft davor gilt nicht mehr
+    if (at - r.t > PROXOPS.tail('berth') * 1000 || at < r.t) { delete PROX.release[k]; continue; }
+    if (cur[port]?.type === type) delete cur[port];
+    put(port, { kind: 'depart', v: { name: r.name, type }, t0: r.t, src: t('Canadarm2 release (arm telemetry)'), from: r });
+  }
+  // 1. Abgefallenes russisches Portflag
+  for (const [port, d] of Object.entries(PROX.drop)) {
+    if (cur[port] || at - d.t0 > PROXOPS.tail(fam(d.v) || 'kurs') * 1000) { delete PROX.drop[port]; continue; }
+    put(port, { kind: 'depart', v: d.v, t0: d.t0, src: t('ISSLive port flag') });
+  }
+  // 2. LL2-Andockereignisse: kürzlich abgedockt bzw. (selten) Ankunft mit künftiger Zeit
+  for (const v of list) {
+    if (!v.port || !fam(v)) continue;
+    const f = fam(v);
+    if (isFinite(v.t1) && at >= v.t1 && at < v.t1 + PROXOPS.tail(f) * 1000 && !cur[v.port]) put(v.port, { kind: 'depart', v, t0: v.t1, src: 'Launch Library 2' });
+    if (at < v.t0 && at >= v.t0 - PROXOPS.lead(f) * 1000 && !cur[v.port]) put(v.port, { kind: 'arrive', v, t0: v.t0, src: 'Launch Library 2' });
+  }
+  // 3. Ereignisplan
+  for (const e of VV.extra.upcoming_events || []) {
+    const kind = PROXOPS.eventKind(e.type, e.name), te = Date.parse(e.date);
+    if (!kind || !isFinite(te) || !PROX_MINUTE.test(e.precision || '')) continue;
+    if (kind === 'depart') {
+      const port = Object.keys(cur).find(p => !cur[p].generic && PROXOPS.sameVehicle(e.name, cur[p].name)); if (!port) continue;
+      const f = fam(cur[port]); if (!f || at < te || at >= te + PROXOPS.tail(f) * 1000) continue;
+      put(port, { kind, v: cur[port], t0: te, src: t('LL2 schedule'), plan: true }); delete cur[port];
+    } else {
+      const type = vvTypeOf(e.name + ' ' + (e.description || '')); if (!type) continue;
+      const f = PROXOPS.FAMILY[type]; if (at < te - PROXOPS.lead(f) * 1000 || at > te + 12 * 3600e3) continue;
+      if (Object.values(cur).some(c => !c.generic && PROXOPS.sameVehicle(e.name, c.name))) continue;      // LL2 führt es schon als angedockt
+      const free = Object.keys(VV_PORT_TYPES).filter(p => !cur[p] || cur[p].generic);
+      const port = PROXOPS.portFromText(e.name + ' ' + (e.description || ''), type, VV_PORT_TYPES, free); if (!port) continue;
+      if (PROX.gone[port + ':' + type] > te - PROXOPS.lead(f) * 1000) continue;
+      const name = String(e.name).replace(/\s*(docking|berthing|arrival|capture)\b.*$/i, '').trim() || VV_TYPE_NAME[type];
+      if (at < te) put(port, { kind, v: { name, type }, t0: te, src: t('LL2 schedule'), plan: true });
+      else { cur[port] = { name, type, t0: te, src: t('LL2 schedule') + ' (' + t('estimated') + ')', generic: false };
+        if (at <= te + proxSettle(type) * 1000) put(port, { kind, v: { name, type }, t0: te, src: t('LL2 schedule'), plan: true }); }
+    }
+  }
+  return out;
+}
+/* Entscheidet, was zum Zeitpunkt t an jedem Port angedockt ist oder gerade an- bzw. abfliegt, und zeigt
+   das Modell. */
 function updateVehicles(at) {
   const occ = vvAt(at), cur = {};
   for (const port of Object.keys(VV_PORT_TYPES)) {
@@ -1051,20 +1136,138 @@ function updateVehicles(at) {
     if (isFinite(flag)) { occupied = flag >= 1; src = t('ISSLive port flag') + (v && occupied ? ' · ' + src : ''); }
     if (!occupied) continue;
     const known = !!v && VV_PORT_TYPES[port].includes(v.type), type = known ? v.type : VV_PORT_TYPES[port][0];
-    cur[port] = { name: known ? v.name : VV_TYPE_NAME[type] + '? (' + t('not identified') + ')', type, t0: v ? v.t0 : NaN, src, generic: !known };
+    cur[port] = { name: known ? v.name : VV_TYPE_NAME[type] + '? (' + t('not identified') + ')', type, t0: v ? v.t0 : NaN, src, generic: !known, flag: isFinite(flag) };
+  }
+  const plan = proxPlan(at, cur);
+  // Russisches Flag belegt, Fahrzeug unbekannt, aber eine Ankunft war geplant: deren Name und Typ übernehmen.
+  for (const [port, c] of Object.entries(cur)) if (c.generic && plan[port]?.kind === 'arrive' && VV_PORT_TYPES[port].includes(plan[port].v.type)) { cur[port] = { ...c, name: plan[port].v.name, type: plan[port].v.type, generic: false }; delete plan[port]; }
+  // Vorschau (nur Anzeige)
+  const vis = { ...cur }, pv = PROX.preview;
+  if (pv) {
+    const f = PROXOPS.FAMILY[pv.v.type], el = (Date.now() - pv.start) / 1000 * PROXOPS.PREVIEW_SPEED;
+    const tt = pv.kind === 'depart' ? el : el - PROXOPS.lead(f), end = pv.kind === 'depart' ? PROXOPS.tail(f) : proxSettle(pv.v.type) + 30;
+    if (tt > end) PROX.preview = null;
+    else { delete vis[pv.port]; plan[pv.port] = { kind: pv.kind, v: pv.v, t0: at - tt * 1000, src: t('preview'), preview: true }; }
+  }
+  const kr = kursRange();
+  PROX.active = {};
+  for (const [port, p] of Object.entries(plan)) {
+    const tt = (at - p.t0) / 1000, st = PROXOPS.stateAt(p.v.type, p.kind, tt, p.preview || !VV_RUS_FLAG[port] ? NaN : kr);
+    if (st.active) PROX.active[port] = { ...p, st, tt };
   }
   for (const [key, g] of Object.entries(MODEL.vvG || {})) {
-    const [port, type] = key.split(':'), c = cur[port], show = !!c && c.type === type; g.visible = show;
-    if (show) { const txt = c.generic ? VV_TYPE_NAME[type] + '? · ' + VV_PORT_NAME[port] : c.name, el = g.userData.label.element; if (el.textContent !== txt) el.textContent = txt; }
+    const [port, type] = key.split(':'), c = vis[port], a = PROX.active[port], show = a ? a.v.type === type : !!c && c.type === type; g.visible = show;
+    if (!show) continue;
+    const txt = a ? `${a.v.name} · ${t(PL.st.held === key ? 'Held by Canadarm2' : a.st.phase)}${a.preview ? ' (' + t('preview') + ')' : a.plan ? ' (' + t('per LL2 schedule') + ')' : ''}` : c.generic ? VV_TYPE_NAME[type] + '? · ' + VV_PORT_NAME[port] : c.name;
+    const el = g.userData.label?.element; if (el && el.textContent !== txt) el.textContent = txt;
   }
   if (MODEL.vvInit && !CMD.active) for (const port of new Set([...Object.keys(cur), ...Object.keys(MODEL.vvCur)])) {
     const a = MODEL.vvCur[port], b = cur[port];
     // Gleiches Fahrzeug unter dem Namen einer anderen Quelle (Manifest -> LL2): keine Ankunft.
     if (a && b && a.type === b.type && (!isFinite(a.t0) || !isFinite(b.t0) || Math.abs(a.t0 - b.t0) < 86400e3)) continue;
+    if (a && !b && a.flag) PROX.drop[port] = { v: a, t0: at };      // Portflag gefallen: Abflug ab jetzt
     if (a && (!b || a.name !== b.name)) logEvent(t('{0} no longer at {1}', a.name, t(VV_PORT_NAME[port])));
     if (b && (!a || a.name !== b.name)) logEvent(t('{0} at {1}', b.name, t(VV_PORT_NAME[port])) + ` (${b.src})`);
   }
+  if (!CMD.active) for (const [port, a] of Object.entries(PROX.active)) {     // Beginn eines Ablaufs einmal melden
+    const k = port + a.kind + a.t0; if (a.preview || PROX.announced[k]) continue; PROX.announced[k] = 1;
+    logEvent(t(a.kind === 'depart' ? '{0} departing from {1}' : '{0} approaching {1}', a.v.name, t(VV_PORT_NAME[port])) + ` (${a.src})`);
+  }
   MODEL.vvInit = true; MODEL.vvCur = cur;
+}
+/* Setzt die Lage der an- und abfliegenden Fahrzeuge (nach updatePayloads, damit ein von Canadarm2
+   gehaltenes Fahrzeug dem Arm folgt und nicht dem Ablauf). */
+function updateProxOps() {
+  for (const [key, g] of Object.entries(MODEL.vvG || {})) {
+    const d0 = g.userData.dock || (g.userData.dock = { p: g.position.clone(), q: g.quaternion.clone(), dir: new THREE.Vector3(1, 0, 0).applyQuaternion(g.quaternion) });
+    const port = key.split(':')[0], a = PROX.active[port], armed = PL.st.held === key || !!PL.st.away[key];
+    if (!g.visible || armed) continue;
+    if (a && a.v.type === key.split(':')[1]) {
+      if (a.from) { g.position.copy(a.from.p).addScaledVector(d0.dir, a.st.d - PROXOPS.CAPTURE_DIST); g.quaternion.copy(a.from.q); }   // ab der Freigabestelle
+      else { g.position.copy(d0.p).addScaledVector(d0.dir, a.st.d); g.quaternion.copy(d0.q); }
+      g.userData.setCone?.(a.st.cone);
+    } else { g.position.copy(d0.p); g.quaternion.copy(d0.q); g.userData.setCone?.(1); }
+  }
+}
+// Spielt den An- oder Abflug des Fahrzeugs an port als Vorschau ab (30-fach).
+function previewProx(port, kind) {
+  const c = MODEL.vvCur[port]; if (!c || !PROXOPS.FAMILY[c.type]) return;
+  PROX.preview = { port, kind, v: { name: c.name, type: c.type }, start: Date.now() };
+}
+// Laufende Abläufe für andere Teile der Seite (Radar, Aktivitätenliste): [{port, name, type, kind, phase, d, speed, src, plan, preview, measured}]
+function proxActivities() {
+  return Object.entries(PROX.active).map(([port, a]) => ({ port, portName: VV_PORT_NAME[port], name: a.v.name, type: a.v.type, kind: a.kind, phase: a.st.phase,
+    d: a.st.d, speed: a.st.speed, src: a.src, plan: !!a.plan, preview: !!a.preview, measured: !!a.st.measured, t0: a.t0 }));
+}
+globalThis.ISS_PROX = { activities: proxActivities, preview: previewProx };
+/* ---------- Nahbereichsradar (v1.19, experimentell, radar.mjs) ----------
+   Läuft nur, solange das Panel sichtbar ist: Dann werden einmalig satellite.js (SGP4, ~100 kB vom CDN)
+   und die Bahnelemente geladen (über den Launcher /__tle, sonst direkt von CelesTrak, 2 h im Browser
+   zwischengespeichert). Gerechnet und gezeichnet wird einmal pro Sekunde, beim Drehen öfter. */
+const RD = { lib: null, libErr: '', tles: null, tleAt: 0, checked: 0, tleErr: '', via: '', loading: false, scale: 0, az: 0.6, last: 0, res: null };
+async function radarLoad() {
+  if (RD.loading) return; RD.loading = true;
+  try {
+    if (!RD.lib && !RD.libErr) { try { RD.lib = await import(RADAR.SAT_URL); } catch (e) { RD.libErr = String(e.message || e); } }
+    if (!RD.tles || Date.now() - RD.checked > 600e3) {
+      RD.checked = Date.now(); let text = '';
+      if (/^https?:$/.test(location.protocol)) {
+        try { const r = await fetch('/__tle', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); text = Object.values(j.groups || {}).join('\n'); RD.tleErr = j.error || ''; RD.tleAt = j.fetched || Date.now(); RD.via = 'launcher'; } } catch (e) {}
+      }
+      if (!text) {
+        let c = null; try { c = JSON.parse(localStorage.getItem('iss.tle') || 'null'); } catch (e) {}
+        if (!c || Date.now() - c.fetched > 7200e3) {
+          try { const parts = []; for (const g of RADAR.GROUPS) { const r = await fetch(RADAR.CELESTRAK + g, { cache: 'no-store' }); if (!r.ok) throw new Error('HTTP ' + r.status); parts.push(await r.text()); }
+            c = { fetched: Date.now(), text: parts.join('\n') }; try { localStorage.setItem('iss.tle', JSON.stringify(c)); } catch (e) {} RD.tleErr = ''; }
+          catch (e) { RD.tleErr = String(e.message || e); }
+        }
+        if (c) { text = c.text; RD.tleAt = c.fetched; RD.via = 'direct'; }
+      }
+      const list = RADAR.parseTle(text); if (list.length) RD.tles = list; else if (!RD.tleErr) RD.tleErr = 'no orbit data';
+    }
+  } finally { RD.loading = false; }
+}
+// Relativlage eines modellierten An-/Abflugs im LVLH-System (Körper ≈ LVLH in XVV; Lage der Station berücksichtigt).
+function proxLvlh(port, d) {
+  const P = MODEL.ports[port]; if (!P) return null;
+  const v = new THREE.Vector3(...P.pos).addScaledVector(new THREE.Vector3(...P.dir), d);
+  if (S.att) v.applyQuaternion(S.att.quaternion);
+  return [v.x, v.y, v.z];
+}
+function updateRadar(force) {
+  const cv = $('#rdCanvas'); if (!cv || !cv.offsetParent) return;          // Panel zu oder nicht im Bild
+  const now = Date.now(); if (!force && now - RD.last < 1000) return; RD.last = now;
+  if (!RD.loading && ((!RD.tles && now - RD.checked > (RD.tleErr ? 900e3 : 60e3)) || now - RD.checked > 600e3 || (!RD.lib && !RD.libErr))) radarLoad();   // alle 10 min nachsehen; nach einem Fehler erst nach 15 min (CelesTrak bittet um seltene Abrufe)
+  if (!cv.dataset.on) {
+    cv.dataset.on = 1;
+    let drag = null;
+    cv.onpointerdown = e => { drag = { x: e.clientX, az: RD.az }; cv.setPointerCapture(e.pointerId); };
+    cv.onpointermove = e => { if (drag) { RD.az = drag.az + (e.clientX - drag.x) / 80; updateRadar(true); } };
+    cv.onpointerup = cv.onpointercancel = () => { drag = null; };
+    $('#rdScale').querySelectorAll('button').forEach(b => b.onclick = () => { RD.scale = +b.dataset.v; $('#rdScale').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); updateRadar(true); });
+  }
+  const docked = Object.values(MODEL.vvCur || {}).map(c => c.name);
+  if (RD.lib && RD.tles && (force !== true || !RD.res)) RD.res = RADAR.propagateAll(RD.lib, RD.tles, now, docked, PROXOPS.sameVehicle);
+  const items = [];
+  for (const a of proxActivities()) { const rel = proxLvlh(a.port, a.d); if (rel) items.push({ label: a.name, rel, range: Math.hypot(...rel), rate: a.kind === 'depart' ? Math.abs(a.speed) : -Math.abs(a.speed), kind: 'model', note: t(a.phase) + (a.measured ? ' · Kurs' : ' · ' + t('modeled')) }); }
+  const free = (RD.res?.items || []).filter(i => i.state === 'free');
+  for (const i of free.slice(0, 12)) items.push({ label: i.name, rel: i.rel, range: i.range, rate: i.rate, kind: 'tle', note: 'TLE ' + t('{0} d old', i.ageD.toFixed(1)) });
+  const kr = kursRange(), kurs = isFinite(kr) ? { range: kr, rate: V('RUSSEG000006') } : null;
+  const scale = RD.scale || RADAR.autoScale(items.map(i => ({ ...i, state: 'free' })));
+  const w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(2, globalThis.devicePixelRatio || 1);
+  if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  const ctx = cv.getContext('2d'), cs = getComputedStyle(document.documentElement), col = k => cs.getPropertyValue(k).trim() || '#888';
+  ctx.setTransform?.(dpr, 0, 0, dpr, 0, 0);
+  RADAR.drawRadar(ctx, w, h, items, { scale, az: RD.az, kurs, colors: { fg: col('--fg'), dim: col('--dim'), accent: col('--acc'), warn: col('--warn'), model: col('--acc2') } });
+  if (force === true) return;
+  const att = (RD.res?.items || []).filter(i => i.state === 'attached').map(i => i.name), stale = (RD.res?.items || []).filter(i => i.state === 'stale' && i.range < 1e6).length;
+  const rows = items.slice().sort((a, b) => a.range - b.range).slice(0, 8).map(i => `<div class="row" title="${esc(i.note)}"><span class="k">${esc(i.label)}</span><span class="v${i.kind === 'model' ? ' prox' : ''}">${RADAR.fmtRange(i.range)} · ${RADAR.fmtRate(i.rate)}</span></div>`).join('')
+    + (kurs ? `<div class="row"><span class="k">Kurs</span><span class="v acc">${RADAR.fmtRange(kurs.range)} · ${RADAR.fmtRate(kurs.rate)}</span></div>` : '');
+  const html = rows || `<div class="note">${t('No free-flying object within 5000 km.')}</div>`;
+  const el = $('#rdList'); if (el.innerHTML !== html) el.innerHTML = html;
+  const src = [RD.libErr ? t('SGP4 library unavailable') + ': ' + RD.libErr : '', RD.tles ? t('Orbits: CelesTrak ({0} objects, {1} ago)', RD.tles.length, fmtDur((now - RD.tleAt) / 1000)) : RD.tleErr ? t('CelesTrak unavailable') + ': ' + RD.tleErr : t('Loading orbits…'),
+    att.length ? t('Docked per orbit data: {0}', att.join(', ')) : '', stale ? t('{0} objects with old orbit data hidden', stale) : '', t('Orange = modeled approach or departure (estimated timeline).')].filter(Boolean).join(' · ');
+  const n = $('#rdSrc'); if (n.textContent !== src) n.textContent = src;
 }
 /* ---------- Greifen und Transportieren (v1.14) ----------
    ISSLive meldet für jedes Greifwerkzeug nur seinen Zustand (0 RELEASED, 1 CAPTIVE, 2 CAPTURED),
@@ -1128,6 +1331,7 @@ function plChoose(J, now, list) {
     if (d < bd) { bd = d; best = m.key; }
   }
   if (best) return best;
+  for (const [port, a] of Object.entries(PROX.active)) if (a.kind === 'arrive' && a.st.berth) return port + ':' + a.v.type;   // wartet am Einfangpunkt
   for (const v of VV.list || VV_FALLBACK) if (['cygnus', 'htvx'].includes(v.type) && ['unityNadir', 'harmonyNadir'].includes(v.port) &&
     ((v.t0 > now && v.t0 - now < 8 * 3600e3) || (isFinite(v.t1) && v.t1 <= now && now - v.t1 < 8 * 3600e3))) return v.port + ':' + v.type;
   return 'unknown';
@@ -1147,8 +1351,13 @@ function updatePayloads(J, now) {
       if (m) {
         const cur = m.obj.matrix.clone(), h = m.obj.userData.home, near = h && new THREE.Vector3().setFromMatrixPosition(cur).distanceTo(h.p) < 0.3;
         const docked = m.vehicle && !!vvAt(now)[k.split(':')[0]];
-        if (near || (m.vehicle && docked)) delete PL.st.away[k];
-        else if (m.vehicle) delete PL.st.away[k];                  // abgelegt und freigegeben: freier Flug, nicht mehr gezeichnet
+        void docked;
+        if (m.vehicle) {                  // v1.19: am CBM losgelassen = angelegt; anderswo = Freigabe, Abflug ab dort (proxops)
+          delete PL.st.away[k];
+          if (near) PROX.berthed[k] = now;
+          else { const p = new THREE.Vector3(), q = new THREE.Quaternion(); cur.decompose(p, q, new THREE.Vector3());
+            PROX.release[k] = { p, q, t: now, name: MODEL.vvCur[k.split(':')[0]]?.name || PROX.active[k.split(':')[0]]?.v.name || t(m.name) }; }
+        } else if (near) delete PL.st.away[k];
         else PL.st.away[k] = cur.toArray();
         logEvent(t('Canadarm2 released: {0}', t(m.name)));
       }
@@ -2426,6 +2635,10 @@ function buildPanels() {
       <div class="chips" id="ports"></div>
       ${row('rMode', 'RS mode', '', '', 'RUSSEG000001')}${row('rKurs', 'Kurs range / rate', '', '', 'RUSSEG000005')}${row('rSudn', 'SUDN attitude mode', '', '', 'RUSSEG000025')}
       ${sub('Visiting vehicles')}<div id="vvList"></div><div class="note" id="vvSrc"></div>${tileSection('rs')}`) +
+    panelHTML('pProx', 'Proximity radar', 'LVLH // EXPERIMENTAL', `
+      <div class="gtools"><div class="seg" id="rdScale" role="group" aria-label="${esc2(t('Radar range'))}"><button data-v="0" aria-pressed="true">${t('Auto')}</button>${RADAR.SCALES.map(v => `<button data-v="${v}">${RADAR.fmtRange(v)}</button>`).join('')}</div></div>
+      <canvas id="rdCanvas" class="radar" title="${esc2(t('Drag to rotate. Plane = V-bar/H-bar, up = zenith. Orbit positions from CelesTrak (SGP4, km accuracy), Kurs range, modeled approaches.'))}"></canvas>
+      <div id="rdList"></div><div class="note" id="rdSrc">${t('Radar starts when this panel is open.')}</div>`) +
     panelHTML('pAct', 'Current activities', 'OPS // NOW', `<div id="actBox"><div class="note">${t('Waiting for telemetry and Launch Library 2…')}</div></div>`) +
     panelHTML('pCrew', 'Crew & schedule', 'LL2 // EXPEDITION', `<div id="crewBox"><div class="note">${t('Waiting for Launch Library 2…')}</div></div>`) +
     panelHTML('pCt', 'Comms', 'C&T // CATO', `
@@ -2612,8 +2825,11 @@ function updatePanels(D) {
   setV('rKurs', `${fmt(V('RUSSEG000005'), 1)} m · ${fmt(V('RUSSEG000006'), 2)} m/s`);
   setV('rSudn', chRead('RUSSEG000025').text);
   { const el = $('#vvList'), cur = MODEL.vvCur || {};
-    const html = Object.keys(VV_PORT_TYPES).filter(p => cur[p]).map(p => `<div class="row" title="${esc(cur[p].src)}"><span class="k">${t(VV_PORT_NAME[p])}</span><span class="v">${esc(cur[p].name)}</span></div>`).join('') || `<div class="note">${t('No vehicle docked')}</div>`;
+    const pb = p => PROXOPS.FAMILY[cur[p].type] && !cur[p].generic ? `<button class="vvb" data-prox="depart" data-port="${p}" title="${esc(t('Play the departure sequence at 30× speed (display only)'))}">▶ ${t('Undock')}</button><button class="vvb" data-prox="arrive" data-port="${p}" title="${esc(t('Play the arrival sequence at 30× speed (display only)'))}">▶ ${t('Dock')}</button>` : '';
+    const act = Object.entries(PROX.active).map(([p, a]) => `<div class="row" title="${esc(a.src)}"><span class="k">${t(VV_PORT_NAME[p])}</span><span class="v prox">${esc(a.v.name)} · ${esc(t(a.st.phase))} · ${RADAR.fmtRange(a.st.d)}${a.st.measured ? ' (Kurs)' : ''}</span></div>`).join('');
+    const html = act + (Object.keys(VV_PORT_TYPES).filter(p => cur[p] && !PROX.active[p]).map(p => `<div class="row" title="${esc(cur[p].src)}"><span class="k">${t(VV_PORT_NAME[p])}</span><span class="v">${esc(cur[p].name)}${pb(p)}</span></div>`).join('') || (act ? '' : `<div class="note">${t('No vehicle docked')}</div>`));
     if (el && el.innerHTML !== html) el.innerHTML = html;
+    if (el && !el.onclick) el.onclick = e => { const b = e.target.closest('[data-prox]'); if (b) previewProx(b.dataset.port, b.dataset.prox); };
     const n = $('#vvSrc'), txt = VV.list ? t('Arrivals and departures: Launch Library 2 (TheSpaceDevs), updated {0} ago. Russian ports: ISSLive port flags.', fmtDur((Date.now() - VV.fetched) / 1000))
       : t('Arrivals and departures: dated manifest (20 Oct 2026); Launch Library 2 {0}. Russian ports: ISSLive port flags.', VV.error ? t('unavailable') + ': ' + VV.error : t('not loaded yet'));
     if (n && n.textContent !== txt) n.textContent = txt; }
@@ -2621,7 +2837,7 @@ function updatePanels(D) {
   setV('cKu', `${fmt(V('Z1000014'), 1)} / ${fmt(V('Z1000015'), 1)}`, '°');
   setV('cSa', `${fmt(V('S1000004'), 0)} / ${fmt(V('S1000005'), 0)}`, '°'); setV('cSb', `${fmt(V('P1000004'), 0)} / ${fmt(V('P1000005'), 0)}`, '°');
   setV('cLap', isFinite(V('USLAB000087')) ? String(V('USLAB000087')) : '---');
-  updateCrew();
+  updateCrew(); updateRadar();
   updateActivities();
 }
 const POWH = [], ALTH = [];
@@ -3400,7 +3616,7 @@ function frame(nowP) {
   if($('#tRadPoint'))$('#tRadPoint').textContent=radStatus;
   if(CMD.active&&$('#radiatorIncidence'))$('#radiatorIncidence').textContent=radStatus;
   // Besuchsfahrzeuge (siehe Kommentar VV_MANIFEST): russische Port-Flags + Andockereignisse aus Launch Library
-  perf('collision'); updateVehicles(now); updatePayloads(J, now); updateHatches();
+  perf('collision'); updateVehicles(now); updatePayloads(J, now); updateProxOps(); updateHatches();
   if (s) updateZvezdaArrays(sunL.clone().applyQuaternion(S.att.quaternion.clone().invert()), D.eclipse);
   if (Math.floor(now / 1000) !== MODEL.irosaTick) { MODEL.irosaTick = Math.floor(now / 1000); updateIrosa(now); }
 
@@ -3715,7 +3931,7 @@ function setLanguage(lang) {
   ISSWorkspace.relang(); logEvent(t('Language: {0}', I18N.LANGS[lang]));
 }
 /* ---------- Launcher-Anbindung (Heartbeat + Beenden) ---------- */
-const PAGE_VERSION = '1.19';      // muss mit VERSION in launcher.py übereinstimmen
+const PAGE_VERSION = '1.20';      // muss mit VERSION in launcher.py übereinstimmen
 function initLauncher() {
   if (!/^https?:$/.test(location.protocol)) return;
   // Ein neuerer Launcher ersetzt den alten; ein offener Tab lädt sich dann selbst neu, statt
