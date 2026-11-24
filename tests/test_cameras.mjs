@@ -2,8 +2,8 @@
 //   - Sichtfelder der Optiken gegen die veröffentlichten NASA-Werte
 //   - Einbett-Adressen für YouTube-Links, Auswahlliste der Streams, Einpassen des Bildformats
 //   - Einbaustellen: Jede Kamera liegt an der Struktur, an der sie laut Quelle sitzt.
-import assert from 'node:assert/strict';
-import { CAMERAS, OPTICS, FOV_MIN, FOV_MAX, fovToSlider, sliderToFov, clampFov, fineStep, wrapAngle, CHANNELS, KNOWN_STREAMS, FEEDS, feedUrl, embedUrl, streamChoices, fitRect } from '../cameras.mjs';
+import assert from 'node:assert/strict'; import * as THREE from 'three';
+import { CAMERAS, DOUG_RIGS, OPTICS, FOV_MIN, FOV_MAX, fovToSlider, sliderToFov, clampFov, fineStep, wrapAngle, CHANNELS, KNOWN_STREAMS, FEEDS, feedUrl, embedUrl, streamChoices, fitRect } from '../cameras.mjs';
 const hfov = o => 2 * Math.atan(Math.tan(o.fovMax * Math.PI / 360) * o.aspect) * 180 / Math.PI;
 // SD-Kamera der ETVCG: 77° × 61° bis 10° × 8° (NTSC 4:3).
 assert.ok(Math.abs(hfov(OPTICS.sd) - 77) < 1.5 && OPTICS.sd.fovMax === 61 && OPTICS.sd.fovMin === 8 && OPTICS.sd.aspect === 4 / 3);
@@ -13,16 +13,34 @@ assert.ok(Math.abs(hfov(OPTICS.hd) - 36) < 0.1 && Math.abs(OPTICS.hd.fovMax - 20
 assert.ok(Math.abs(hfov(OPTICS.mss) - 52) < 1.5 && OPTICS.mss.fovMin === 4);
 // Sen-Nadirkamera: 240 km Bildbreite aus etwa 415 km Höhe.
 assert.ok(Math.abs(2 * 415 * Math.tan(hfov(OPTICS.senNadir) * Math.PI / 360) - 240) < 3);
-for (const c of CAMERAS) { assert.ok(c.optics.length && c.optics.every(k => OPTICS[k]), c.id); assert.ok(c.target || c.dir, c.id); }
+for (const c of CAMERAS) { assert.ok(c.optics.length && c.optics.every(k => OPTICS[k]), c.id); assert.ok(c.target || c.dir || DOUG_RIGS[c.rig], c.id); assert.ok(!c.rig || c.ptu, c.id + ': Kette heißt schwenkbar'); }
 assert.equal(new Set(CAMERAS.map(c => c.id)).size, CAMERAS.length);
-// Einbaustellen der Kameraports (Körpersystem: +Y Steuerbord, +Z Nadir).
-const cam = Object.fromEntries(CAMERAS.map(c => [c.id, c]));
-assert.ok(cam.cp8.pos[1] < -18 && cam.cp8.pos[2] < 0, 'CP8: P1 außen, Zenit');
-assert.ok(cam.cp9.pos[1] < -18 && cam.cp9.pos[2] > 0, 'CP9: P1 außen, Nadir');
-assert.ok(cam.cp3.pos[1] > 18 && cam.cp3.pos[1] < 20.3 && cam.cp3.pos[2] > 0, 'CP3: S1 außen, Nadir, innen neben ELC-4');
-assert.ok(cam.cp13.pos[1] > 0 && cam.cp13.pos[2] < 4.85 && cam.cp13.pos[0] > -2.26 && cam.cp13.pos[0] < 6.42, 'CP13: Destiny Zenit Steuerbord');
-// v1.18: Augpunkte aus NASA DOUG (Stage 75-7).
-for (const [id, p] of Object.entries({ cp3: [0.93, 18.50, 3.63], cp8: [0.04, -19.39, -4.05], cp9: [0.17, -19.39, 4.06], cp13: [5.38, 3.91, 3.51] })) assert.deepEqual(cam[id].pos, p, id + ' DOUG eye point');
+// Kameraketten (DOUG_RIGS): Auge und Blickrichtung im Befestigungssystem für Schwenk p und Neigung t.
+const M = a => new THREE.Matrix4().compose(new THREE.Vector3(...a.slice(0, 3)), new THREE.Quaternion(...a.slice(3)), new THREE.Vector3(1, 1, 1));
+function eyeOf(id, p, t) {
+  const R = DOUG_RIGS[id], m = M(R.pan.pre).multiply(new THREE.Matrix4().makeRotationZ(p * Math.PI / 180)).multiply(M(R.pan.post))
+    .multiply(M(R.tilt.pre)).multiply(new THREE.Matrix4().makeRotationY(t * Math.PI / 180)).multiply(M(R.tilt.post)).multiply(M(R.eye));
+  return { pos: new THREE.Vector3().setFromMatrixPosition(m), look: new THREE.Vector3(-1, 0, 0).transformDirection(m), up: new THREE.Vector3(0, 0, 1).transformDirection(m) };
+}
+const cam = id => CAMERAS.find(c => c.id === id);
+const near = (v, w, tol, msg) => assert.ok(v.distanceTo(new THREE.Vector3(...w)) < tol, msg + ': ' + v.toArray().map(x => x.toFixed(3)));
+// Augpunkte der Paketpose (Schwenk −180°, Neigung 90°, recherche/DOUG/DOUG_zero_configurations.md) kommen heraus.
+for (const [id, p] of Object.entries({ cp3: [0.926, 18.496, 3.631], cp8: [0.038, -19.395, -4.051], cp9: [0.165, -19.395, 4.064], cp13: [5.385, 3.911, 3.506] })) near(eyeOf(id, -180, 90).pos, p, 0.005, id + ' DOUG eye point');
+// Lage der Kameraports (Körpersystem: +Y Steuerbord, +Z Nadir).
+const at = id => eyeOf(id, 0, 0).pos;
+assert.ok(at('cp8').y < -18 && at('cp8').z < 0, 'CP8: P1 außen, Zenit'); assert.ok(at('cp9').y < -18 && at('cp9').z > 0, 'CP9: P1 außen, Nadir');
+assert.ok(at('cp3').y > 18 && at('cp3').y < 20.3 && at('cp3').z > 0, 'CP3: S1 außen, Nadir'); assert.ok(at('cp13').y > 2 && at('cp13').x > 5, 'CP13: Destiny, Steuerbord');
+// CP13 am 24.11.2026 an das Livebild angepasst (Canadarm2-LEE zeigt auf die Kamera): Schwenk −8,5°, Neigung −29,5°.
+// Auge und Blick wie in DOUG gerechnet (Python, unabhängig vom Modell).
+const fit13 = eyeOf('cp13', -8.5, -29.5); near(fit13.pos, [5.735, 3.903, 3.481], 0.005, 'CP13 eye 24.11.');
+assert.ok(fit13.look.y > 0.6 && fit13.look.z > 0.5, 'CP13 blickt nach Steuerbord und Nadir zum Arm');
+// Trägerrohre: Fuß an der Struktur, Kopf am Schwenkgehäuse (DOUG CAMERA_STANCHION, VCSA_BASE).
+for (const id of ['cp3', 'cp8', 'cp9', 'cp13']) { const [a, b] = DOUG_RIGS[id].stanchion.map(p => new THREE.Vector3(...p)); assert.ok(a.distanceTo(b) > 1.2 && a.distanceTo(b) < 1.4, id + ' stanchion ' + a.distanceTo(b));
+  near(b, DOUG_RIGS[id].pan.pre.slice(0, 3), 1e-3, id + ' Schwenkgehäuse am Rohrkopf'); }
+// Auslegerkameras: 2,65 m vom Ellbogen (DOUG), Neigeachse 0,27 m über der Grundplatte.
+assert.ok(Math.abs(DOUG_RIGS.boom1.pan.pre[0] - -4.453) < 0.01 && Math.abs(DOUG_RIGS.boom2.pan.pre[0] - -2.646) < 0.01);
+// LEE-Kameras sitzen hinter der Stirnfläche seitlich am LEE (DOUG-Leuchte bei 0,41 m / 0,35 m), nicht davor.
+for (const id of ['leeTip', 'leeBase']) assert.ok(cam(id).pos[1] > 0 && cam(id).pos[0] > 0.38, id);
 // Einbett-Adressen
 assert.match(embedUrl('https://www.youtube.com/watch?v=abcdefghijk'), /^https:\/\/www\.youtube\.com\/embed\/abcdefghijk\?autoplay=1&mute=1/);
 assert.match(embedUrl('https://youtu.be/abcdefghijk?t=3'), /embed\/abcdefghijk\?/);
@@ -44,7 +62,7 @@ assert.deepEqual(live.map(s => s.url), [W('abcdefghijk'), W(KNOWN_STREAMS[2].id)
 assert.equal(live[1].label, 'Sen · Earth in 4K');
 // Jede Kamera hat ihren Stream: Kameraports und MSS -> NASA „Live Video“, Harmony-HD -> NASA-HD, Sen -> Sen.
 assert.ok(CAMERAS.every(c => FEEDS[c.feed]), 'feed je Kamera');
-assert.equal(feedUrl(cam.cp8.feed), W('M3HKLzjvKPc')); assert.equal(feedUrl(cam.hd2.feed), W('ROboUHfPUrU')); assert.equal(feedUrl(cam.senNadir.feed), W('fO9e9jnhYK8'));
+assert.equal(feedUrl(cam('cp8').feed), W('M3HKLzjvKPc')); assert.equal(feedUrl(cam('hd2').feed), W('ROboUHfPUrU')); assert.equal(feedUrl(cam('senNadir').feed), W('fO9e9jnhYK8'));
 const run = [{ channel: 'NASA', channelName: 'nasa', id: 'aaaaaaaaaaa', title: 'Live High-Definition Views from the International Space Station' },
   { channel: 'NASA', channelName: 'nasa', id: 'bbbbbbbbbbb', title: 'Live Video from the International Space Station (Official NASA Stream)' },
   { channel: 'Sen', channelName: 'sen', id: 'ccccccccccc', title: 'Earth in 4K' }];

@@ -533,7 +533,7 @@ function buildDextre(mt) {
   const pdgf = dougNode(body, [68.7, 0, 0], [0, 0, -45]); const pdgfY = new THREE.Group(); pdgfY.quaternion.setFromRotationMatrix(DOUG_AXES.clone().transpose()); pdgf.add(pdgfY); MODEL.dextrePdgf = pdgfY;
   cyl(pdgf, 'x', 0.15, 0.32, 0.32, [0.08, 0, 0], 'gold', 'Dextre PDGF (top)', { ...o, segs: 16, rings: 0 });
   box(bodyY, 0.4, 0.4, 0.4, [0, 1.1, 0.65], 'gold', 'Dextre torso head (cameras)', o);
-  const b1 = dougNode(body, [68.7, 0, 0], [90, -45, -180]);
+  const b1 = dougNode(body, [68.7, 0, 0], [90, -45, -180]); MODEL.dextreTorso = b1;   // SPDM_body: Träger der Schulterbalken und der beiden Rumpfkameras
   tube(b1, [0, -46.9 * DIN, 46.9 * DIN], [0, 46.9 * DIN, 46.9 * DIN], 0.2, 0.2, 'arm', 'Dextre torso shoulder beam', o);
   MODEL.dextre = []; MODEL.dextreTools = [];
   DEXTRE_ARMS.forEach((arm, side) => {

@@ -2,6 +2,28 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.21: Kameras nach NASA DOUG, LEE-Kamera am LEE (24.11.)
+
+- **Alle schwenkbaren Kameras mit der DOUG-Kette** (`DOUG_RIGS` in `cameras.mjs`, erzeugt mit dem neuen
+  `tools/doug_cameras.mjs`): CP3, CP8, CP9, CP13, beide Auslegerkameras, MBS-Kamera und jetzt beide
+  Rumpfkameras von Dextre. Schwenk und Neigung sind die echten Gelenkwinkel (0/0 = NASA-Nullstellung), das
+  Auge wandert mit. Trägerrohre und Köpfe in DOUG-Maßen (Rohr 1,3 m, Neigeachse 0,65 m über dem
+  Schwenkgehäuse, SD-Kamera 0,18 m und HD-Kamera 0,38 m seitlich, Leuchte gegenüber). Gespeicherte Schwenk-,
+  Neige- und Rollwerte dieser Kameras werden einmalig zurückgesetzt. CP13 zum Livebild vom 24.11. (09:04 UTC,
+  LEE zeigt auf die Kamera): Schwenk −8,5°, Neigung −29,5°, Rollen 4,5°.
+- **Lagefehler behoben:** Die Auslegerkameras saßen 0,9 m statt 2,65 m vom Ellbogen und auf der falschen
+  Seite des Auslegers, die MBS-Kamera 1,6 m hinter und 2 m neben ihrer DOUG-Lage. CP13 stand bei der
+  Ansicht vom 24.11. 0,35 m zu weit hinten (fester Augpunkt statt Kette).
+- **LEE-Kameras** sitzen seitlich am LEE hinter der Stirnfläche (DOUG CLA), nicht mehr frei vor dem Greifer,
+  und haben ein Gehäuse mit Objektiv und Leuchtenfenster wie auf dem Livebild.
+- `pruefwerkzeuge/camshot.mjs`: Zwillingsansicht einer Kamera ohne Python aufnehmen (Node, Playwright),
+  mit Telemetrie aus einer JSON-Datei, Uhrzeit und einem Prüfausdruck.
+- **Offen, nicht geändert (Solarflügel):** Auf dem Livebild von CP13 vom 24.11. zeigt der Flügel rechts
+  vom Arm (S4, 1A/3A) seine orange Rückseite fast von vorn; der Zwilling zeigt ihn um etwa 60° schräg. Mit
+  BGA + 45° (so wie SSP 30219 und DOUG) passt das Bild. Die Sonnenprüfung vom 20.10. (`test_regression.mjs`,
+  Autotrack auf 0,09-0,5° genau) spricht dagegen. `CAL` bleibt deshalb, bis ein zweites Livebild mit
+  Flügel und bekannter Sonnenlage die Frage entscheidet.
+
 # v1.20: An- und Abflug wie in echt, Nahbereichsradar (24.11.)
 
 - **An- und Abflug** (`proxops.mjs`): Ein Fahrzeug verschwindet beim Abdocken nicht mehr und taucht beim
