@@ -54,36 +54,44 @@ export function wrapAngle(a, lo, hi, wrap) {
   return Math.round(Math.min(hi, Math.max(lo, a)) * 100) / 100;
 }
 const ETVCG = ['sd', 'hd'];
+/* Kameraketten aus NASA DOUG (Stage 75-7), erzeugt mit tools/doug_cameras.mjs. Je Kamera: Schwenkgelenk
+   (pre = System vor dem Gelenk im Befestigungssystem, Drehung um z, post danach), Neigegelenk (um y) und das
+   Augsystem relativ zum Neigesystem. Blickrichtung = −x des Augsystems, Bildoben = +z (am Livebild von CP13
+   am 24.11.2026 geprüft: Rest-Rollwinkel 4,5°). Bei den MSS-Kameras (CLPA) hat DOUG keinen Augknoten; das
+   Auge sitzt dort 0,21 m vor der Neigeachse (Schätzung), Blickrichtung wie die Leuchte. stanchion: Fuß und Kopf des Trägerrohrs. */
+export const DOUG_RIGS = {cp3: {pan: {pre: [0.6026,18.9286,3.2331,0.6124,0.7071,0,-0.3536],post: [0,0,0,0,0,0,1]},tilt: {pre: [0,0,-0.6477,0.7071,0.7071,0,0],post: [0,0,0,0,0,0,1]},eye: [0,0.1759,0,0,0,1,0],stanchion: [[0.004,19.478,2.205],[0.603,18.929,3.233]]},cp8: {pan: {pre: [0.038,-19.5707,-3.4035,0,0,-0.7071,0.7071],post: [0,0,0,0,0,0,1]},tilt: {pre: [0,0,-0.6477,0.7071,0.7071,0,0],post: [0,0,0,0,0,0,1]},eye: [0,0.1759,0,0,0,1,0],stanchion: [[0.102,-19.533,-2.108],[0.038,-19.571,-3.404]]},cp9: {pan: {pre: [0.165,-19.5707,3.4164,0.7071,0.7071,0,0],post: [0,0,0,0,0,0,1]},tilt: {pre: [0,0,-0.6477,0.7071,-0.7071,0,0],post: [0,0,0,0,0,0,1]},eye: [0,0.1759,0,0,0,1,0],stanchion: [[0.102,-19.533,2.108],[0.165,-19.571,3.416]]},cp13: {pan: {pre: [5.5606,3.299,3.7165,0,-0.5807,0.8141,0],post: [0,0,0,0,0,0,1]},tilt: {pre: [0,0,-0.6477,0.7071,-0.7071,0,0],post: [0,0,0,0,0,0,1]},eye: [0,0.1759,0,0,0,1,0],stanchion: [[5.522,2.083,4.202],[5.561,3.299,3.717]]},boom1: {pan: {pre: [-4.453,0,0.3048,1,0,0,0],post: [0,0,0,1,0,0,0]},tilt: {pre: [0,-0.1702,0.2159,0,0,0,1],post: [0,0,0,0,0,1,0]},eye: [-0.21,0,0,0,0,0,1]},boom2: {pan: {pre: [-2.6461,-0.0038,-0.3048,0,0,1,0],post: [0,0,0,1,0,0,0]},tilt: {pre: [0,-0.1702,0.2159,0,0,0,1],post: [0,0,0,0,0,1,0]},eye: [-0.21,0,0,0,0,0,1]},mbs: {pan: {pre: [4.876,-0.0076,-0.0254,-0.5,-0.5,0.5,0.5],post: [0,0,0,0,0,0,1]},tilt: {pre: [0,-0.1588,0,0,0,0,1],post: [0,0,0,1,0,0,0]},eye: [-0.21,0,0,0,0,0,1]},dextre1: {pan: {pre: [0.1372,-1.016,2.2276,0,0,-0.7071,0.7071],post: [0,0,0,1,0,0,0]},tilt: {pre: [0,-0.1702,0.2159,0,0,0,1],post: [0,0,0,0,0,1,0]},eye: [-0.21,0,0,0,0,0,1]},dextre2: {pan: {pre: [0.1372,1.016,2.2276,0,0,0.7071,0.7071],post: [0,0,0,1,0,0,0]},tilt: {pre: [0,-0.1702,0.2159,0,0,0,1],post: [0,0,0,0,0,1,0]},eye: [-0.21,0,0,0,0,0,1]}};
 export const CAMERAS = [
   // feed: welcher Livestream diese Kamera zeigt (FEEDS); der NASA-Stream „Live Video“ wechselt selbst
   // zwischen den Außenkameras, welche gerade läuft, steht nicht in der Telemetrie.
-  // v1.18: Lage von CP3, CP8, CP9 und CP13 = Augpunkte aus NASA DOUG (Stage 75-7); Fußpunkte auf der
-  // Modellhülle (Träger bzw. Destiny) in Richtung des Trägerrohrs, damit kein Kamerakopf frei schwebt.
-  // id, Name, Gruppe, Bauform, Befestigung (root = Stationssystem, sonst Knoten in MODEL), Lage, Fußpunkt
-  // des Trägerrohrs (base), Blickziel im Stationssystem bzw. Blickrichtung lokal, Optiken, schwenkbar
-  { id: 'cp8', feed: 'nasaLive', name: 'CP8 · P1 outboard, zenith', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.04, -19.39, -4.05], base: [0.04, -19.39, -1.4], target: [1.5, 0, -0.5], optics: ETVCG, ptu: true,
+  // id, Name, Gruppe, Bauform, Befestigung (root = Stationssystem, sonst Knoten in MODEL), dann entweder
+  // rig (Kette aus DOUG_RIGS, Schwenk und Neigung wie bei der echten Kamera, 0/0 = NASA-Nullstellung) oder
+  // eine feste Lage pos mit Blickziel target (Stationssystem) bzw. Blickrichtung dir (lokal), Optiken.
+  // v1.21: Kameraports, Ausleger-, MBS- und Dextre-Kameras mit den vollständigen DOUG-Ketten. Bis v1.20 drehte
+  // der Kopf um den festen Augpunkt der Paketpose; jetzt wandert das Auge wie in echt mit Schwenk und Neigung.
+  { id: 'cp8', feed: 'nasaLive', name: 'CP8 · P1 outboard, zenith', group: 'ETVCG', kind: 'etvcg', mount: 'root', rig: 'cp8', optics: ETVCG, ptu: true,
     note: 'Looks starboard along the truss: Kibo, Harmony with Dragon, MBS, Z1' },
-  { id: 'cp9', feed: 'nasaLive', name: 'CP9 · P1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.17, -19.39, 4.06], base: [0.17, -19.39, 1.4], target: [6, 0, 5], optics: ETVCG, ptu: true },
-  { id: 'cp3', feed: 'nasaLive', name: 'CP3 · S1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [0.93, 18.50, 3.63], base: [0.93, 18.50, 1.38], target: [6, 0, 5], optics: ETVCG, ptu: true },
-  { id: 'cp13', feed: 'nasaLive', name: 'CP13 · Destiny, zenith starboard', group: 'ETVCG', kind: 'etvcg', mount: 'root', pos: [5.38, 3.91, 3.51], base: [5.38, 2.02, 4.15], target: [-20, 8, 1], optics: ETVCG, ptu: true,
+  { id: 'cp9', feed: 'nasaLive', name: 'CP9 · P1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', rig: 'cp9', optics: ETVCG, ptu: true },
+  { id: 'cp3', feed: 'nasaLive', name: 'CP3 · S1 outboard, nadir', group: 'ETVCG', kind: 'etvcg', mount: 'root', rig: 'cp3', optics: ETVCG, ptu: true },
+  { id: 'cp13', feed: 'nasaLive', name: 'CP13 · Destiny, zenith starboard', group: 'ETVCG', kind: 'etvcg', mount: 'root', rig: 'cp13', optics: ETVCG, ptu: true,
     note: 'Position from NASA DOUG (Stage 75-7)' },
   { id: 'hd2', feed: 'nasaHd', name: 'Harmony forward HD camera', group: 'NASA HD', kind: 'box', mount: 'root', pos: [12.5, -1.6, 3.1], base: [12.3, -1.3, 3.25], target: [40, 0, 14], optics: ['n2hd'], ptu: false,
     note: 'Looks forward past IDA-2; source of the NASA high-definition views' },
   { id: 'senDock', feed: 'sen', name: 'Sen SpaceTV-1 · docking port', group: 'Sen', kind: 'lens', mount: 'root', pos: [14.2, 7.0, 4.3], target: [16.09, 0, 5.56], optics: ['senDock'], ptu: false },
   { id: 'senNadir', feed: 'sen', name: 'Sen SpaceTV-1 · nadir', group: 'Sen', kind: 'lens', mount: 'root', pos: [14.0, 7.2, 4.72], target: [14.0, 7.2, 100], up: [1, 0, 0], optics: ['senNadir'], ptu: false },
   { id: 'senHorizon', feed: 'sen', name: 'Sen SpaceTV-1 · horizon', group: 'Sen', kind: 'lens', mount: 'root', pos: [14.2, 7.4, 4.5], target: [100, 7.4, 40], optics: ['senWide'], ptu: false },
-  { id: 'leeTip', feed: 'nasaLive', name: 'Canadarm2 · free LEE camera', group: 'MSS', kind: 'box', mount: 'armTip', pos: [0.45, -0.3, 0], dir: [0, -1, 0], up: [0, 0, 1], optics: ['mss'], ptu: false },
-  { id: 'leeBase', feed: 'nasaLive', name: 'Canadarm2 · base LEE camera', group: 'MSS', kind: 'box', mount: 'armBase', pos: [0.45, -0.3, 0], dir: [0, -1, 0], up: [0, 0, 1], optics: ['mss'], ptu: false },
-  // Auslegerkameras (CLPA, mit Schwenk-Neige-Kopf) je eine an beiden Auslegern neben dem Ellbogen. Lage
-  // genähert: 0,9 m vor dem Ellbogengelenk seitlich am Ausleger, Blick den Ausleger entlang zum LEE.
-  { id: 'boom1', feed: 'nasaLive', name: 'Canadarm2 · boom camera, shoulder side', group: 'MSS', kind: 'box', mount: 'armBooms.b1', pos: [-6.2, 0.35, -0.24], dir: [1, 0, 0], up: [0, 1, 0], optics: ['mss'], ptu: true,
-    note: 'Looks along the boom to the shoulder and LEE B' },
-  { id: 'boom2', feed: 'nasaLive', name: 'Canadarm2 · boom camera, wrist side', group: 'MSS', kind: 'box', mount: 'armBooms.b2', pos: [-0.9, 0.35, -0.285], dir: [-1, 0, 0], up: [0, 1, 0], optics: ['mss'], ptu: true,
-    note: 'Looks along the boom to the wrist and LEE A' },
-  // Eigene Kamera: für Bilder, die keiner bekannten Einbaustelle zuzuordnen sind. Lage px/py/pz (m,
-  // Stationssystem) im Kalibrierfeld; Grundstellung vorn an Harmony, Blick in Flugrichtung.
-  { id: 'dextreHead', feed: 'nasaLive', name: 'Dextre · body camera', group: 'MSS', kind: 'box', mount: 'dextreBodyY', pos: [0, 1.1, 0.9], dir: [0, 0, 1], up: [0, 1, 0], optics: ['mss'], ptu: true },
-  { id: 'mbs', feed: 'nasaLive', name: 'MBS · camera', group: 'MSS', kind: 'box', mount: 'pivots.mt', pos: [3.3, 2.0, -1.5], dir: [1, 0, 0.2], up: [0, 0, -1], optics: ['mss'], ptu: true },
+  // LEE-Kameras (CLA): Kamera und Leuchte in einem Gehäuse seitlich am LEE, Blick entlang der LEE-Achse
+  // aus dem Greifer heraus. Lage aus DOUG (Leuchte 0,41 m neben der Achse, 0,35 m hinter der Stirnfläche);
+  // Gehäusemaße nach Fotos geschätzt.
+  { id: 'leeTip', feed: 'nasaLive', name: 'Canadarm2 · free LEE camera', group: 'MSS', kind: 'cla', mount: 'armTip', pos: [0.5, 0.07, -0.07], dir: [0, -1, 0], up: [0, 0, 1], optics: ['mss'], ptu: false },
+  { id: 'leeBase', feed: 'nasaLive', name: 'Canadarm2 · base LEE camera', group: 'MSS', kind: 'cla', mount: 'armBase', pos: [0.5, 0.07, -0.07], dir: [0, -1, 0], up: [0, 0, 1], optics: ['mss'], ptu: false },
+  // Auslegerkameras (CLPA) mit Schwenk-Neige-Kopf: an Ausleger B 2,66 m vor dem Ellbogen, an Ausleger A 2,65 m
+  // hinter dem Ellbogen (DOUG camholder_B2 / camholder_A2).
+  { id: 'boom1', feed: 'nasaLive', name: 'Canadarm2 · boom camera, shoulder side', group: 'MSS', kind: 'clpa', mount: 'armBooms.b1', rig: 'boom1', optics: ['mss'], ptu: true },
+  { id: 'boom2', feed: 'nasaLive', name: 'Canadarm2 · boom camera, wrist side', group: 'MSS', kind: 'clpa', mount: 'armBooms.b2', rig: 'boom2', optics: ['mss'], ptu: true },
+  // Dextre: zwei Rumpfkameras (CLPA) beiderseits des oberen Rumpfs.
+  { id: 'dextreHead', feed: 'nasaLive', name: 'Dextre · body camera 1', group: 'MSS', kind: 'clpa', mount: 'dextreTorso', rig: 'dextre1', optics: ['mss'], ptu: true },
+  { id: 'dextreHead2', feed: 'nasaLive', name: 'Dextre · body camera 2', group: 'MSS', kind: 'clpa', mount: 'dextreTorso', rig: 'dextre2', optics: ['mss'], ptu: true },
+  { id: 'mbs', feed: 'nasaLive', name: 'MBS · camera', group: 'MSS', kind: 'clpa', mount: 'pivots.mt', rig: 'mbs', optics: ['mss'], ptu: true },
 ];
 
 /* Livestreams. YouTube vergibt für Dauerstreams immer wieder neue Kennungen, und beendete Streams werden
@@ -184,36 +192,71 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
   const st = (() => { try { return JSON.parse(localStorage.getItem('iss.cams') || '{}') || {}; } catch (e) { return {}; } })();
   const save = () => { try { localStorage.setItem('iss.cams', JSON.stringify(st)); } catch (e) {} };
   st.view ||= {}; st.stream ||= ''; st.feedPick ||= {};   // feedPick: vom Nutzer gewählter Stream je Zuordnung
+  // v1.21: Schwenk und Neigung der Kameras mit DOUG-Kette bedeuten jetzt die echten Gelenkwinkel. Alte Werte
+  // (Drehung um den festen Augpunkt) passen nicht mehr dazu und werden einmalig zurückgesetzt.
+  if (st.rigV !== 1) { for (const c of CAMERAS) if (c.rig && st.view[c.id]) for (const k of ['pan', 'tilt', 'roll', 'dx', 'dy', 'dz']) delete st.view[c.id][k]; st.rigV = 1; save(); }
   const byId = {}, pickers = [], own = new Map();
   const mountOf = c => c.mount === 'root' ? MODEL.root : c.mount.split('.').reduce((o, k) => o?.[k], MODEL);
   const D = { decor: true, segs: 10, rings: 0, longs: 4 }, keep = (c, ...parts) => own.set(c.id, (own.get(c.id) || []).concat(parts));
   const pickMat = new THREE.MeshBasicMaterial({ visible: false });
 
-  /* Kameramodelle. Die Gruppe g sitzt an der Einbaustelle und blickt entlang ihrer −Z-Achse (wie
-     three.js-Kameras), head dreht darin mit Schwenk und Neigung. Maße der Kameragruppe nach NASA-Fotos:
-     Trägerrohr etwa 1 m, Schwenk-Neige-Kopf, Kameragehäuse etwa 0,45 m, Leuchte daneben, HD-Kamera
-     auf der anderen Seite. */
+  /* Kameramodelle. Feste Kameras: Gruppe g an der Einbaustelle, Blick entlang ihrer −Z-Achse (wie three.js-
+     Kameras). Kameras mit DOUG-Kette (rig): Schwenkgelenk um z, Neigegelenk um y, Augsystem; opt ist das
+     three.js-Kamerasystem am Auge (−Z = −x des Auges, +Y = +z des Auges). Maße aus DOUG: Trägerrohr vom
+     Fuß bis zum Schwenkgehäuse, Neigeachse 0,65 m über dem Schwenkgehäuse (ETVCG), SD-Kamera 0,18 m neben
+     der Neigeachse, HD-Kamera 0,38 m, Leuchte auf der anderen Seite. Gehäusemaße nach NASA-Fotos geschätzt. */
+  const frameOf = (parent, a) => { const g = new THREE.Group(); g.position.set(a[0], a[1], a[2]); g.quaternion.set(a[3], a[4], a[5], a[6]); parent.add(g); return g; };
+  const OPT = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0)));
   for (const c of CAMERAS) {
     const parent = mountOf(c); if (!parent) continue;
+    const nm = t(c.name);
+    if (c.rig) {
+      const R = DOUG_RIGS[c.rig], base = frameOf(parent, R.pan.pre), pan = new THREE.Group(); base.add(pan);
+      const tiltBase = frameOf(frameOf(pan, R.pan.post), R.tilt.pre), tilt = new THREE.Group(); tiltBase.add(tilt);
+      const head = frameOf(tilt, R.tilt.post), eye = frameOf(head, R.eye), opt = new THREE.Group(); opt.quaternion.copy(OPT); eye.add(opt);
+      const zt = R.tilt.pre[2];   // Abstand Schwenkgehäuse - Neigeachse entlang der Schwenkachse (ETVCG −0,65 m)
+      if (c.kind === 'etvcg') {
+        if (R.stanchion) { const [a, b] = R.stanchion.map(p => new THREE.Vector3(...p)), d = b.clone().sub(a);
+          const s = cyl(parent, 'x', d.length(), 0.05, 0.05, [0, 0, 0], 'truss', nm + ' stanchion', D); keep(c, s);
+          s.position.copy(a).add(b).multiplyScalar(0.5); s.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), d.normalize()); }
+        keep(c, cyl(base, 'z', 0.22, 0.13, 0.13, [0, 0, -0.11], 'gold', nm + ' pan unit', D),
+          box(pan, 0.16, 0.16, Math.abs(zt) - 0.22, [0, 0, (zt - 0.22) / 2], 'gold', nm + ' pan/tilt arm', D),
+          cyl(tilt, 'y', 0.3, 0.08, 0.08, [0, 0.03, 0], 'gold', nm + ' tilt joint', D),
+          // In head: Blick +x, SD-Kamera mit dem Objektiv am Auge (y 0,18), HD-Kamera (EHDC) bei y 0,38, Leuchte bei y −0,33.
+          box(head, 0.4, 0.18, 0.2, [-0.25, 0.176, 0], 'cam', nm + ' SD camera', D), cyl(head, 'x', 0.05, 0.07, 0.07, [-0.025, 0.176, 0], 'glass', nm + ' SD lens', D),
+          box(head, 0.4, 0.17, 0.22, [-0.08, 0.375, -0.07], 'silver', nm + ' HD camera (EHDC)', D), cyl(head, 'x', 0.06, 0.065, 0.065, [0.15, 0.375, -0.07], 'glass', nm + ' HD lens', D),
+          box(head, 0.3, 0.16, 0.2, [-0.02, -0.33, -0.08], 'cam', nm + ' luminaire', D), box(head, 0.02, 0.13, 0.17, [0.135, -0.33, -0.08], 'glass', nm + ' luminaire window', D));
+      } else {
+        // CLPA (MSS): Grundplatte, Schwenkbügel bis zur Neigeachse, Kamera mit Leuchte; Blick −x des Neigesystems.
+        const tp = new THREE.Vector3(...R.tilt.pre.slice(0, 3));
+        keep(c, box(base, 0.22, 0.22, 0.1, [0, 0, 0.05], 'cam', nm + ' base', D),
+          cyl(pan, 'z', 0.1, 0.09, 0.09, [0, 0, 0.15], 'gold', nm + ' pan unit', D),
+          box(pan, 0.08, Math.abs(tp.y) + 0.08, 0.08, [0, tp.y / 2, 0.2], 'gold', nm + ' pan/tilt bracket', D),
+          box(pan, 0.08, 0.08, Math.max(0.05, tp.z - 0.2), [0, tp.y, (tp.z + 0.2) / 2], 'gold', nm + ' pan/tilt bracket', D),
+          box(head, 0.36, 0.15, 0.16, [0.02, 0, 0], 'cam', nm, D), cyl(head, 'x', 0.04, 0.05, 0.05, [-0.18, 0, 0], 'glass', nm + ' lens', D),
+          box(head, 0.14, 0.12, 0.08, [-0.1, 0, 0.12], 'cam', nm + ' light', D), box(head, 0.02, 0.1, 0.06, [-0.175, 0, 0.12], 'glass', nm + ' light window', D));
+      }
+      const pick = new THREE.Mesh(new THREE.SphereGeometry(0.55, 10, 8), pickMat); pick.userData.camId = c.id; eye.add(pick); pickers.push(pick);
+      eye.userData.cam = c; byId[c.id] = { g: eye, opt, pan, tilt };
+      continue;
+    }
     const g = new THREE.Group(); g.position.set(...c.pos); parent.add(g);
     const up = new THREE.Vector3(...(c.up || [0, 0, -1]));
     g.quaternion.setFromRotationMatrix(c.target ? new THREE.Matrix4().lookAt(g.position, new THREE.Vector3(...c.target), up) : new THREE.Matrix4().lookAt(new THREE.Vector3(), new THREE.Vector3(...c.dir), up));
-    const head = new THREE.Group(); g.add(head);
-    const nm = t(c.name);
-    if (c.base) keep(c, cyl(parent, 'x', 1, 0.045, 0.045, [0, 0, 0], 'truss', nm + ' stanchion', D));
-    if (c.base) { const a = new THREE.Vector3(...c.base), b = new THREE.Vector3(...c.pos), d = b.clone().sub(a), p = own.get(c.id).at(-1);
-      p.position.copy(a).add(b).multiplyScalar(0.5); p.scale.set(d.length(), 1, 1); p.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), d.normalize()); }
-    if (c.kind === 'etvcg') {
-      keep(c, box(g, 0.2, 0.22, 0.2, [0, -0.12, 0.05], 'gold', nm + ' pan/tilt unit', D),
-        box(head, 0.2, 0.2, 0.45, [0, 0.1, -0.1], 'cam', nm + ' SD camera', D), cyl(head, 'z', 0.06, 0.07, 0.07, [0, 0.1, -0.355], 'glass', nm + ' SD lens', D),
-        cyl(head, 'z', 0.2, 0.06, 0.15, [-0.27, 0.1, -0.2], 'cam', nm + ' luminaire', D),
-        box(head, 0.2, 0.24, 0.5, [0.24, 0.1, -0.1], 'silver', nm + ' HD camera (EHDC)', D), cyl(head, 'z', 0.07, 0.065, 0.065, [0.24, 0.1, -0.385], 'glass', nm + ' HD lens', D));
+    if (c.base) { const a = new THREE.Vector3(...c.base), b = new THREE.Vector3(...c.pos), d = b.clone().sub(a);
+      const s = cyl(parent, 'x', d.length(), 0.045, 0.045, [0, 0, 0], 'truss', nm + ' stanchion', D); keep(c, s);
+      s.position.copy(a).add(b).multiplyScalar(0.5); s.quaternion.setFromUnitVectors(new THREE.Vector3(1, 0, 0), d.normalize()); }
+    if (c.kind === 'cla') {
+      // Gehäuse an der LEE-Wand (Radius 0,38 m): innen anliegend, vorn bündig 0,07 m hinter der Stirnfläche.
+      // g sitzt am Objektiv; das Gehäuse liegt dahinter (+Z) und reicht zur LEE-Achse hin (−y von g aus gesehen).
+      keep(c, box(g, 0.28, 0.22, 0.42, [0, -0.07, 0.21], 'cam', nm, D), cyl(g, 'z', 0.03, 0.05, 0.05, [0, 0, -0.005], 'glass', nm + ' lens', D),
+        box(g, 0.12, 0.08, 0.02, [0.07, 0.0, -0.005], 'glass', nm + ' light window', D));
     } else if (c.kind === 'box') {
-      keep(c, box(head, 0.16, 0.16, 0.3, [0, 0, 0], 'cam', nm, D), cyl(head, 'z', 0.05, 0.05, 0.05, [0, 0, -0.175], 'glass', nm + ' lens', D));
-    } else keep(c, cyl(head, 'z', 0.12, 0.05, 0.05, [0, 0, -0.06], 'glass', nm + ' lens', D));
+      keep(c, box(g, 0.16, 0.16, 0.3, [0, 0, 0], 'cam', nm, D), cyl(g, 'z', 0.05, 0.05, 0.05, [0, 0, -0.175], 'glass', nm + ' lens', D));
+    } else keep(c, cyl(g, 'z', 0.12, 0.05, 0.05, [0, 0, -0.06], 'glass', nm + ' lens', D));
     // Unsichtbare Kugel als Klickfläche: Die Kameras sind im Maßstab der Station sehr klein.
     const pick = new THREE.Mesh(new THREE.SphereGeometry(0.55, 10, 8), pickMat); pick.userData.camId = c.id; g.add(pick); pickers.push(pick);
-    g.userData.cam = c; byId[c.id] = { g, head };
+    g.userData.cam = c; byId[c.id] = { g, opt: g };
   }
   /* Markierung und Beschriftung jeder Kamera (Punkt an der Einbaustelle, Name daneben), schaltbar über
      „Cameras“ unter Display/Overlays. Klick auf die Markierung öffnet das Kamerafenster. Die Beschriftungen
@@ -366,12 +409,13 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     fine(f, $(k)); fine(f, $(k + 'N'));
   }
   $('#camReset').onclick = () => { delete st.view[cur]; save(); syncCtl(); };
-  // Kamerasystem in Weltkoordinaten: Einbaulage · Schwenk (um die Hochachse) · Neigung. Dreht auch den
-  // Kamerakopf des Modells mit.
+  // Schwenk und Neigung in die DOUG-Kette setzen (dreht auch das Kameramodell mit).
+  function aim(id) { const b = byId[id]; if (!b?.pan) return; const v = view(id); b.pan.rotation.z = v.pan * Math.PI / 180; b.tilt.rotation.y = v.tilt * Math.PI / 180; }
+  // Kamerasystem in Weltkoordinaten: Befestigung · Schwenk · Neigung · Auge.
   function pose(id, out) {
-    const { g, head } = byId[id], v = view(id);
-    head.rotation.set(v.tilt * Math.PI / 180, -v.pan * Math.PI / 180, 0, 'YXZ'); head.updateWorldMatrix(true, false);
-    out.matrixWorld.copy(head.matrixWorld); out.matrixWorld.decompose(out.position, out.quaternion, out.scale);
+    const { opt } = byId[id], v = view(id);
+    aim(id); opt.updateWorldMatrix(true, false);
+    out.matrixWorld.copy(opt.matrixWorld); out.matrixWorld.decompose(out.position, out.quaternion, out.scale);
     // Feinjustage aus dem Kalibrierfeld (calib-panel.mjs): Versatz in m entlang rechts/oben/hinten der Kamera,
     // Rollen um die Blickachse. Die Einbaulagen sind Näherungen nach NASA-Beschreibung.
     if (v.dx || v.dy || v.dz) { out.translateX(v.dx || 0); out.translateY(v.dy || 0); out.translateZ(v.dz || 0); }
@@ -418,5 +462,6 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     updateFrustum();
     $('#camCap').textContent = t('TWIN') + ' · ' + t(camOf(cur).name);
   }
+  for (const c of CAMERAS) aim(c.id);   // gespeicherte Schwenk- und Neigewinkel auch am Modell zeigen
   return { open, close, tick, list: CAMERAS, pose, state: st, refreshStreams, save, get current() { return cur; }, labels: marks, showMarks, get marksOn() { return marksOn; } };
 }

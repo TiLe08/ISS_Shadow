@@ -28,16 +28,35 @@ derselben Zuordnung.
 
 | Kamera | Einbaustelle | Beleg | Lage im Modell |
 |---|---|---|---|
-| CP8 | P1 außen, Zenit | Liste der Kameraports (J. McDowell, planet4589.org); Livebild 10.11.2026 | angenähert |
-| CP9 | P1 außen, Nadir | wie oben; NASA: Kibo verdeckt von dort den vorderen Port von Harmony | angenähert |
-| CP3 | S1 außen, Nadir, direkt innen neben ELC-4 | wie oben; NASA-Beschreibung der Kamera an S1 | angenähert |
-| CP13 | Destiny, Zenit Steuerbord | wie oben; NASA: der Träger verdeckt von dort den vorderen Port von Harmony, deshalb im Modell hinter S0 | angenähert, unsicherste Lage |
+| CP8 | P1 außen, Zenit | NASA DOUG Stage 75-7 (Kette CP8_CAMERA_STANCHION … CP8_VCSA_eye); Livebild 10.11.2026 | DOUG |
+| CP9 | P1 außen, Nadir | NASA DOUG | DOUG |
+| CP3 | S1 außen, Nadir, direkt innen neben ELC-4 | NASA DOUG | DOUG |
+| CP13 | Destiny, Zenit Steuerbord, Trägerrohr nach Steuerbord | NASA DOUG; Livebild 24.11.2026 (LEE von Canadarm2 zeigt auf die Kamera) | DOUG |
 | Harmony HD | vorderes Ende von Harmony, Blick nach vorn | Beschreibung des NASA-Streams „High-Definition Views“ | angenähert |
 | Sen SpaceTV-1 (3 Kameras) | Bartolomeo an Columbus | Sen | angenähert |
-| Canadarm2 LEE (2), Dextre, MBS | an den Roboterarmen | NASA-Übersicht der MSS-Kameras | folgt den Gelenken |
+| Canadarm2 LEE (2) | seitlich an beiden LEE, Blick aus dem Greifer | NASA DOUG (CLA_1/CLA_2, Leuchte 0,41 m neben der Achse, 0,35 m hinter der Stirnfläche); Livebild 24.11.2026 | Lage DOUG, Gehäuse geschätzt |
+| Canadarm2 Ausleger (2) | Ausleger B 2,66 m vor dem Ellbogen, Ausleger A 2,65 m dahinter | NASA DOUG (CLPA_1/CLPA_2) | DOUG |
+| Dextre (2) | beiderseits des oberen Rumpfs | NASA DOUG (SPDM_CLPA_1/2) | DOUG |
+| MBS | vorn am MBS, an der POA-Strebe | NASA DOUG (MBS_CAMERA_*) | DOUG |
 
 Jede Kameragruppe der NASA (ETVCG) trägt auf einem Trägerrohr einen Schwenk-Neige-Kopf mit
 SD-Kamera, Leuchte und seit 2016 einer HD-Kamera. So ist sie auch im Modell gebaut.
+
+**Kameraketten aus DOUG (v1.21).** `tools/doug_cameras.mjs` rechnet die Knoten des DOUG-Pakets in die
+Befestigungssysteme des Modells um und schreibt `DOUG_RIGS` in `cameras.mjs`. Jede schwenkbare Kamera ist
+dort eine Kette wie in DOUG: Trägerrohr (Fuß bis Schwenkgehäuse, bei den ETVCG 1,3 m), Schwenkgelenk um die
+Rohrachse, Neigeachse 0,65 m über dem Schwenkgehäuse, Auge 0,18 m seitlich auf der Neigeachse (HD-Kamera
+0,38 m, Leuchte auf der anderen Seite). Schwenk und Neigung im Fenster sind damit die echten Gelenkwinkel
+(DOUG-Kamerazuordnung: Schwenk −180° bis 160°, Neigung ±90°; 0/0 = NASA-Nullstellung), und das Auge wandert
+wie an der echten Kamera mit. Blickrichtung = −x des DOUG-Augsystems, Bildoben = +z. Geprüft: In der
+Paketpose (Schwenk −180°, Neigung 90°) liegen die Augpunkte auf 5 mm bei DOUG; das Livebild von CP13 vom
+24.11.2026 passt bei Schwenk −8,5°, Neigung −29,5° mit 4,5° Restrollen (`tests/test_cameras.mjs`).
+Bis v1.20 drehte sich der Kopf um den festen Augpunkt der Paketpose; dort lag CP13 bei dieser Ansicht
+0,35 m zu weit hinten. Gespeicherte Schwenk-, Neige- und Rollwerte dieser Kameras setzt v1.21 einmalig
+zurück. Die Gehäusemaße stehen nicht in den Knotendaten und sind nach Fotos geschätzt.
+
+`pruefwerkzeuge/camshot.mjs` nimmt eine Zwillingsansicht ohne Python auf (Node und Playwright), zum Beispiel
+mit Telemetrie aus dem Broker: `node pruefwerkzeuge/camshot.mjs bild.png cp13 -8.5 -29.5 61 --roll 4.5 --tm tm.json`.
 
 ## Sichtfelder
 
