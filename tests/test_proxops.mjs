@@ -128,5 +128,22 @@ assert.equal(new Date(R.tleEpoch('1 25544U 98067A   26322.50000000  .00016717  0
   R.drawRadar(ctx, 300, 220, [{ label: 'X', rel: [300e3, 0, 0], range: 300e3, rate: -5, kind: 'tle' }, { label: 'Y', rel: [5, 0, 20], range: 21, rate: 0.1, kind: 'model' }],
     { scale: 1e6, kurs: { range: 150, rate: -0.2 }, colors: { fg: '#fff', dim: '#888', accent: '#0ff', warn: '#ff0', model: '#fa0' } });
   assert.ok(calls.filter(k => k === 'fillText').length >= 8, 'Radar gezeichnet');
+  // Erde: Mittelpunkt in Nadirrichtung im Abstand |r|, bei 20 000 km Bildradius gezeichnet (Beschriftung „Earth“)
+  assert.deepEqual(r.earth.center, [0, 0, 6778e3]);
+  const texts = []; const ctx2 = new Proxy({}, { get: (o, k) => k in o ? o[k] : k === 'fillText' ? s => texts.push(s) : () => {}, set: (o, k, v) => (o[k] = v, true) });
+  R.drawRadar(ctx2, 300, 260, [], { scale: 2e7, az: 0, el: 0.3, earth: r.earth, colors: { fg: '#fff', dim: '#888', accent: '#0ff', warn: '#ff0', model: '#fa0' } });
+  assert.ok(texts.includes('Earth'), 'Erde sichtbar beim Herauszoomen');
+  texts.length = 0; R.drawRadar(ctx2, 300, 260, [], { scale: 1e4, earth: r.earth, colors: { fg: '#fff', dim: '#888', accent: '#0ff', warn: '#ff0', model: '#fa0' } });
+  assert.ok(!texts.includes('Earth'), 'Erde nicht im Bild bei 10 km');
+  assert.equal(R.zoomScale(1e4, 1), 1.25e4); assert.equal(R.zoomScale(R.MIN_SCALE, -1), R.MIN_SCALE);
 }
-console.log('PASS proxops: Dragon/Kurs/CBM-Abläufe, Nasenkappe, Kurs-Abstand, LL2-Abdocken, Portflag, Ereignisplan (Ab- und Anflug), Vorschau; Radar: TLE-Epoche, LVLH, angedockt/frei/alt, Zeichnen');
+{ // OMM/JSON von CelesTrak, auch mit sechsstelligen Katalognummern (das TLE-Format kann sie nicht)
+  const omm = [{ OBJECT_NAME: 'ISS (ZARYA)', NORAD_CAT_ID: 25544, EPOCH: '2026-11-18T12:00:00.000000' }, { OBJECT_NAME: 'DRAGON CRS-36', NORAD_CAT_ID: 100123, EPOCH: '2026-11-18T06:00:00.000000' }];
+  const l = R.parseGp([omm, []]);
+  assert.deepEqual(l.map(x => [x.id, x.name, new Date(x.epoch).toISOString()]), [[25544, 'ISS (ZARYA)', '2026-11-18T12:00:00.000Z'], [100123, 'DRAGON CRS-36', '2026-11-18T06:00:00.000Z']]);
+  assert.equal(R.parseGp(JSON.stringify(omm)).length, 2); assert.equal(R.parseGp('No GP data found').length, 0);
+  const used = []; const lib = { json2satrec: o => (used.push(o.NORAD_CAT_ID), { p: o.NORAD_CAT_ID === 25544 ? [6778, 0, 0] : [6778, 30, 0] }), propagate: s => ({ position: { x: s.p[0], y: s.p[1], z: s.p[2] }, velocity: { x: 0, y: 7.67, z: 0 } }) };
+  const r = R.propagateAll(lib, l, Date.parse('2026-11-18T12:00:00Z'));
+  assert.deepEqual(used, [25544, 100123]); assert.equal(r.items[0].id, 100123); assert.ok(Math.abs(r.items[0].range - 30e3) < 1e-6);
+}
+console.log('PASS proxops: Dragon/Kurs/CBM-Abläufe, Nasenkappe, Kurs-Abstand, LL2-Abdocken, Portflag, Ereignisplan (Ab- und Anflug), Vorschau; Radar: TLE-Epoche, OMM/JSON (6-stellig), LVLH, angedockt/frei/alt, Kugel mit Erde, Zoom');

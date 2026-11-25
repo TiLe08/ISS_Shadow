@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ISS Digital Shadow v1.25</title>
+<title>ISS Digital Shadow v1.26</title>
 <!--
   iss_twin.html: Hauptseite von ISS Shadow (digitaler Schatten / Zwilling der ISS).
 
@@ -368,7 +368,7 @@ tr.fresh td.v{color:var(--ok)}
 .settings{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;padding:10px;font-size:11px}
 .settings input{background:var(--bg);border:1px solid var(--line2);padding:4px 6px;width:100%}
 .note{color:var(--dim);font-size:10.5px;line-height:1.45}
-canvas.radar{display:block;width:100%;height:220px;margin:6px 0;cursor:grab;touch-action:none}
+canvas.radar{display:block;width:100%;height:260px;margin:6px 0;cursor:grab;touch-action:none}
 .vvb{background:transparent;border:1px solid var(--line2);color:var(--dim);font:600 9px/1 var(--f-disp);letter-spacing:.1em;padding:2px 5px;margin-left:4px;cursor:pointer;text-transform:uppercase}
 .vvb:hover{color:var(--acc);border-color:var(--acc)}
 .row .v.prox{color:var(--acc2)}
@@ -1274,26 +1274,28 @@ globalThis.ISS_PROX = { activities: proxActivities, preview: previewProx };
    Läuft nur, solange das Panel sichtbar ist: Dann werden einmalig satellite.js (SGP4, ~100 kB vom CDN)
    und die Bahnelemente geladen (über den Launcher /__tle, sonst direkt von CelesTrak, 2 h im Browser
    zwischengespeichert). Gerechnet und gezeichnet wird einmal pro Sekunde, beim Drehen öfter. */
-const RD = { lib: null, libErr: '', tles: null, tleAt: 0, checked: 0, tleErr: '', via: '', loading: false, scale: 0, az: 0.6, last: 0, res: null };
+const RD = { lib: null, libErr: '', tles: null, tleAt: 0, checked: 0, tleErr: '', via: '', loading: false, scale: 0, az: 0.6, el: 0.62, last: 0, res: null, pauseUntil: 0 };
+/* Bahnelemente: über den Launcher (/__tle), nur ohne Launcher direkt von CelesTrak (OMM/JSON, 2 h im
+   Browser zwischengespeichert). Nach einer HTTP-Fehlerantwort von CelesTrak 2 h Pause (Abrufregeln). */
 async function radarLoad() {
   if (RD.loading) return; RD.loading = true;
   try {
     if (!RD.lib && !RD.libErr) { try { RD.lib = await import(RADAR.SAT_URL); } catch (e) { RD.libErr = String(e.message || e); } }
     if (!RD.tles || Date.now() - RD.checked > 600e3) {
-      RD.checked = Date.now(); let text = '';
+      RD.checked = Date.now(); let data = null, launcher = false;
       if (/^https?:$/.test(location.protocol)) {
-        try { const r = await fetch('/__tle', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); text = Object.values(j.groups || {}).join('\n'); RD.tleErr = j.error || ''; RD.tleAt = j.fetched || Date.now(); RD.via = 'launcher'; } } catch (e) {}
+        try { const r = await fetch('/__tle', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); launcher = true; data = Object.values(j.groups || {}); RD.tleErr = j.error || ''; RD.tleAt = j.fetched || Date.now(); RD.via = 'launcher'; } } catch (e) {}
       }
-      if (!text) {
-        let c = null; try { c = JSON.parse(localStorage.getItem('iss.tle') || 'null'); } catch (e) {}
-        if (!c || Date.now() - c.fetched > 7200e3) {
-          try { const parts = []; for (const g of RADAR.GROUPS) { const r = await fetch(RADAR.CELESTRAK + g, { cache: 'no-store' }); if (!r.ok) throw new Error('HTTP ' + r.status); parts.push(await r.text()); }
-            c = { fetched: Date.now(), text: parts.join('\n') }; try { localStorage.setItem('iss.tle', JSON.stringify(c)); } catch (e) {} RD.tleErr = ''; }
+      if (!launcher) {
+        let c = null; try { c = JSON.parse(localStorage.getItem('iss.gp') || 'null'); } catch (e) {}
+        if ((!c || Date.now() - c.fetched > 7200e3) && Date.now() >= RD.pauseUntil) {
+          try { const parts = []; for (const g of RADAR.GROUPS) { const r = await fetch(RADAR.CELESTRAK + g, { cache: 'no-store' }); if (!r.ok) { RD.pauseUntil = Date.now() + 7200e3; throw new Error('HTTP ' + r.status); } parts.push(RADAR.parseGp(await r.text()).map(x => x.omm)); }
+            c = { fetched: Date.now(), groups: parts }; try { localStorage.setItem('iss.gp', JSON.stringify(c)); } catch (e) {} RD.tleErr = ''; }
           catch (e) { RD.tleErr = String(e.message || e); }
         }
-        if (c) { text = c.text; RD.tleAt = c.fetched; RD.via = 'direct'; }
+        if (c) { data = c.groups; RD.tleAt = c.fetched; RD.via = 'direct'; }
       }
-      const list = RADAR.parseTle(text); if (list.length) RD.tles = list; else if (!RD.tleErr) RD.tleErr = 'no orbit data';
+      const list = RADAR.parseGp(data || []); if (list.length) RD.tles = list; else if (!RD.tleErr) RD.tleErr = 'no orbit data';
     }
   } finally { RD.loading = false; }
 }
@@ -1311,8 +1313,11 @@ function updateRadar(force) {
   if (!cv.dataset.on) {
     cv.dataset.on = 1;
     let drag = null;
-    cv.onpointerdown = e => { drag = { x: e.clientX, az: RD.az }; cv.setPointerCapture(e.pointerId); };
-    cv.onpointermove = e => { if (drag) { RD.az = drag.az + (e.clientX - drag.x) / 80; updateRadar(true); } };
+    // Ziehen dreht die Kugel (waagerecht: Azimut, senkrecht: Blickhöhe), Mausrad zoomt stufenlos
+    cv.onpointerdown = e => { drag = { x: e.clientX, y: e.clientY, az: RD.az, el: RD.el }; cv.setPointerCapture(e.pointerId); };
+    cv.onpointermove = e => { if (drag) { RD.az = drag.az + (e.clientX - drag.x) / 80; RD.el = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, drag.el + (e.clientY - drag.y) / 80)); updateRadar(true); } };
+    cv.onwheel = e => { e.preventDefault(); RD.scale = RADAR.zoomScale(RD.scale || RD.autoScale || RADAR.SCALES[0], e.deltaY); $('#rdScale').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(+x.dataset.v === RD.scale))); updateRadar(true); };
+    cv.ondblclick = () => { RD.az = 0.6; RD.el = 0.62; updateRadar(true); };
     cv.onpointerup = cv.onpointercancel = () => { drag = null; };
     $('#rdScale').querySelectorAll('button').forEach(b => b.onclick = () => { RD.scale = +b.dataset.v; $('#rdScale').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); updateRadar(true); });
   }
@@ -1323,12 +1328,12 @@ function updateRadar(force) {
   const free = (RD.res?.items || []).filter(i => i.state === 'free');
   for (const i of free.slice(0, 12)) items.push({ label: i.name, rel: i.rel, range: i.range, rate: i.rate, kind: 'tle', note: 'TLE ' + t('{0} d old', i.ageD.toFixed(1)) });
   const kr = kursRange(), kurs = isFinite(kr) ? { range: kr, rate: V('RUSSEG000006') } : null;
-  const scale = RD.scale || RADAR.autoScale(items.map(i => ({ ...i, state: 'free' })));
+  const scale = RD.scale || (RD.autoScale = RADAR.autoScale(items.map(i => ({ ...i, state: 'free' }))));
   const w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(2, globalThis.devicePixelRatio || 1);
   if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
   const ctx = cv.getContext('2d'), cs = getComputedStyle(document.documentElement), col = k => cs.getPropertyValue(k).trim() || '#888';
   ctx.setTransform?.(dpr, 0, 0, dpr, 0, 0);
-  RADAR.drawRadar(ctx, w, h, items, { scale, az: RD.az, kurs, colors: { fg: col('--fg'), dim: col('--dim'), accent: col('--acc'), warn: col('--warn'), model: col('--acc2') } });
+  RADAR.drawRadar(ctx, w, h, items, { scale, az: RD.az, el: RD.el, kurs, earth: RD.res?.earth, earthLabel: t('Earth'), colors: { fg: col('--fg'), dim: col('--dim'), accent: col('--acc'), warn: col('--warn'), model: col('--acc2'), earth: '#4a90d9' } });
   if (force === true) return;
   const att = (RD.res?.items || []).filter(i => i.state === 'attached').map(i => i.name), stale = (RD.res?.items || []).filter(i => i.state === 'stale' && i.range < 1e6).length;
   const rows = items.slice().sort((a, b) => a.range - b.range).slice(0, 8).map(i => `<div class="row" title="${esc(i.note)}"><span class="k">${esc(i.label)}</span><span class="v${i.kind === 'model' ? ' prox' : ''}">${RADAR.fmtRange(i.range)} · ${RADAR.fmtRate(i.rate)}</span></div>`).join('')
@@ -2713,7 +2718,7 @@ function buildPanels() {
       ${sub('Visiting vehicles')}<div id="vvList"></div><div class="note" id="vvSrc"></div>${tileSection('rs')}`) +
     panelHTML('pProx', 'Proximity radar', 'LVLH // EXPERIMENTAL', `
       <div class="gtools"><div class="seg" id="rdScale" role="group" aria-label="${esc2(t('Radar range'))}"><button data-v="0" aria-pressed="true">${t('Auto')}</button>${RADAR.SCALES.map(v => `<button data-v="${v}">${RADAR.fmtRange(v)}</button>`).join('')}</div></div>
-      <canvas id="rdCanvas" class="radar" title="${esc2(t('Drag to rotate. Plane = V-bar/H-bar, up = zenith. Orbit positions from CelesTrak (SGP4, km accuracy), Kurs range, modeled approaches.'))}"></canvas>
+      <canvas id="rdCanvas" class="radar" title="${esc2(t('Drag to rotate the sphere, scroll to zoom, double-click to reset. Plane = V-bar/H-bar, up = zenith; Earth appears when zoomed out. Orbit positions from CelesTrak (SGP4, km accuracy), Kurs range, modeled approaches.'))}"></canvas>
       <div id="rdList"></div><div class="note" id="rdSrc">${t('Radar starts when this panel is open.')}</div>`) +
     panelHTML('pAct', 'Current activities', 'OPS // NOW', `<div id="actBox"><div class="note">${t('Waiting for telemetry and Launch Library 2…')}</div></div>`) +
     panelHTML('pCrew', 'Crew & schedule', 'LL2 // EXPEDITION', `<div id="crewBox"><div class="note">${t('Waiting for Launch Library 2…')}</div></div>`) +
@@ -4063,7 +4068,7 @@ function setLanguage(lang) {
   ISSWorkspace.relang(); logEvent(t('Language: {0}', I18N.LANGS[lang]));
 }
 /* ---------- Launcher-Anbindung (Heartbeat + Beenden) ---------- */
-const PAGE_VERSION = '1.25';      // muss mit VERSION in launcher.py übereinstimmen
+const PAGE_VERSION = '1.26';      // muss mit VERSION in launcher.py übereinstimmen
 function initLauncher() {
   if (!/^https?:$/.test(location.protocol)) return;
   // Ein neuerer Launcher ersetzt den alten; ein offener Tab lädt sich dann selbst neu, statt

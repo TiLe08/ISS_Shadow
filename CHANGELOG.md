@@ -2,6 +2,27 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.26: CelesTrak repariert, Radar als drehbare Kugel mit Erde (25.11.)
+
+- **CelesTrak im OMM/JSON-Format:** Launcher (`tle.py`) und Browser holen die Bahnelemente jetzt mit
+  `FORMAT=json` statt im TLE-Textformat und rechnen sie mit `json2satrec` (satellite.js 6.0.1). Grund: Seit
+  Mitte 2026 vergibt der Katalog sechsstellige Nummern (ab 100000), die das TLE-Format nicht darstellen kann.
+  Neue Objekte fehlten deshalb im TLE-Abruf, gerade die Gruppe „last-30-days“ (Fahrzeuge im Anflug).
+  Eine leere Gruppe („No GP data found“) gilt nicht mehr als Fehler.
+- **Abrufregeln von CelesTrak eingehalten:** Nach einer HTTP-Fehlerantwort (403, 404, 5xx …) ruht der
+  Dienst 2 h statt alle 15 min neu zu fragen (CelesTrak sperrt IPs, die Fehlerantworten ignorieren). Nach
+  drei Netzfehlern in Folge ebenfalls 2 h Pause. Der Browser fragt CelesTrak nur noch direkt, wenn kein
+  Launcher läuft (vorher zusätzlich, sobald der Launcher noch keine Daten hatte). Neuer Zwischenspeicher
+  `cache/gp.json` bzw. `iss.gp` im Browser; der alte `cache/tle.json` wird nicht mehr gelesen.
+- **Radar als Kugel:** Ziehen dreht die Ansicht frei in Azimut und Blickhöhe (auch von unten), das Mausrad
+  zoomt stufenlos (200 m bis 40 000 km), Doppelklick setzt die Ansicht zurück. Umriss und zwei senkrechte
+  Großkreise zeigen die Kugel, Rückseiten sind gestrichelt. Neue Stufe 20 000 km.
+- **Erde im Radar:** Sobald die Erdoberfläche in die Nähe des Bildradius rückt (ab etwa 300 km), erscheint die
+  Erde in Nadirrichtung mit Rand, Äquator und Nordpol (aus der Bahn der ISS berechnet). Objekte hinter der
+  Erde werden schwach gezeichnet.
+- Tests: `tests/test_tle.py` (JSON, sechsstellige Nummern, Pause nach HTTP 403, Netzfehler),
+  `tests/test_proxops.mjs` (OMM-Auswertung, Erde, Zoom).
+
 # v1.25: UHF-Antenne an das CP13-Livebild angepasst (25.11.)
 
 - Der Antennenkopf sitzt 0,45 m vom DOUG-Gelenk entlang dessen Z-Achse (0,09 m in X versetzt), nicht im

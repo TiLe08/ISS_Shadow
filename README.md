@@ -1,4 +1,4 @@
-# ISS Digital Shadow (v1.25)
+# ISS Digital Shadow (v1.26)
 
 Digitaler Schatten der Internationalen Raumstation auf Basis der öffentlichen NASA-Telemetrie
 **ISSLive** (337 öffentliche Kanäle), ergänzt um die unabhängige NASA/JSC-Bahnvorhersage. Ein
@@ -69,7 +69,7 @@ Zwecks und ihrer Schnittstelle.
 | MQTT-Broker (eingebettet, amqtt) | `127.0.0.1:1883` (MQTT), `127.0.0.1:9001` (MQTT über WebSocket) |
 | `bridge.py` + `ephemeris.py` | ISSLive und unabhängige NASA-Bahnvorhersage → getrennte MQTT-Topics; jeder Wert in `logs/iss_tm_JJJJMMTT.csv`, Kommandos in `logs/commands.jsonl` |
 | `vehicles.py` | Besuchsfahrzeuge, Crew, Ereignisse und Starts aus Launch Library 2 (`/__vehicles`) |
-| `tle.py` | Bahnelemente von CelesTrak für das Nahbereichsradar (`/__tle`, alle 2 h) |
+| `tle.py` | Bahnelemente von CelesTrak (OMM/JSON) für das Nahbereichsradar (`/__tle`, alle 2 h, nach Fehlern 2 h Pause) |
 | Webserver | `http://localhost:8137/iss_twin.html` |
 
 Läuft auf 1883/9001 schon ein Broker (etwa Mosquitto), nutzt der Launcher diesen.
@@ -149,7 +149,7 @@ in [docs/TESTS.md](docs/TESTS.md).
   ist nur so aktuell wie Launch Library 2.
 - An- und Abflüge (`proxops.mjs`) folgen veröffentlichten Missionsabläufen mit geschätzten Zeiten und
   liegen ganz auf der Andockachse. Gemessen ist nur der Kurs-Abstand russischer Fahrzeuge.
-- Das Nahbereichsradar ist experimentell: TLE-Bahnen sind auf etwa 1 km bis einige km genau.
+- Das Nahbereichsradar ist experimentell: Bahnen aus CelesTrak-Elementen (OMM/JSON, SGP4) sind auf etwa 1 km bis einige km genau.
 - Die Geometrie ist prozedural und vereinfacht; die virtuelle Station ist ein Lehrmodell, keine
   Flugsoftware. Ausführlich in COVERAGE.md.
 
