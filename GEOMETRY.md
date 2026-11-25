@@ -119,8 +119,8 @@ Sonnenlicht. Sonne im Körpersystem aus Zustandsvektor, Quaternion und Sonneneph
 |---|---|
 | Richtung der Quaternion (Körper → LVLH), LVLH-Achsen | Fehler zum SARJ-Ziel −0,1 ± 0,14°; mit der inversen Quaternion: 18° |
 | SARJ S / P | unverändert: S = r + 90, P = 90 − r; Backbord fällt, Steuerbord steigt, wie es die Sonnenbewegung verlangt |
-| BGA Steuerbord 1A, 3B / 3A, 1B | +r − 135 / −r − 135 (0,09-0,5° RMS zum sonnenoptimalen Beta) |
-| BGA Backbord 4A, 2B / 2A, 4B | +r + 45 / −r + 45 |
+| BGA Steuerbord 1A, 3B / 3A, 1B | +r − 135 / −r − 135 (0,09-0,5° RMS zum sonnenoptimalen Beta). **Ersetzt in v1.23** durch +r − 90 / −r − 90 (SSP 30219, DOUG, Livebilder CP13): Die Flügel standen am 20.10. 45° neben der Sonne |
+| BGA Backbord 4A, 2B / 2A, 4B | +r + 45 / −r + 45, **ab v1.23** +r + 90 / −r + 90 |
 | Ausrichtung des ganzen Modells | richtig: Erdpunkt darunter, Spur voraus entlang +X, Norden auf der richtigen Seite; Harmony +X, Swesda −X, Columbus +Y, Kibo −Y. Eine 180°-Drehung um Z ist ausgeschlossen |
 | Ku-SGANT (Z1000014/15) | Hauptstrahlrichtung trifft den geostationären Ring während der ganzen Aufzeichnung bei einer Länge zwischen 80 und 95° O (ein TDRS, Streuung < 1°) |
 | TRRJ | Achse und Vorzeichen siehe Abschnitt v1.15; im Autotrack noch nicht beobachtet |

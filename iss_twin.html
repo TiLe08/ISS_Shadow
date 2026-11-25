@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ISS Digital Shadow v1.22.1</title>
+<title>ISS Digital Shadow v1.23.1</title>
 <!--
   iss_twin.html: Hauptseite von ISS Shadow (digitaler Schatten / Zwilling der ISS).
 
@@ -613,11 +613,13 @@ const pad2 = n => String(n).padStart(2, '0');
      verlangt. Das bestätigt auch die Richtung der Quaternion (Körper -> LVLH) und die
      LVLH-Achsen: Die inverse Quaternion verfehlt das Ziel um 18°. Der Drehsinn wird nicht
      mehr zur Laufzeit gelernt.
-   - BGA: Jeder Flügel folgt dem sonnenoptimalen Beta-Winkel auf 0,09-0,5° RMS mit der
-     Tabelle unten (Offset Steuerbord −135, Backbord +45, gegenüberliegende Flügel mit
-     umgekehrtem Vorzeichen). Die bis v1.7 verwendete Tabelle stammte aus dem Schnappschuss
-     vom 14.10. mit geparkten SARJs: Vorzeichen und Nullpunkt waren falsch, nachführende
-     Flügel zeigten von der Sonne weg.
+   - BGA (v1.23): Nullpunkt und Vorzeichen wie SSP 30219 Rev. K und NASA DOUG (Offset Steuerbord −90,
+     Backbord +90, gegenüberliegende Flügel mit umgekehrtem Vorzeichen). Bestätigt an zwei Livebildern
+     von CP13 (24.11. und 25.11.2026): Der Flügel deckt sich mit dem Livebild nur so. Bis v1.22 lag der
+     Offset 45° daneben (−135/+45), weil er unter der Annahme bestimmt war, die Flügel zeigten am 20.10.
+     genau zur Sonne; tatsächlich standen sie dort 45° neben der Sonne. Wie weit ein Flügel neben dem
+     Sonnenoptimum steht, lernt die Seite jetzt (PRED.bias) und hält diesen Abstand in Datenlücken.
+     Die Tabelle von v1.7 (Schnappschuss 14.10., geparkte SARJs) war schon vorher verworfen.
    - TRRJ (v1.15): Das Gelenk dreht den Radiatorbalken um die Körper-X-Achse (Längsachse der
      Radiatoren), nicht um die Trägerachse. Bis v1.14 klappten die Radiatoren im Modell wie
      Landeklappen um Y. Belege: NASA TM-110318 (TRRJ-Drehung „about the +X direction“ der Station),
@@ -638,8 +640,8 @@ const pad2 = n => String(n).padStart(2, '0');
 const CAL = {
   sarjS: { sign: 1, offset: 90 }, sarjP: { sign: -1, offset: 90 },
   trrjS: { sign: 1, offset: 0 }, trrjP: { sign: 1, offset: 0 },
-  bga1A: { sign: 1, offset: -135 }, bga3A: { sign: -1, offset: -135 }, bga3B: { sign: 1, offset: -135 }, bga1B: { sign: -1, offset: -135 },
-  bga2A: { sign: -1, offset: 45 }, bga4A: { sign: 1, offset: 45 }, bga4B: { sign: -1, offset: 45 }, bga2B: { sign: 1, offset: 45 },
+  bga1A: { sign: 1, offset: -90 }, bga3A: { sign: -1, offset: -90 }, bga3B: { sign: 1, offset: -90 }, bga1B: { sign: -1, offset: -90 },
+  bga2A: { sign: -1, offset: 90 }, bga4A: { sign: 1, offset: 90 }, bga4B: { sign: -1, offset: 90 }, bga2B: { sign: 1, offset: 90 },
   ssrms:{ sign: 1, offset: 0 },
   sgant:{ sign: 1, offset: 0 }, kuCross: { sign: 1, offset: 0 },
 };
@@ -3550,7 +3552,7 @@ function poseSource() {
    SARJ im Autotrack ist). Geparkte Gelenke (DIR POS) bleiben, wo sie sind. Die Lage wird
    relativ zu LVLH gehalten, so fliegt die Station normalerweise. Vorhersagen sind gekennzeichnet
    und werden nie in den Telemetriespeicher geschrieben. */
-const PRED = { tracking: {} };
+const PRED = { tracking: {}, bias: {} };
 // Dauer der aktuellen Datenlücke in Sekunden (0, solange Daten fließen).
 function poseGapS(now) {
   if (CMD.active || LINK.src === 'sim' || !LINK.lastRx || effectiveSignal(now) === 'AOS') return 0;
@@ -3561,10 +3563,16 @@ const wingSide = ch => ['1A', '3A', '1B', '3B'].includes(ch) ? 'sarjS' : 'sarjP'
 function betaFor(alpha, sunB) {      // bestes Beta für ein gegebenes Alpha: Zellseite = (cos a cos b, sin b, −sin a cos b)
   const a = alpha * D2R; return Math.atan2(sunB.y, sunB.x * Math.cos(a) - sunB.z * Math.sin(a)) * R2D;
 }
-// Merkt sich bei frischen Daten im Sonnenlicht, welche Flügel der Sonne nachgeführt werden.
+// Merkt sich bei frischen Daten im Sonnenlicht, welche Flügel der Sonne nachgeführt werden und wie weit sie
+// neben dem Sonnenoptimum stehen (bias, Grad). Die Station führt die Flügel oft mit Versatz nach (am 20.10.
+// und 24./25.11.2026 rund 45°); als nachgeführt gilt ein Flügel bis 60° Versatz.
 function learnTracking(J, sunB, eclipsed) {
   if (eclipsed) return;
-  for (const ch of CHANS) PRED.tracking[ch] = solarNormal(J[wingSide(ch)], J.bga[ch]).dot(sunB) > 0.85;
+  for (const ch of CHANS) {
+    const a = J[wingSide(ch)], bias = wrap180(J.bga[ch] - betaFor(a, sunB));
+    PRED.tracking[ch] = Math.abs(bias) < 60 && Math.hypot(sunB.y, sunB.x * Math.cos(a * D2R) - sunB.z * Math.sin(a * D2R)) > 0.5;
+    if (PRED.tracking[ch]) PRED.bias[ch] = bias; else delete PRED.bias[ch];
+  }
 }
 /* Drehsinn der TRRJ aus dem Betrieb prüfen. Im AUTOTRACK bei Sonnenlicht stellt die Station ihre
    Radiatoren kantig zur Sonne. Für jeden Messwert r gibt es zwei Lesarten, Modellwinkel +r oder −r;
@@ -3599,7 +3607,7 @@ function predictJoints(J, sunB, nadirB, eclipsed) {
   if (auto('S0000008')) { P.sarjP = track.sarj; what.push('SARJ P'); }
   if (auto('S0000009')) { P.sarjS = track.sarj; what.push('SARJ S'); }
   const wings = CHANS.filter(ch => PRED.tracking[ch] ?? auto(wingSide(ch) === 'sarjS' ? 'S0000009' : 'S0000008'));
-  for (const ch of wings) P.bga[ch] = betaFor(P[wingSide(ch)], sunB);
+  for (const ch of wings) P.bga[ch] = betaFor(P[wingSide(ch)], sunB) + (PRED.bias[ch] || 0);
   if (wings.length) what.push(wings.length === CHANS.length ? 'all BGAs' : 'BGA ' + wings.join('/'));
   if (auto('S0000006')) { P.trrjP = radiatorGoal(sunB, nadirB, eclipsed, J.trrjP); what.push('TRRJ P'); }
   if (auto('S0000007')) { P.trrjS = radiatorGoal(sunB, nadirB, eclipsed, J.trrjS); what.push('TRRJ S'); }
@@ -4055,7 +4063,7 @@ function setLanguage(lang) {
   ISSWorkspace.relang(); logEvent(t('Language: {0}', I18N.LANGS[lang]));
 }
 /* ---------- Launcher-Anbindung (Heartbeat + Beenden) ---------- */
-const PAGE_VERSION = '1.22.1';      // muss mit VERSION in launcher.py übereinstimmen
+const PAGE_VERSION = '1.23.1';      // muss mit VERSION in launcher.py übereinstimmen
 function initLauncher() {
   if (!/^https?:$/.test(location.protocol)) return;
   // Ein neuerer Launcher ersetzt den alten; ein offener Tab lädt sich dann selbst neu, statt

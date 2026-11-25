@@ -123,7 +123,10 @@ for(const m of t.MODEL.parts.filter(p=>/^SAW (1A|3A) blanket box$/.test(p.mesh.u
    // Quaternion-Richtung: Körper -> LVLH; die Inverse verfehlt das Autotrack-Ziel um > 10°
    const sunBi=new THREE.Vector3(sun.dot(B.x),sun.dot(B.y),sun.dot(B.z)).applyQuaternion(q),tgi=Math.atan2(-sunBi.z,sunBi.x)*180/Math.PI;
    assert.ok(Math.abs(((J.sarjS-tgi)%360+540)%360-180)>10,'inverse attitude rejected');
-   for(const ch of CH)assert.ok(t.solarNormal(['1A','3A','1B','3B'].includes(ch)?J.sarjS:J.sarjP,J.bga[ch]).dot(sunB)>0.995,'wing faces the Sun '+tag+' '+ch);}
+   // v1.23 (BGA wie SSP 30219/DOUG, Livebilder CP13): Die Flügel standen am 20.10. alle rund 45° neben der Sonne,
+   // nachgeführt mit festem Versatz (die bis v1.22 verwendete Tabelle hatte diesen Versatz als Nullpunkt genommen).
+   for(const ch of CH){const off=Math.acos(Math.min(1,t.solarNormal(['1A','3A','1B','3B'].includes(ch)?J.sarjS:J.sarjP,J.bga[ch]).dot(sunB)))*180/Math.PI;
+     assert.ok(Math.abs(off-45)<5,'wing about 45° off the Sun '+tag+' '+ch+': '+off.toFixed(2));}}
   const lons=[];
   for(const V of F.antenna_series){t.TM.clear();for(const [k,v]of Object.entries(V))if(/^[A-Z]/.test(k))t.ingest(k,v,NaN,Date.now(),'SIM');
    t.applyJoints(t.liveJoints());root.updateMatrixWorld(true);

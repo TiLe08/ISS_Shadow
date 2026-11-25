@@ -2,7 +2,7 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
-# v1.22.1: Countdown bis Sonnenaufgang/-untergang (25.11.)
+# v1.23.1: Countdown bis Sonnenaufgang/-untergang (25.11.)
 
 - **Countdown „Sunrise in 12:34“ / „Sunset in 45:10“** als Pille in der 3D-Ansicht, als Zeile im
   Orbit-Panel (*Next sunrise/Next sunset*, T−mm:ss) und in der Kopfzeile der Zwillingsansicht im
@@ -13,6 +13,27 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
   (Halbschatten und Atmosphäre nicht modelliert). Hoher Beta-Winkel ohne Schatten: „Continuous sunlight“.
   Im Kommandomodus mit erzwungener Beleuchtung ausgeblendet. Übersetzungen in allen sechs Sprachen.
 - Neuer Test `tests/test_sun_event.mjs` (Ereignis auf 1 s am Umschlag, Phasenlängen, Beta 90°, Zwischenspeicher).
+
+# v1.23: Nullpunkt der Solarflügel (BGA) nach NASA (25.11.)
+
+- **BGA wie SSP 30219 und NASA DOUG:** Offset Steuerbord −90 statt −135, Backbord +90 statt +45 (`CAL` in
+  `iss_twin.html`). Zwei Livebilder von CP13 (24.11. und 25.11.2026) zeigen den Flügel S4 nur so deckungsgleich;
+  am 25.11. passten Kamera und Sichtfeld über den ganzen Flügel, nachdem Tim ihn von Hand um 45° gedreht hatte.
+- Die alte Tabelle war am 20.10. unter der Annahme bestimmt, die Flügel zeigten genau zur Sonne. Nach der Norm
+  standen sie damals alle rund 45° neben der Sonne (2B rund 41°). `tests/test_regression.mjs` prüft jetzt diesen
+  Versatz, `tests/test_ssp30219.mjs` die genaue Übereinstimmung mit der Norm.
+- **Vorhersage in Datenlücken:** Die Seite merkt sich bei frischen Daten, wie weit jeder Flügel neben dem
+  Sonnenoptimum steht (`PRED.bias`), und hält diesen Abstand, statt auf das Optimum zu springen.
+- Ein im Kalibrierfeld von Hand gesetzter BGA-Zusatzoffset von +45° ist damit doppelt: auf 0 zurückstellen.
+
+# v1.23.1: Sichtbares Konsolenfenster als Ausschalter (25.11.)
+
+- `Start ISS Shadow.bat` startet den Launcher mit `python` statt `pythonw` in einem eigenen Konsolenfenster
+  „ISS Digital Shadow“, das offen bleibt, solange das Programm läuft.
+- Fenster schließen oder Strg+C beendet Broker, Bridge, Dienste und Webserver sofort und geordnet
+  (`SetConsoleCtrlHandler` für das Schließen, zweites Strg+C beendet hart). Danach `os._exit`, damit kein
+  Bibliotheks-Thread den Prozess am Leben hält.
+- Hauptschleife prüft jede Sekunde statt alle 5 s. Leerlauf-Abschaltung nach 4 min bleibt als Rückfall.
 
 # v1.22: Entwicklermodus (25.11.)
 

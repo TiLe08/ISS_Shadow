@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """ISS Digital Shadow: Start mit einem Klick (launcher.py).
-Startet in einem Hintergrundprozess (ohne Konsolenfenster, wenn mit pythonw gestartet):
+Startet in einem Prozess (unter Windows in einem sichtbaren Konsolenfenster):
   1. eingebetteten MQTT-Broker (amqtt)    tcp 127.0.0.1:1883, WebSocket 127.0.0.1:9001
   2. Telemetrie-Bridge (bridge.py)        ISSLive -> MQTT, CSV-Protokolle in ./logs
      Besuchsfahrzeuge (vehicles.py)       Andockereignisse aus Launch Library 2, /__vehicles
@@ -8,17 +8,19 @@ Startet in einem Hintergrundprozess (ohne Konsolenfenster, wenn mit pythonw gest
      Bahnelemente CelesTrak (tle.py)      Nahbereichsradar, /__tle
   3. lokalen Webserver                    http://localhost:8137/iss_twin.html
 und öffnet das Dashboard im Standardbrowser.
-Alles beendet sich, wenn im Dashboard EXIT gedrückt wird, oder einige Minuten, nachdem der
-letzte Dashboard-Tab geschlossen wurde. Protokoll: logs/launcher.log
+Alles beendet sich sofort, wenn das Konsolenfenster geschlossen, dort Strg+C gedrückt oder im
+Dashboard EXIT gedrückt wird; sonst einige Minuten, nachdem der letzte Dashboard-Tab geschlossen
+wurde. Broker, Bridge und Dienste sind Threads dieses Prozesses, es bleibt also nichts zurück.
+Protokoll: logs/launcher.log
 Unter Windows wird der Launcher über „Start ISS Shadow.bat“ gestartet (installiert beim ersten
 Start die Python-Pakete aus requirements.txt).
 """
-import asyncio, json, logging, os, socket, sys, threading, time, types, urllib.request, webbrowser
+import asyncio, json, logging, os, signal, socket, sys, threading, time, types, urllib.request, webbrowser
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HTTP_PORT, MQTT_PORT, WS_PORT = 8137, 1883, 9001
-VERSION = "1.22.1"             # muss mit PAGE_VERSION in iss_twin.html übereinstimmen
+VERSION = "1.23.1"             # muss mit PAGE_VERSION in iss_twin.html übereinstimmen
 IDLE_TIMEOUT = 240          # s ohne Dashboard-Heartbeat bis zum Beenden
 URL = f"http://localhost:{HTTP_PORT}/iss_twin.html#mqtt"
 
@@ -50,7 +52,38 @@ def port_free(port):
 
 
 # ---------------------------------------------------------------- Webserver
-STATE = {"ping": time.time(), "quit": threading.Event()}
+STATE = {"ping": time.time(), "quit": threading.Event(), "stopped": threading.Event()}
+
+
+def install_stop_handlers():
+    """Strg+C, Strg+Pause und das Schließen des Konsolenfensters beenden alles geordnet.
+    Strg+C setzt nur das Quit-Ereignis (statt KeyboardInterrupt mitten im Ablauf). Für das
+    Schließen des Fensters (CTRL_CLOSE_EVENT) gibt Windows dem Prozess etwa 5 s; der Handler
+    wartet so lange, bis main() aufgeräumt hat, danach beendet Windows den Prozess."""
+    def on_signal(*_):
+        if STATE["quit"].is_set():          # zweites Strg+C: sofort hart beenden
+            os._exit(1)
+        log.info("stop requested from console"); STATE["quit"].set()
+    signal.signal(signal.SIGINT, on_signal)
+    if hasattr(signal, "SIGBREAK"):
+        signal.signal(signal.SIGBREAK, on_signal)
+    if os.name == "nt":
+        try:
+            import ctypes
+            from ctypes import wintypes
+            CLOSE_EVENTS = (2, 5, 6)        # CTRL_CLOSE_EVENT, CTRL_LOGOFF_EVENT, CTRL_SHUTDOWN_EVENT
+
+            @ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.DWORD)
+            def on_console(event):
+                if event not in CLOSE_EVENTS:
+                    return False            # Strg+C/Strg+Pause übernimmt der signal-Handler
+                log.info("console window closed - shutting down")
+                STATE["quit"].set(); STATE["stopped"].wait(4)
+                return True
+            STATE["console_handler"] = on_console      # Referenz halten, sonst räumt Python sie ab
+            ctypes.windll.kernel32.SetConsoleCtrlHandler(on_console, True)
+        except Exception:
+            log.exception("could not install console handler")
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -207,20 +240,41 @@ def main():
     httpd = ThreadingHTTPServer(("127.0.0.1", HTTP_PORT), Handler)
     threading.Thread(target=httpd.serve_forever, daemon=True, name="http").start()
     log.info("dashboard at %s", URL)
+    print(f"\n  ISS Digital Shadow {VERSION} is running: {URL}\n"
+          "  Close this window or press Ctrl+C to stop everything.\n", flush=True)
     STATE["ping"] = time.time() + 60          # Schonfrist, bis der Browser gestartet ist
     webbrowser.open(URL)
 
     last_stats = time.time()
-    while not STATE["quit"].wait(5):
+    while not STATE["quit"].wait(1):
         if time.time() - STATE["ping"] > IDLE_TIMEOUT:
             log.info("no dashboard open for %d s - shutting down", IDLE_TIMEOUT); break
         if time.time() - last_stats > 60:
             br.stats(); last_stats = time.time()
 
-    br.stop(); httpd.shutdown()
-    if broker: broker.stop(); broker.join(5)
+    log.info("stopping")
+    for step in (br.stop, httpd.shutdown):
+        try: step()
+        except Exception: log.exception("error while stopping")
+    if broker: broker.stop(); broker.join(3)
     log.info("stopped")
 
 
 if __name__ == "__main__":
-    main()
+    install_stop_handlers()
+    code = 0
+    try:
+        main()
+    except SystemExit as e:                 # fatal(): Fehlercode an die Startdatei weitergeben
+        code = e.code if isinstance(e.code, int) else 1
+    except Exception:
+        log.exception("launcher failed"); code = 1
+    finally:
+        STATE["stopped"].set()
+        logging.shutdown()
+    if code and os.name == "nt" and sys.stdin and sys.stdin.isatty() and not STATE["quit"].is_set():
+        try: input("\nISS Digital Shadow stopped with an error (details: logs/launcher.log). Press Enter to close.")
+        except Exception: pass
+    # Hart beenden: Kein Hintergrund-Thread einer Bibliothek (z. B. Lightstreamer) darf den
+    # Prozess nach dem Aufräumen noch am Leben halten.
+    os._exit(code)
