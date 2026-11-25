@@ -44,7 +44,7 @@ Protokollierung.
    │  ephemeris.py ◀─ NASA OEM (HTTPS) ─▶ iss/orbit, /__orbit    │ │                       │
    │  vehicles.py  ◀─ Launch Library 2 ─▶ /__vehicles            │ │                       │
    │  streams.py   ◀─ YouTube, sen.com ─▶ /__streams             │ │                       │
-   │  tle.py       ◀─ CelesTrak (TLE)  ─▶ /__tle                 │ │                       │
+   │  tle.py       ◀─ CelesTrak (OMM)  ─▶ /__tle                 │ │                       │
    │  MQTT-Broker (amqtt) 1883 TCP / 9001 WebSocket              │ │                       │
    │  Webserver 8137 (liefert die Projektdateien aus)            │ │                       │
    └──────────────┬──────────────────────────────────────────────┘ │                       │
@@ -87,7 +87,7 @@ Protokollierung.
 | `ephemeris.py` | NASA-Bahnvorhersage (OEM) laden, prüfen, interpolieren, zwischenspeichern |
 | `vehicles.py` | Andockereignisse, Crew, Ereignisplan, Starts und Außenbordeinsätze (`/spacewalks/`) aus Launch Library 2 |
 | `streams.py` | Laufende ISS-Livestreams von NASA (YouTube-Stream-Seite) und Sen (Schnittstelle von sen.com, sonst YouTube) ermitteln (`/__streams`), weil feste Video-Kennungen nach einiger Zeit privat werden |
-| `tle.py` | Bahnelemente der CelesTrak-Gruppen „stations“ und „last-30-days“ höchstens alle 2 h holen, Zwischenspeicher `cache/tle.json`, liefert `/__tle` für das Radar |
+| `tle.py` | Bahnelemente der CelesTrak-Gruppen „stations“ und „last-30-days“ als OMM/JSON höchstens alle 2 h holen (nach einer HTTP-Fehlerantwort 2 h Pause), Zwischenspeicher `cache/gp.json`, liefert `/__tle` für das Radar |
 | `tools/doug_cameras.mjs` | Rechnet die Kameraknoten des DOUG-Pakets in `DOUG_RIGS` (`cameras.mjs`) um |
 | `pruefwerkzeuge/camshot.mjs` | Zwillingsansicht einer Kamera mit Telemetrie aus einer JSON-Datei aufnehmen (Node, Playwright) |
 | `tools/export_viewer.mjs`, `tools/viewer_template.html` | Erzeugen `ISS_Model_Viewer_v1.3.html`: bauen das Modell wie die Seite, backen Geometrie, Materialien und Texturen ein und schreiben einen eigenständigen Viewer (Node.js) |
@@ -218,7 +218,7 @@ Ausführlich in [MODELL_UND_KALIBRIERUNG.md](MODELL_UND_KALIBRIERUNG.md).
 | `iss.cams` | Kamerafenster: Schwenk, Neigung, Rollen, Sichtfeld und Kamerakopf je Kamera, gewählter Stream |
 | `iss.camwin` | Lage und Größe des Kamerafensters |
 | `iss.camMarks` | Kameramarkierungen in der Hauptansicht ein/aus |
-| `iss.tle` | Bahnelemente für das Radar, wenn ohne Launcher direkt von CelesTrak geladen |
+| `iss.gp` | Bahnelemente (OMM) für das Radar, wenn ohne Launcher direkt von CelesTrak geladen |
 | `iss.payloads` | was Canadarm2 hält und wo abgesetzte Nutzlasten stehen; zurücksetzen mit `ISS.resetPayloads()` in der Konsole |
 | `iss.ll2`, `iss.ll2.*` | Zwischenspeicher der LL2-Antworten, wenn ohne Launcher gearbeitet wird |
 
