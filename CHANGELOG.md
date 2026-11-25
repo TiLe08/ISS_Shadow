@@ -2,6 +2,23 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.28: Darstellung „Realistisch“, realistischer Tag-Nacht-Übergang der Erde (25.11.)
+
+- **Neue Darstellung *Realistic* (Realistisch)** neben Holo und Solid (Display → Station): texturierte
+  PBR-Materialien je Bauteilart (Trümmerschutzbleche mit Fugen und Nieten, gesteppte Isolationsdecken,
+  zerknitterte Goldfolie, gebürstetes Metall der Träger, Solarzellen mit Leiterbahnen), Spiegelung und
+  diffuses Licht von Erde und Weltraum (Umgebungskarte nach Sonnenstand, neu nur bei ≈ 2° Änderung)
+  und Schatten der Sonne auf der Station (2048², nur jedes dritte Bild neu gezeichnet).
+- Geometrie, Gelenke, Nullpunkte und Kamerakalibrierung bleiben unverändert: Der Modus tauscht nur
+  Materialien und Licht (`tests/test_realistic.mjs` prüft gleiche Geometrie und Sichtbarkeit wie Solid).
+- Alle Texturen entstehen zur Laufzeit aus Rauschen und Rastern, es gibt keine heruntergeladenen
+  Modelle oder Bilder (keine Lizenzfragen). Das NASA-3D-Modell der ISS wurde bewusst nicht verwendet:
+  Es ist ein starres Gesamtnetz in älterer Konfiguration und ließe sich nicht mit SARJ, BGA, TRRJ und
+  Arm bewegen. Kostet mehr Grafikleistung als Solid und wird erst bei der ersten Wahl aufgebaut.
+- **Erde in Solid und Realistic:** Beleuchtung nach Sonnenhöhe (flacher Stand dunkler), weiche Dämmerung
+  mit rötlichem Saum, dunkle Nachtseite mit Stadtlichtern (NASA VIIRS, zur Laufzeit geladen),
+  Sonnenglanz auf dem Meer und ein dünner, an der Dämmerung rötlicher Atmosphärensaum. Holo bleibt wie bisher.
+
 # v1.27.2: NASA-Bahn wieder da, Konsolenfenster friert Dienste nicht mehr ein (25.11.)
 
 - **NASA-Bahn (OEM):** Das aktuelle NASA-Produkt vom 23.11. 18:47 UTC war am 25.11. abends älter als

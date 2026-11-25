@@ -6,7 +6,7 @@
 //
 // Inhalt:
 //   - MODEL: alle Bauteile, Drehpunkte, Greifpunkte und Besuchsfahrzeuge des gebauten Modells
-//   - MAT, setRenderStyle(): Materialien für die Darstellungen Holo und Solid
+//   - MAT, setRenderStyle(): Materialien für die Darstellungen Holo und Solid (Realistisch: realistic.mjs)
 //   - Bauteil-Fabrik (part, cyl, box, ...) und buildStation()
 //   - Montagekonventionen: solarAngles/solarNormal (SARJ, BGA), radiatorNormal (TRRJ)
 //
@@ -102,16 +102,21 @@ const BACK_OF = { array: 'arrayBack', irosa: 'irosaBack' };
 
 // Wendet die Darstellung auf alle Bauteile an. holo: Flächen als schwache Füllung mit Drahtgitter.
 // Solid: beleuchtete Materialien ohne Linien; Hüllkörper (proxy) unsichtbar, Stabgitter sichtbar.
-export function setRenderStyle(holo) {
+// style: 'holo' | 'solid' | 'real' (true/false wie früher für holo/solid). Für 'real' liefert
+// realMats (realistic.mjs) die Materialien je Bauteilart; die Station wirft und empfängt dann Schatten.
+export function setRenderStyle(style, realMats = null) {
+  if (style === true) style = 'holo'; else if (style === false) style = 'solid';
+  const holo = style === 'holo', real = style === 'real' && realMats, set = real ? realMats : MAT.solid;
   for (const p of MODEL.parts) {
     const amber = AMBER_KINDS.has(p.kind);
     if (holo) {
       p.mesh.material = amber ? MAT.holoFill2 : MAT.holoFill;
       p.wire.material = amber ? MAT.holoLine2 : (p.dim ? MAT.holoLineDim : MAT.holoLine);
-    } else p.mesh.material = p.proxy ? MAT.hidden : (MAT.solid[p.kind] || MAT.solid.module);
+    } else p.mesh.material = p.proxy ? MAT.hidden : (set[p.kind] || MAT.solid[p.kind] || set.module);
     p.wire.visible = holo && !p.solidOnly;
     p.mesh.visible = holo ? !p.solidOnly : true;
-    if (p.back) p.back.visible = !holo;
+    p.mesh.castShadow = p.mesh.receiveShadow = !!real;
+    if (p.back) { p.back.visible = !holo; p.back.material = set[BACK_OF[p.kind]] || MAT.solid[BACK_OF[p.kind]]; p.back.castShadow = false; p.back.receiveShadow = !!real; }
   }
 }
 

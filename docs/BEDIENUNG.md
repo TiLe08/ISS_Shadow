@@ -45,7 +45,10 @@ Tastenkürzel: **D** Dashboard, **C** Kanal-Browser, **?** Hilfe, **Esc** Menüs
   *Display* schaltet *Cameras* die Markierungen und Namen aller Kameras in der Hauptansicht (und den
   Sichtkegel der gewählten Kamera); ein Klick auf eine Markierung öffnet die Kamera. Einzelheiten in
   [KAMERAS.md](KAMERAS.md).
-- **Display:** Darstellung *Holo* (Drahtgitter) oder *Solid* (beleuchtete Flächen); Erde *Earth photo* (NASA Blue Marble)
+- **Display:** Darstellung *Holo* (Drahtgitter), *Solid* (beleuchtete Flächen) oder *Realistic*
+  (texturierte PBR-Materialien, Spiegelung von Erde und Weltraum, Sonnenschatten; braucht mehr
+  Grafikleistung, bei ruckelnder Ansicht *Solid* wählen). In *Solid* und *Realistic* zeigt die Erde
+  einen weichen Tag-Nacht-Übergang mit Dämmerung, Meeresglanz und Stadtlichtern; Erde *Earth photo* (NASA Blue Marble)
   oder *Earth radar* (Küsten und Grenzen); Einblendungen *ISS labels*, *Axes* (Körperachsen), *Sun*
   (Richtung zur Sonne); *Earth labels* für Ortsnamen.
 - **Pillen in der Ansicht:** Countdown *Sunrise in / Sunset in* (Sonnenauf- bzw. -untergang an der
