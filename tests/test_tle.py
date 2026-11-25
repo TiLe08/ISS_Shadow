@@ -47,14 +47,44 @@ class TleTest(unittest.TestCase):
             s.step()
             for _ in range(5):
                 s.last_request = 0; s.step()
-            self.assertEqual(len(calls), 1, "nach HTTP 403 keine weitere Anfrage")
+            self.assertEqual(len([c for c in calls if c.startswith("X")]), 1, "nach HTTP 403 keine weitere CelesTrak-Anfrage")
             self.assertIn("HTTP 403", s.snapshot()["error"])
+
+    def test_503_short_backoff_then_satnogs(self):
+        calls = []
+        SAT = json.dumps([{"tle0": "0 ISS (ZARYA)", "norad_cat_id": 25544, "tle1": "1 25544U 98067A   26328.88031538  .00004718  00000-0  91905-4 0  9995",
+                           "tle2": "2 25544  51.6319 224.8621 0007433  61.9046 298.2693 15.49577477596662"},
+                          {"tle0": "0 TITANIA", "norad_cat_id": 100900, "tle1": "1 A0900U 26227T   26328.96579037  .00001106  00000-0  59004-4 0  9995",
+                           "tle2": "2 A0900  97.4372  37.4896 0000583  91.1053 269.0247 15.17178937  8226"}])
+        def get(url):
+            calls.append(url)
+            if url.startswith("SAT"):
+                return SAT
+            raise http_error(503)
+        with tempfile.TemporaryDirectory() as d:
+            s = tle.TleService(d, base="X?GROUP=", get=get); s.satnogs = "SAT"
+            s.step()
+            self.assertAlmostEqual(s.paused_until - time.monotonic(), tle.BACKOFF[0], delta=5, msg="nach 503 erster Versuch nach 15 min")
+            self.assertIn("next try in 15 min", s.snapshot()["error"])
+            s.last_request = 0; s.step()
+            self.assertEqual(calls, ["X?GROUP=stations", "SAT"], "während der Pause springt SatNOGS ein")
+            snap = s.snapshot()
+            self.assertEqual(snap["source"], "SatNOGS")
+            self.assertEqual([o["NORAD_CAT_ID"] for o in snap["groups"]["satnogs"]], [25544, 100900])
+            self.assertEqual(snap["groups"]["satnogs"][0]["OBJECT_NAME"], "ISS (ZARYA)")
+            s.last_request = 0; s.step()
+            self.assertEqual(len(calls), 2, "SatNOGS höchstens alle 2 h")
+            # zweiter und dritter 503: 30 und 60 min, dann 2 h
+            for want in tle.BACKOFF[1:] + [tle.HTTP_PAUSE]:
+                s.paused_until = 0; s.next = {g: 0 for g in s.next}; s.next["satnogs"] = time.monotonic() + 1e6; s.last_request = 0; s.step()
+                self.assertAlmostEqual(s.paused_until - time.monotonic(), want, delta=5)
 
     def test_network_errors_back_off(self):
         s = tle.TleService(tempfile.gettempdir(), base="X?GROUP=", get=lambda u: (_ for _ in ()).throw(OSError("timed out")))
-        for _ in range(3):
-            s.next = {g: 0 for g in tle.GROUPS}; s.last_request = 0; s.step()
-        self.assertGreater(max(s.next.values()), time.monotonic() + tle.HTTP_PAUSE - 60, "nach drei Netzfehlern 2 h Pause")
+        s.satnogs = None
+        for _ in range(4):
+            s.paused_until = 0; s.next = {g: 0 for g in s.next}; s.last_request = 0; s.step()
+        self.assertGreater(s.paused_until, time.monotonic() + tle.HTTP_PAUSE - 60, "nach drei Netzfehlern 2 h Pause")
 
     def test_invalid(self):
         self.assertEqual(tle.parse_omm(""), [])

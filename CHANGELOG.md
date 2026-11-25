@@ -2,6 +2,25 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.27: Ersatzquelle bei CelesTrak-Ausfall, Erde immer im Radar, Bahn auf Klick (25.11.)
+
+- **CelesTrak-Ausfall abgefangen:** Am 25.11. antwortete die ganze Seite celestrak.org mit HTTP 503
+  (Server nicht verfügbar, auch die Startseite), das Radar blieb leer. Nach 5xx- und Netzfehlern versucht
+  `tle.py` es jetzt nach 15, 30 und 60 min erneut (CelesTrak erlaubt 2-3 Wiederholungen), erst dann alle
+  2 h. Nach 403/404 bleibt es bei 2 h Pause.
+- **Ersatzquelle SatNOGS:** Hat CelesTrak keine (oder über einen Tag alte) Daten, holt der Launcher
+  höchstens alle 2 h die Bahnelemente der SatNOGS-Datenbank (db.satnogs.org, Quelle Space-Track, etwa
+  1700 Objekte mit ISS und Nauka, aber ohne Dragon, Progress und Sojus). Ohne Launcher macht der Browser
+  dasselbe. Die Quelle steht in der Zeile unter dem Radar („Bahnen: SatNOGS …“). Sechsstellige Nummern
+  kommen dort im Alpha-5-Format, die Nummer wird aus dem Datensatz übernommen.
+- **Erde immer sichtbar:** Liegt die Erdoberfläche weit außerhalb des Bildradius, zeigt ein blauer Bogen
+  am Kugelrand in Nadirrichtung, wo die Erde ist und wie weit ihre Oberfläche entfernt ist („Erde 415 km“).
+  Ohne Bahndaten wird eine Bahnhöhe von 415 km angenommen (vorher fehlte die Erde dann ganz).
+- **Bahn auf Klick:** Ein Klick auf ein Objekt im Radar oder in der Liste darunter zeigt seine Bahn relativ
+  zur ISS von −45 bis +45 min (SGP4, im LVLH-System der ISS zum jeweiligen Zeitpunkt, alle 30 s neu
+  gerechnet) mit Zeitmarken alle 15 min; Vergangenheit gestrichelt. Bei modellierten An- und Abflügen ist
+  es die Portachse bis zum Port. Erneuter Klick oder Klick ins Leere hebt die Auswahl auf.
+
 # v1.26: CelesTrak repariert, Radar als drehbare Kugel mit Erde (25.11.)
 
 - **CelesTrak im OMM/JSON-Format:** Launcher (`tle.py`) und Browser holen die Bahnelemente jetzt mit

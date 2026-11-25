@@ -146,4 +146,22 @@ assert.equal(new Date(R.tleEpoch('1 25544U 98067A   26322.50000000  .00016717  0
   const r = R.propagateAll(lib, l, Date.parse('2026-11-18T12:00:00Z'));
   assert.deepEqual(used, [25544, 100123]); assert.equal(r.items[0].id, 100123); assert.ok(Math.abs(r.items[0].range - 30e3) < 1e-6);
 }
-console.log('PASS proxops: Dragon/Kurs/CBM-Abläufe, Nasenkappe, Kurs-Abstand, LL2-Abdocken, Portflag, Ereignisplan (Ab- und Anflug), Vorschau; Radar: TLE-Epoche, OMM/JSON (6-stellig), LVLH, angedockt/frei/alt, Kugel mit Erde, Zoom');
+{ // Ersatzquelle SatNOGS (TLE-Zeilen, Alpha-5-Nummern), Bahn durch die Kugel, Klick-Auswahl, Erde ohne Bahndaten
+  const sn = R.fromSatnogs([{ tle0: '0 ISS (ZARYA)', norad_cat_id: 25544, tle1: '1 25544U 98067A   26328.88031538  .00004718  00000-0  91905-4 0  9995', tle2: '2 25544  51.6319 224.8621 0007433  61.9046 298.2693 15.49577477596662' },
+    { tle0: '0 TITANIA', norad_cat_id: 100900, tle1: '1 A0900U 26227T   26328.96579037  .00001106  00000-0  59004-4 0  9995', tle2: '2 A0900  97.4372  37.4896 0000583  91.1053 269.0247 15.17178937  8226' }, { tle0: 'kaputt' }]);
+  const l = R.parseGp([sn]);
+  assert.deepEqual(l.map(x => [x.id, x.name]), [[25544, 'ISS (ZARYA)'], [100900, 'TITANIA']]);
+  assert.equal(new Date(l[0].epoch).toISOString().slice(0, 10), '2026-11-24');
+  // Fake-SGP4: Objekt läuft 1 km/min in +y relativ zur ISS
+  const lib = { twoline2satrec: l1 => ({ id: l1.slice(2, 7) }), propagate: (s, d) => { const m = (d - Date.parse('2026-11-25T12:00:00Z')) / 60e3; return { position: { x: 6778, y: s.id === '25544' ? 0 : m, z: 0 }, velocity: { x: 0, y: 7.67, z: 0 } }; } };
+  const tr = R.trajectory(lib, l, 100900, Date.parse('2026-11-25T12:00:00Z'), { before: 2, after: 2, step: 1 });
+  assert.deepEqual(tr.map(q => q.dt), [-2, -1, 0, 1, 2]);
+  assert.ok(Math.abs(tr[4].rel[0] - 2000) < 1e-6 && Math.abs(tr[0].rel[0] + 2000) < 1e-6, 'Bahn relativ zur ISS: +V voraus ' + JSON.stringify(tr.map(q => q.rel[0])));
+  const ctx = new Proxy({}, { get: (o, k) => k in o ? o[k] : () => {}, set: (o, k, v) => (o[k] = v, true) }), texts = [];
+  ctx.fillText = s => texts.push(s);
+  const it = { key: 't:100900', label: 'TITANIA', rel: tr[2].rel, range: 1, rate: 0, kind: 'tle', sel: true, path: tr };
+  const hits = R.drawRadar(ctx, 300, 260, [it], { scale: 1e4, earth: R.DEFAULT_EARTH, earthLabel: 'Earth', colors: { fg: '#fff', dim: '#888', accent: '#0ff', warn: '#ff0', model: '#fa0' } });
+  assert.ok(texts.some(s => /^Earth 415 km$/.test(s)), 'Erdhinweis am Rand, auch ohne Bahndaten: ' + texts.join('|'));
+  assert.equal(R.pick(hits, hits[0].x + 3, hits[0].y - 2), it, 'Klick wählt das Objekt'); assert.equal(R.pick(hits, 0, 0), null);
+}
+console.log('PASS proxops: Dragon/Kurs/CBM-Abläufe, Nasenkappe, Kurs-Abstand, LL2-Abdocken, Portflag, Ereignisplan (Ab- und Anflug), Vorschau; Radar: TLE-Epoche, OMM/JSON (6-stellig), LVLH, angedockt/frei/alt, Kugel mit Erde, Zoom, SatNOGS, Bahn auf Klick');
