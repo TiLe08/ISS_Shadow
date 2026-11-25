@@ -2,6 +2,18 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.23: Nullpunkt der Solarflügel (BGA) nach NASA (25.11.)
+
+- **BGA wie SSP 30219 und NASA DOUG:** Offset Steuerbord −90 statt −135, Backbord +90 statt +45 (`CAL` in
+  `iss_twin.html`). Zwei Livebilder von CP13 (24.11. und 25.11.2026) zeigen den Flügel S4 nur so deckungsgleich;
+  am 25.11. passten Kamera und Sichtfeld über den ganzen Flügel, nachdem Tim ihn von Hand um 45° gedreht hatte.
+- Die alte Tabelle war am 20.10. unter der Annahme bestimmt, die Flügel zeigten genau zur Sonne. Nach der Norm
+  standen sie damals alle rund 45° neben der Sonne (2B rund 41°). `tests/test_regression.mjs` prüft jetzt diesen
+  Versatz, `tests/test_ssp30219.mjs` die genaue Übereinstimmung mit der Norm.
+- **Vorhersage in Datenlücken:** Die Seite merkt sich bei frischen Daten, wie weit jeder Flügel neben dem
+  Sonnenoptimum steht (`PRED.bias`), und hält diesen Abstand, statt auf das Optimum zu springen.
+- Ein im Kalibrierfeld von Hand gesetzter BGA-Zusatzoffset von +45° ist damit doppelt: auf 0 zurückstellen.
+
 # v1.22: Entwicklermodus (25.11.)
 
 - **Entwicklermodus** (neues Modul `dev-panel.mjs`): Schalter „Dev mode“ in Setup (`localStorage iss.dev`),

@@ -68,8 +68,8 @@ Modellwinkel = sign · Telemetriewert + offset      (Funktion cal; uncal ist die
 | Gelenk | sign | offset | Beleg |
 |---|---|---|---|
 | SARJ Steuerbord / Backbord | +1 / −1 | 90 / 90 | Autotrack-Daten 20.10.2026: Fehler zum Sonnenziel −0,1 ± 0,14° |
-| BGA 1A, 3B / 3A, 1B (Steuerbord) | +1 / −1 | −135 | Autotrack 20.10.: 0,09-0,5° RMS zum sonnenoptimalen Beta |
-| BGA 4A, 2B / 2A, 4B (Backbord) | +1 / −1 | +45 | ebenso |
+| BGA 1A, 3B / 3A, 1B (Steuerbord) | +1 / −1 | −90 | SSP 30219 und NASA DOUG; Livebilder CP13 vom 24.11. und 25.11.2026 (v1.23, vorher −135) |
+| BGA 4A, 2B / 2A, 4B (Backbord) | +1 / −1 | +90 | ebenso (vorher +45) |
 | TRRJ Steuerbord / Backbord | +1 / +1 | 0 | Drehung um X. Steuerbord aus einer NASA-Abstandsmessung, Backbord aus dem Livebild CP8 vom 10.11.2026; `checkTrrjSense()` prüft im Autotrack nach (siehe GEOMETRY.md) |
 | Canadarm2, Ku-Antenne, MT | +1 | 0 | Umrechnung über `SSRMS_CONV` bzw. Antennengeometrie |
 
@@ -150,9 +150,11 @@ Gelenkwinkel der Energie- und Kühlsysteme:
   ISSLive-Werte (Backbord = 360° − Steuerbord) passen.
 - **TRRJ:** gamma = Rechtsdrehung um +X, 0° = Radiatorbalken in der X-Y-Ebene, beide Seiten gleich. Stimmt.
 - **BGA:** Die Norm gibt je Flügel eine eigene Formel (z. B. beta_S4UPR3A = −beta − 90°, 0° = Zellseite
-  nach innen). Mit ihr läge jeder Flügel in den Livedaten vom 20.10.2026 um 45° neben der Sonne; mit `CAL`
-  stehen alle acht genau zur Sonne. Die ISSLive-Kanäle folgen also nicht wörtlich der Norm (oder der
-  ausgelesene Text der Formel ist unvollständig); maßgebend bleiben die Livedaten.
+  nach innen). Seit v1.23 folgt `CAL` ihr genau. Bis v1.22 lag `CAL` 45° daneben: Die Tabelle war aus den
+  Livedaten vom 20.10.2026 unter der Annahme bestimmt, die Flügel zeigten genau zur Sonne. Zwei Livebilder
+  von CP13 (24.11. und 25.11.2026, Kamera über den Arm und den Flügel selbst eingepasst) zeigen den Flügel nur
+  mit der Norm richtig, ebenso DOUG. Die Station führte die Flügel an diesen Tagen also mit rund 45° Versatz
+  zur Sonne nach. Diesen Versatz lernt die Seite bei frischen Daten (`PRED.bias`) und hält ihn in Datenlücken.
 - Für Canadarm2, Dextre, MBS-Greifpunkte und Antennen enthält die Norm nur Bezugssysteme (Ursprung und
   Achsen), keine Nullpunkte der Gelenke. Die Lage von MT und MBS (MT/MBS-Schnittstelle 95,79 in vor der
   S0-Achse) stimmt mit dem Modell überein.
