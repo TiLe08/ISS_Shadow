@@ -2,6 +2,15 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.22.1: Sichtbares Konsolenfenster als Ausschalter (25.11.)
+
+- `Start ISS Shadow.bat` startet den Launcher mit `python` statt `pythonw` in einem eigenen Konsolenfenster
+  „ISS Digital Shadow“, das offen bleibt, solange das Programm läuft.
+- Fenster schließen oder Strg+C beendet Broker, Bridge, Dienste und Webserver sofort und geordnet
+  (`SetConsoleCtrlHandler` für das Schließen, zweites Strg+C beendet hart). Danach `os._exit`, damit kein
+  Bibliotheks-Thread den Prozess am Leben hält.
+- Hauptschleife prüft jede Sekunde statt alle 5 s. Leerlauf-Abschaltung nach 4 min bleibt als Rückfall.
+
 # v1.22: Entwicklermodus (25.11.)
 
 - **Entwicklermodus** (neues Modul `dev-panel.mjs`): Schalter „Dev mode“ in Setup (`localStorage iss.dev`),
