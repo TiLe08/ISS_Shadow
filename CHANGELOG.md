@@ -2,6 +2,24 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.22: Entwicklermodus (25.11.)
+
+- **Entwicklermodus** (neues Modul `dev-panel.mjs`): Schalter „Dev mode“ in Setup (`localStorage iss.dev`),
+  dann Knopf **Dev** neben Setup und „?“. Das Fenster (verschiebbar, nur englisch, keine Übersetzungen)
+  löst Ereignisse von Hand aus, um Animationen zu prüfen; reine Anzeige, Meldungen mit „[DEV]“:
+  - **Vehicles:** Anflug an einen freien Port mit wählbarem Typ, sofort hinsetzen, Abflug, sofort entfernen,
+    zurück zu den Daten. Zeitraffer 1× bis 300×. Cygnus/HTV-X verkürzt: Anflug, Halt am Einfangpunkt,
+    geradlinig an den CBM (Arm unbewegt, vereinfacht).
+  - **Spacewalk:** Crewlock auspumpen und wieder befüllen, Stationsmodus External ops, Eintrag wie aus LL2.
+  - **Moving parts:** gesetzte Telemetriewerte (`DEV.tm`, gelesen über `tv()`) für SARJ, BGA, TRRJ, MT,
+    Canadarm2 mit Spitzen-LEE, Dextre und Ku-Antenne; laufen mit der Gelenkrate zum Ziel. Solange einer
+    gesetzt ist, ruhen Posenvorhersage, `learnTracking` und `checkTrrjSense` (sonst würde die Kalibrierung
+    aus erfundenen Werten lernen). Knopf zum Zurücksetzen der gespeicherten Nutzlastlagen (`iss.payloads`,
+    offener Punkt 5 der Übergabe).
+  - Ausschalten verwirft alle Eingriffe.
+- **Quest-EV-Luke** schwenkt jetzt in 8 s auf und zu (Schätzung) statt zu springen.
+- Neuer Test `tests/test_dev.mjs`.
+
 # v1.21: Kameras nach NASA DOUG, LEE-Kamera am LEE (24.11.)
 
 - **Alle schwenkbaren Kameras mit der DOUG-Kette** (`DOUG_RIGS` in `cameras.mjs`, erzeugt mit dem neuen
