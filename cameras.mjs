@@ -23,7 +23,7 @@
 // Markierungen und Namen aller Kameras in der Hauptansicht lassen sich über Display/Overlays „Cameras“
 // ein- und ausschalten (localStorage iss.camMarks, Voreinstellung aus); dazu gehört auch der Sichtkegel.
 //
-// Schnittstelle: setupCameras({ THREE, S, MODEL, t, onOpen }) baut die Modelle und gibt
+// Schnittstelle: setupCameras({ THREE, S, MODEL, t, onOpen, sunNote }) baut die Modelle und gibt
 // { open(id), close(), tick(now), list } zurück. Die Kameramodelle sind Bauteile des Stationsmodells
 // (MODEL.parts) und folgen damit der gewählten Darstellung.
 import { makeFrame } from './window-frame.mjs';
@@ -188,7 +188,7 @@ const CSS = `
 .lbl3d.cam.lbl-off{visibility:visible;background:none;font-size:0;padding:6px 0 6px 12px}
 `;
 
-export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
+export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen, sunNote }) {
   const st = (() => { try { return JSON.parse(localStorage.getItem('iss.cams') || '{}') || {}; } catch (e) { return {}; } })();
   const save = () => { try { localStorage.setItem('iss.cams', JSON.stringify(st)); } catch (e) {} };
   st.view ||= {}; st.stream ||= ''; st.feedPick ||= {};   // feedPick: vom Nutzer gewählter Stream je Zuordnung
@@ -460,7 +460,8 @@ export function setupCameras({ THREE, S, MODEL, t = s => s, onOpen }) {
     frustum.visible = false; renderer.render(S.scene, cam);
     for (const m of mine) m.visible = true;
     updateFrustum();
-    $('#camCap').textContent = t('TWIN') + ' · ' + t(camOf(cur).name);
+    { let note = ''; try { note = sunNote?.() || ''; } catch (e) {}
+      $('#camCap').textContent = t('TWIN') + ' · ' + t(camOf(cur).name) + (note ? ' · ' + note : ''); }
   }
   for (const c of CAMERAS) aim(c.id);   // gespeicherte Schwenk- und Neigewinkel auch am Modell zeigen
   return { open, close, tick, list: CAMERAS, pose, state: st, refreshStreams, save, get current() { return cur; }, labels: marks, showMarks, get marksOn() { return marksOn; } };

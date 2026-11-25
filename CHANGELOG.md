@@ -2,6 +2,18 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.22.1: Countdown bis Sonnenaufgang/-untergang (25.11.)
+
+- **Countdown „Sunrise in 12:34“ / „Sunset in 45:10“** als Pille in der 3D-Ansicht, als Zeile im
+  Orbit-Panel (*Next sunrise/Next sunset*, T−mm:ss) und in der Kopfzeile der Zwillingsansicht im
+  Kamerafenster. Gerechnet wird der Austritt aus bzw. Eintritt in den Erdschatten **an der Station**
+  (Bahnhöhe), nicht das Überfliegen des Terminators am Boden: `nextSunEvent()` propagiert die Bahn in
+  20-s-Schritten mit demselben Schattenzylinder wie `inShadow()` und grenzt den Übergang auf 0,5 s ein;
+  neu gerechnet nach jedem Ereignis, jede Minute und nach Bahnsprüngen. Genauigkeit etwa ±10 s
+  (Halbschatten und Atmosphäre nicht modelliert). Hoher Beta-Winkel ohne Schatten: „Continuous sunlight“.
+  Im Kommandomodus mit erzwungener Beleuchtung ausgeblendet. Übersetzungen in allen sechs Sprachen.
+- Neuer Test `tests/test_sun_event.mjs` (Ereignis auf 1 s am Umschlag, Phasenlängen, Beta 90°, Zwischenspeicher).
+
 # v1.22: Entwicklermodus (25.11.)
 
 - **Entwicklermodus** (neues Modul `dev-panel.mjs`): Schalter „Dev mode“ in Setup (`localStorage iss.dev`),

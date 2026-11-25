@@ -375,3 +375,10 @@ Arrow keys or mouse wheel: 0.1°, with Shift 1°, with Alt 0.01°|Pfeiltasten od
 Outside the zoom range of this camera|Außerhalb des Zoombereichs dieser Kamera|Fuera del rango de zoom de esta cámara|Вне диапазона зума этой камеры|Hors de la plage de zoom de cette caméra|このカメラのズーム範囲外
 Zoom range|Zoombereich|Rango de zoom|Диапазон зума|Plage de zoom|ズーム範囲
 vertical|senkrecht|vertical|по вертикали|vertical|垂直
+Next sunrise|Nächster Sonnenaufgang|Próximo amanecer|Следующий восход|Prochain lever|次の日の出
+Next sunset|Nächster Sonnenuntergang|Próximo atardecer|Следующий заход|Prochain coucher|次の日の入り
+Sunrise in {0}|Sonnenaufgang in {0}|Amanecer en {0}|Восход через {0}|Lever dans {0}|日の出まで {0}
+Sunset in {0}|Sonnenuntergang in {0}|Atardecer en {0}|Заход через {0}|Coucher dans {0}|日の入りまで {0}
+Continuous sunlight|Dauersonne|Luz solar continua|Непрерывное освещение|Ensoleillement continu|連続日照
+No sunrise within 3 h|Kein Sonnenaufgang innerhalb 3 h|Sin amanecer en 3 h|Нет восхода в течение 3 ч|Pas de lever sous 3 h|3時間以内に日の出なし
+none (continuous sunlight)|keiner (Dauersonne)|ninguno (luz solar continua)|нет (непрерывное освещение)|aucun (ensoleillement continu)|なし（連続日照）
