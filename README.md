@@ -16,10 +16,12 @@ Doppelklick auf **`Start ISS Shadow.bat`**. Das Dashboard öffnet sich im Browse
 
 - **Voraussetzung:** Python 3.10 oder neuer von python.org, bei der Installation „Add python.exe to
   PATH“ ankreuzen.
-- **Erster Start:** Ein Fenster installiert drei Python-Pakete (etwa eine Minute). Spätere Starts
-  zeigen kein Fenster.
-- **Beenden:** „Exit“ in der oberen Leiste des Dashboards oder den Tab schließen. Etwa 4 Minuten nach
-  dem letzten Dashboard-Tab beendet sich alles von selbst.
+- **Erster Start:** Ein Fenster installiert drei Python-Pakete (etwa eine Minute).
+- **Konsolenfenster „ISS Digital Shadow“:** bleibt offen, solange das Programm läuft, und zeigt das
+  Protokoll.
+- **Beenden:** Konsolenfenster schließen oder darin Strg+C drücken (beendet Broker, Bridge und
+  Webserver sofort), alternativ „Exit“ in der oberen Leiste des Dashboards. Bleibt nur der Tab zu,
+  beendet sich alles etwa 4 Minuten nach dem letzten Dashboard-Tab von selbst.
 - **Läuft schon:** Ein zweiter Doppelklick öffnet nur das Dashboard erneut. Eine neue Version ersetzt
   eine noch laufende alte automatisch.
 - **Fehlersuche:** `logs/launcher.log`.
@@ -60,7 +62,7 @@ Zwecks und ihrer Schnittstelle.
 
 ## Was im Hintergrund läuft
 
-`launcher.py` startet alles in einem versteckten Prozess:
+`launcher.py` startet alles in einem Prozess mit eigenem Konsolenfenster:
 
 | Baustein | Einzelheiten |
 |---|---|

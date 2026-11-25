@@ -1,13 +1,15 @@
 @echo off
 setlocal
 rem Startdatei fuer Windows: sucht Python, installiert beim ersten Start die Pakete aus
-rem requirements.txt und startet launcher.py (Broker, Bridge, Webserver, Browser).
+rem requirements.txt und startet launcher.py (Broker, Bridge, Webserver, Browser) in einem
+rem eigenen Konsolenfenster "ISS Digital Shadow". Das Fenster bleibt offen, solange das Programm
+rem laeuft: Fenster schliessen oder Strg+C darin beendet alles sofort.
 cd /d "%~dp0"
 
 rem --- Python 3.10+ suchen (zuerst der py-Launcher, dann python im PATH) ---
 set "PY="
-where py >nul 2>nul && (set "PY=py" & set "PYW=pyw")
-if not defined PY (where pythonw >nul 2>nul && (set "PY=python" & set "PYW=pythonw"))
+where py >nul 2>nul && set "PY=py"
+if not defined PY (where python >nul 2>nul && set "PY=python")
 if not defined PY goto nopython
 %PY% -c "import sys; sys.exit(0 if sys.version_info >= (3,10) else 1)" >nul 2>nul || goto nopython
 
@@ -25,8 +27,9 @@ if not exist ".deps_ok" (
   echo ok> ".deps_ok"
 )
 
-rem --- alles im Hintergrund starten (ohne Konsole) und dieses Fenster schliessen ---
-start "" %PYW% "%~dp0launcher.py"
+rem --- in eigenem Konsolenfenster starten (gehoert nur Python, also kein "Batchvorgang
+rem abbrechen (J/N)?" bei Strg+C); dieses Fenster ist der Ausschalter ---
+start "ISS Digital Shadow" %PY% "%~dp0launcher.py"
 exit /b 0
 
 :nopython
