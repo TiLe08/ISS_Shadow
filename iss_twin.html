@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ISS Digital Shadow v1.23.1</title>
+<title>ISS Digital Shadow v1.24</title>
 <!--
   iss_twin.html: Hauptseite von ISS Shadow (digitaler Schatten / Zwilling der ISS).
 
@@ -4063,7 +4063,7 @@ function setLanguage(lang) {
   ISSWorkspace.relang(); logEvent(t('Language: {0}', I18N.LANGS[lang]));
 }
 /* ---------- Launcher-Anbindung (Heartbeat + Beenden) ---------- */
-const PAGE_VERSION = '1.23.1';      // muss mit VERSION in launcher.py übereinstimmen
+const PAGE_VERSION = '1.24';      // muss mit VERSION in launcher.py übereinstimmen
 function initLauncher() {
   if (!/^https?:$/.test(location.protocol)) return;
   // Ein neuerer Launcher ersetzt den alten; ein offener Tab lädt sich dann selbst neu, statt

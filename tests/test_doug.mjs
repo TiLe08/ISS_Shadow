@@ -51,4 +51,13 @@ for (const id of MBS_IDS) {
 // MT-Arbeitsplätze wie DOUG; ISSLive meldete am 14.10. −525,78 cm (WS5).
 assert.deepEqual(WS, { 1: 21.693, 2: 16.490, 3: 7.974, 4: 2.870, 5: -5.258, 6: -7.941, 7: -16.535, 8: -21.693 });
 assert.ok(Math.abs(WS[5] - -5.2578) < 0.001);
-console.log(`PASS DOUG: Canadarm2-Spitze über ${Q.length} Posen auf ${(worstP * 1000).toFixed(1)} mm und Rahmen exakt, MBS-Greifpunkte, MT-Arbeitsplätze`);
+// UHF-Antennen und POA (v1.24): Mast endet am DOUG-Gelenk, das POA-LEE greift nach Backbord (DOUG MBS_POA).
+MODEL.root.updateMatrixWorld(true);
+const part = name => { let o = null; MODEL.root.traverse(c => { if (!o && c.userData?.name === name && c.isGroup) o = c; }); assert.ok(o, name); return o; };
+const wpos = o => new THREE.Vector3().setFromMatrixPosition(o.matrixWorld);
+assert.ok(wpos(part('Destiny UHF antenna crossbar')).distanceTo(new THREE.Vector3(5.624, 3.026, 7.728)) < 0.01, 'Destiny-UHF-Gelenk');
+assert.ok(wpos(part('P1 UHF antenna crossbar')).distanceTo(new THREE.Vector3(1.473, -12.649, -3.016)) < 0.01, 'P1-UHF-Gelenk');
+{ const lee = part('MBS POA (LEE)'), mt = MODEL.pivots.mt, loc = mt.worldToLocal(wpos(lee));
+  const tip = mt.worldToLocal(new THREE.Vector3(0, -0.745, 0).applyMatrix4(lee.matrixWorld));
+  assert.ok(new THREE.Vector3(3.870 + 0.259, -1.770 - 1.467, 0).distanceTo(tip) < 0.01 && loc.y < -1.77, 'POA-Endeffektor nach DOUG: ' + tip.toArray()); }
+console.log(`PASS DOUG: Canadarm2-Spitze über ${Q.length} Posen auf ${(worstP * 1000).toFixed(1)} mm und Rahmen exakt, MBS-Greifpunkte, MT-Arbeitsplätze, UHF-Antennen, POA`);

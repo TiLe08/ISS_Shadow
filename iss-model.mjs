@@ -730,6 +730,21 @@ export function buildStation(cfg = {}) {
     const el = new THREE.Group(); az.add(el); MODEL.pivots['sbandAz' + i] = az; MODEL.pivots['sbandEl' + i] = el;
     cyl(el, 'z', 0.25, 0.45, 0.12, [0, 0, -0.12], 'white', 'S-band antenna ' + (i + 1), { sys: 'ct', segs: 18, rings: 0 });   // Hauptstrahl −Z bei az = el = 0
   });
+  // UHF-Antennen (Space-to-Space Station Radio, Sprechfunk bei Außeneinsätzen) auf Destiny (nadirseitig Steuerbord,
+  // 45°) und auf der Zenitseite von P1. Fußpunkt und Gelenk aus NASA DOUG (UhfSys/boom/UHF_pivot, P1_UHF_*, v1.24).
+  // Querträger entlang Stations-X mit zwei Radomen; Maße aus dem CP13-Livebild vom 25.11.2026 geschätzt.
+  const uhf = (base, pivot, name) => {
+    const b = new THREE.Vector3(...base), p = new THREE.Vector3(...pivot), out = p.clone().sub(b).normalize();
+    tube(root, base, pivot, 0.05, 0.05, 'truss', name + ' mast', { segs: 8, rings: 0 });
+    cyl(root, 'x', 2.3, 0.035, 0.035, pivot, 'truss', name + ' crossbar', { segs: 8, rings: 0 });
+    for (const dx of [-0.72, 0.72]) {
+      const r = p.clone().add(out.clone().multiplyScalar(0.14)); r.x += dx;
+      tube(root, [p.x + dx, p.y, p.z], r.toArray(), 0.03, 0.03, 'truss', name + ' radome post', { segs: 6, rings: 0 });
+      cyl(root, 'x', 0.85, 0.12, 0.12, r.toArray(), 'white', name + ' radome', { sys: 'ct', segs: 16, rings: 0 });
+    }
+  };
+  uhf([5.624, 1.643, 6.345], [5.624, 3.026, 7.728], 'Destiny UHF antenna');
+  uhf([1.473, -12.649, -1.06], [1.473, -12.649, -3.016], 'P1 UHF antenna');
   /* --- Hauptradiatoren (TRRJ) --- */
   radiatorWing(root, 14.68, 'S1 radiator', 'trrjS');
   radiatorWing(root, -14.68, 'P1 radiator', 'trrjP');
@@ -774,11 +789,12 @@ export function buildStation(cfg = {}) {
   const base = new THREE.Group(); MODEL.anchors[7].add(base); MODEL.armBase = base;
   buildSSRMS(base);
   buildDextre(mt);
-  // POA (Payload/ORU Accommodation): ein LEE auf der Zenitseite des MBS (Lage angenähert).
+  // POA (Payload/ORU Accommodation): ein LEE an der Vorderseite des MBS, Greifrichtung Backbord (−Y), um 10° gegiert.
+  // Lage aus NASA DOUG (MBS_POA im MT-System: 3,87 / −1,77 / 0; Endeffektor 1,49 m entlang −Y, v1.24).
   // Platzhalter-Nutzlast, solange CSAMBA00004 CAPTURED meldet.
-  { const poa = new THREE.Group(); poa.position.set(3.0, 1.55, -1.25); mt.add(poa);
-    cyl(poa, 'z', 0.5, 0.36, 0.36, [0, 0, 0], 'arm', 'MBS POA (LEE)', { sys: 'ssrms', segs: 12 });
-    MODEL.poaPayload = box(poa, 1.2, 1.2, 1.2, [0, 0, -0.85], 'gold', 'Payload on POA (identity not in telemetry)', { sys: 'payload' }); MODEL.poaPayload.visible = false; }
+  { const poa = new THREE.Group(); poa.position.set(3.87, -1.77, 0); poa.rotation.z = 10 * Math.PI / 180; mt.add(poa);
+    cyl(poa, 'y', 1.49, 0.36, 0.36, [0, -0.745, 0], 'arm', 'MBS POA (LEE)', { sys: 'ssrms', segs: 12 });
+    MODEL.poaPayload = box(poa, 1.2, 1.2, 1.2, [0, -2.11, 0], 'gold', 'Payload on POA (identity not in telemetry)', { sys: 'payload' }); MODEL.poaPayload.visible = false; }
   // Platzhalter für eine Nutzlast am Spitzen-LEE, deren Identität die Telemetrie nicht nennt.
   { const u = new THREE.Group(); u.visible = false; root.add(u); MODEL.unknownPayload = u;
     box(u, 1.3, 1.3, 1.3, [0, 0, 0], 'gold', 'Payload on Canadarm2 (identity not in telemetry)', { sys: 'payload' });
