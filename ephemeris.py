@@ -18,7 +18,10 @@ import time
 import urllib.request
 
 URL = "https://nasa-public-data.s3.amazonaws.com/iss-coords/current/ISS_OEM/ISS.OEM_J2K_EPH.txt"
-MAX_AGE = 48 * 3600
+# NASA veröffentlicht das OEM unregelmäßig (teils über 2 Tage Pause; am 25.11.2026 war das
+# aktuelle Produkt 49 h alt, aber bis 08.12. gültig). Maßgeblich ist der Gültigkeitsbereich im
+# Produkt; das Alter begrenzt nur sehr alte Vorhersagen (Bahnmanöver seither nicht enthalten).
+MAX_AGE = 7 * 86400
 REFRESH = 30 * 60
 log = logging.getLogger("orbit")
 
@@ -97,7 +100,7 @@ class Ephemeris:
         Wirft ValueError, wenn das Produkt zu alt ist, now außerhalb liegt oder die Lücke > 10 min ist.
         """
         if not -300 <= now - self.created <= MAX_AGE:
-            raise ValueError("NASA trajectory product is older than 48 hours or future-dated")
+            raise ValueError("NASA trajectory product is older than 7 days or future-dated")
         for start, stop, times, rows in self.segments:
             if not start <= now <= stop:
                 continue

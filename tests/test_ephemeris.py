@@ -55,8 +55,12 @@ class Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'gap'): Ephemeris(text).state(BASE+300)
     def test_stale_creation_rejected_within_coverage(self):
         """Ein zu altes Produkt wird abgelehnt, auch wenn die Zeit im Gültigkeitsbereich liegt."""
-        e=Ephemeris(fixture().replace('2026-10-07T23:00:00.000','2026-10-04T23:00:00.000'))
-        with self.assertRaisesRegex(ValueError,'48 hours'): e.state(BASE+120)
+        e=Ephemeris(fixture().replace('2026-10-07T23:00:00.000','2026-09-29T23:00:00.000'))
+        with self.assertRaisesRegex(ValueError,'7 days'): e.state(BASE+120)
+    def test_three_day_old_product_still_used(self):
+        """NASA lässt manchmal > 48 h zwischen zwei Produkten; ein 3 Tage altes, gültiges OEM bleibt nutzbar."""
+        e=Ephemeris(fixture().replace('2026-10-07T23:00:00.000','2026-10-05T00:00:00.000'))
+        self.assertEqual(len(e.state(BASE+120)),6)
     def test_cached_prediction_survives_fetch_failure_but_expires(self):
         """Eine zwischengespeicherte Vorhersage übersteht einen fehlgeschlagenen Abruf, läuft aber ab.
         """
