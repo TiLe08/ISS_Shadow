@@ -1,4 +1,4 @@
-# ISS Digital Shadow (v1.24)
+# ISS Digital Shadow (v1.25)
 
 Digitaler Schatten der Internationalen Raumstation auf Basis der öffentlichen NASA-Telemetrie
 **ISSLive** (337 öffentliche Kanäle), ergänzt um die unabhängige NASA/JSC-Bahnvorhersage. Ein

@@ -55,8 +55,9 @@ assert.ok(Math.abs(WS[5] - -5.2578) < 0.001);
 MODEL.root.updateMatrixWorld(true);
 const part = name => { let o = null; MODEL.root.traverse(c => { if (!o && c.userData?.name === name && c.isGroup) o = c; }); assert.ok(o, name); return o; };
 const wpos = o => new THREE.Vector3().setFromMatrixPosition(o.matrixWorld);
-assert.ok(wpos(part('Destiny UHF antenna crossbar')).distanceTo(new THREE.Vector3(5.624, 3.026, 7.728)) < 0.01, 'Destiny-UHF-Gelenk');
-assert.ok(wpos(part('P1 UHF antenna crossbar')).distanceTo(new THREE.Vector3(1.473, -12.649, -3.016)) < 0.01, 'P1-UHF-Gelenk');
+{ const arm = (n, piv, gz) => { const a = part(n + ' head arm'), end = new THREE.Vector3(...piv).addScaledVector(new THREE.Vector3(...gz), 0.45);
+    end.x += 0.09; assert.ok(wpos(a).distanceTo(new THREE.Vector3(...piv).add(end).multiplyScalar(0.5)) < 0.01, n + ': Kopfarm am DOUG-Gelenk'); };
+  arm('Destiny UHF antenna', [5.624, 3.026, 7.728], [0, 0.7071, -0.7071]); arm('P1 UHF antenna', [1.473, -12.649, -3.016], [0, 1, 0]); }
 { const lee = part('MBS POA (LEE)'), mt = MODEL.pivots.mt, loc = mt.worldToLocal(wpos(lee));
   const tip = mt.worldToLocal(new THREE.Vector3(0, -0.745, 0).applyMatrix4(lee.matrixWorld));
   assert.ok(new THREE.Vector3(3.870 + 0.259, -1.770 - 1.467, 0).distanceTo(tip) < 0.01 && loc.y < -1.77, 'POA-Endeffektor nach DOUG: ' + tip.toArray()); }

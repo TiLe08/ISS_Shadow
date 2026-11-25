@@ -2,6 +2,13 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.25: UHF-Antenne an das CP13-Livebild angepasst (25.11.)
+
+- Der Antennenkopf sitzt 0,45 m vom DOUG-Gelenk entlang dessen Z-Achse (0,09 m in X versetzt), nicht im
+  Gelenk selbst. Damit liegen die Radome im CP13-Bild dort, wo sie im Livebild sind (vorher rund 5° zu tief).
+- Radome schlanker und abgerundet (0,8 m lang, Ø 0,2 m, Abstand 1,3 m), Querträger 1,6 m statt 2,3 m.
+  Alle Kopfmaße sind am Livebild vom 25.11. geschätzt, DOUG enthält nur Mast und Gelenk.
+
 # v1.24: UHF-Antennen und POA nach NASA DOUG (25.11.)
 
 - **UHF-Antennen ergänzt:** Destiny (nadirseitig Steuerbord, 45°) und P1 (Zenitseite) tragen jetzt die

@@ -731,20 +731,26 @@ export function buildStation(cfg = {}) {
     cyl(el, 'z', 0.25, 0.45, 0.12, [0, 0, -0.12], 'white', 'S-band antenna ' + (i + 1), { sys: 'ct', segs: 18, rings: 0 });   // Hauptstrahl −Z bei az = el = 0
   });
   // UHF-Antennen (Space-to-Space Station Radio, Sprechfunk bei Außeneinsätzen) auf Destiny (nadirseitig Steuerbord,
-  // 45°) und auf der Zenitseite von P1. Fußpunkt und Gelenk aus NASA DOUG (UhfSys/boom/UHF_pivot, P1_UHF_*, v1.24).
-  // Querträger entlang Stations-X mit zwei Radomen; Maße aus dem CP13-Livebild vom 25.11.2026 geschätzt.
-  const uhf = (base, pivot, name) => {
-    const b = new THREE.Vector3(...base), p = new THREE.Vector3(...pivot), out = p.clone().sub(b).normalize();
+  // 45°) und auf der Zenitseite von P1. Fußpunkt, Mast und Gelenk aus NASA DOUG (UhfSys/boom/UHF_pivot, P1_UHF_*).
+  // Der Antennenkopf sitzt nicht im Gelenk, sondern 0,45 m entlang der Gelenk-Z-Achse davon, um 0,09 m in X versetzt;
+  // Querträger 1,6 m entlang Stations-X, zwei abgerundete Radome (0,8 m, Ø 0,2 m) 0,2 m darüber. Kopf und Maße sind
+  // an das CP13-Livebild vom 25.11.2026 angepasst (Schätzung, v1.25; DOUG enthält keine Kopfgeometrie).
+  const RADOME = [[-0.4, 0], [-0.385, 0.06], [-0.34, 0.095], [-0.28, 0.1], [0.28, 0.1], [0.34, 0.095], [0.385, 0.06], [0.4, 0]];
+  const uhf = (base, pivot, gz, name) => {
+    const p = new THREE.Vector3(...pivot), z = new THREE.Vector3(...gz);
+    const head = p.clone().addScaledVector(z, 0.45); head.x += 0.09;
+    const top = head.clone().addScaledVector(z, 0.2);
     tube(root, base, pivot, 0.05, 0.05, 'truss', name + ' mast', { segs: 8, rings: 0 });
-    cyl(root, 'x', 2.3, 0.035, 0.035, pivot, 'truss', name + ' crossbar', { segs: 8, rings: 0 });
-    for (const dx of [-0.72, 0.72]) {
-      const r = p.clone().add(out.clone().multiplyScalar(0.14)); r.x += dx;
-      tube(root, [p.x + dx, p.y, p.z], r.toArray(), 0.03, 0.03, 'truss', name + ' radome post', { segs: 6, rings: 0 });
-      cyl(root, 'x', 0.85, 0.12, 0.12, r.toArray(), 'white', name + ' radome', { sys: 'ct', segs: 16, rings: 0 });
+    tube(root, pivot, head.toArray(), 0.04, 0.04, 'truss', name + ' head arm', { segs: 8, rings: 0 });
+    cyl(root, 'x', 1.6, 0.04, 0.04, head.toArray(), 'truss', name + ' crossbar', { segs: 8, rings: 0 });
+    for (const dx of [-0.65, 0.65]) {
+      tube(root, [head.x + dx, head.y, head.z], [top.x + dx, top.y, top.z], 0.025, 0.025, 'truss', name + ' radome post', { segs: 6, rings: 0 });
+      const r = hull(root, 'x', RADOME.map(([a, rr]) => [a, rr]), [top.y, top.z], 'white', name + ' radome', { sys: 'ct', segs: 16, longs: 4 });
+      r.position.x = top.x + dx;
     }
   };
-  uhf([5.624, 1.643, 6.345], [5.624, 3.026, 7.728], 'Destiny UHF antenna');
-  uhf([1.473, -12.649, -1.06], [1.473, -12.649, -3.016], 'P1 UHF antenna');
+  uhf([5.624, 1.643, 6.345], [5.624, 3.026, 7.728], [0, 0.7071, -0.7071], 'Destiny UHF antenna');
+  uhf([1.473, -12.649, -1.06], [1.473, -12.649, -3.016], [0, 1, 0], 'P1 UHF antenna');
   /* --- Hauptradiatoren (TRRJ) --- */
   radiatorWing(root, 14.68, 'S1 radiator', 'trrjS');
   radiatorWing(root, -14.68, 'P1 radiator', 'trrjP');
