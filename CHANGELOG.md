@@ -2,6 +2,16 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.24: UHF-Antennen und POA nach NASA DOUG (25.11.)
+
+- **UHF-Antennen ergänzt:** Destiny (nadirseitig Steuerbord, 45°) und P1 (Zenitseite) tragen jetzt die
+  UHF-Antennen für den Sprechfunk bei Außeneinsätzen. Fußpunkt, Mast und Gelenk stammen aus NASA DOUG.
+  Querträger und Radome sind aus dem CP13-Livebild vom 25.11. geschätzt (Querträger 2,3 m, Radome 0,85 m).
+  Die Destiny-Antenne ist das T-förmige Teil unten im Bild von CP13.
+- **POA an die richtige Stelle:** Das LEE des MBS sitzt nach DOUG an der Vorderseite des MBS und greift nach
+  Backbord (−Y, 10° gegiert), nicht auf der Zenitseite. Die Platzhalter-Nutzlast hängt jetzt an dessen Spitze.
+- Änderungsprotokoll: Der Eintrag zum Konsolenfenster heißt wieder v1.22.1.
+
 # v1.23.1: Countdown bis Sonnenaufgang/-untergang (25.11.)
 
 - **Countdown „Sunrise in 12:34“ / „Sunset in 45:10“** als Pille in der 3D-Ansicht, als Zeile im
@@ -26,7 +36,7 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
   Sonnenoptimum steht (`PRED.bias`), und hält diesen Abstand, statt auf das Optimum zu springen.
 - Ein im Kalibrierfeld von Hand gesetzter BGA-Zusatzoffset von +45° ist damit doppelt: auf 0 zurückstellen.
 
-# v1.23.1: Sichtbares Konsolenfenster als Ausschalter (25.11.)
+# v1.22.1: Sichtbares Konsolenfenster als Ausschalter (25.11.)
 
 - `Start ISS Shadow.bat` startet den Launcher mit `python` statt `pythonw` in einem eigenen Konsolenfenster
   „ISS Digital Shadow“, das offen bleibt, solange das Programm läuft.
