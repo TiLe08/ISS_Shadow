@@ -20,7 +20,7 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 HTTP_PORT, MQTT_PORT, WS_PORT = 8137, 1883, 9001
-VERSION = "1.27"             # muss mit PAGE_VERSION in iss_twin.html übereinstimmen
+VERSION = "1.27.1"             # muss mit PAGE_VERSION in iss_twin.html übereinstimmen
 IDLE_TIMEOUT = 240          # s ohne Dashboard-Heartbeat bis zum Beenden
 URL = f"http://localhost:{HTTP_PORT}/iss_twin.html#mqtt"
 
@@ -82,6 +82,14 @@ def install_stop_handlers():
                 return True
             STATE["console_handler"] = on_console      # Referenz halten, sonst räumt Python sie ab
             ctypes.windll.kernel32.SetConsoleCtrlHandler(on_console, True)
+            # Schnellbearbeitung (QuickEdit) aus: Ein Klick ins Konsolenfenster startet sonst eine
+            # Textauswahl, und jede Ausgabe blockiert, bis Esc gedrückt wird. Da alle Dienste ins
+            # Fenster loggen, blieben Bridge (Telemetrie) und Bahndienst dann einfach stehen.
+            k32 = ctypes.windll.kernel32
+            h_in = k32.GetStdHandle(-10)                # STD_INPUT_HANDLE
+            mode = wintypes.DWORD()
+            if k32.GetConsoleMode(h_in, ctypes.byref(mode)):
+                k32.SetConsoleMode(h_in, (mode.value & ~0x0040) | 0x0080)   # ~QUICK_EDIT | EXTENDED_FLAGS
         except Exception:
             log.exception("could not install console handler")
 

@@ -15,7 +15,7 @@ eigene Datei ohne Abhängigkeiten, damit dieselbe Logik im Browser und in den No
    Größenordnung erkannt (ISSLive liefert km und m/s, obwohl das Arbeitsblatt FT nennt; `toKm`).
 2. **NASA PREDICTED ORBIT**: die offizielle Vorhersage von NASA/JSC (OEM, siehe unten), wenn sie
    gültig ist: Bezugssystem EME2000, km und km/s, Zeitpunkt im Gültigkeitsbereich, Zustand höchstens
-   20 s alt, Produkt höchstens 48 h alt.
+   20 s alt, Produkt höchstens 7 Tage alt.
 3. **PROPAGATED · STALE TLM**: Fällt beides weg, wird ein früherer gemessener Zustand höchstens fünf
    Minuten weitergerechnet und nach 30 s als veraltet markiert. Danach ist die Bahn nicht verfügbar.
 4. **SIMULATED / RECORDED / VIRTUAL ORBIT**: Simulator, Wiedergabe und Kommandomodus sind eigene
@@ -40,7 +40,7 @@ Position, Geschwindigkeit), normalerweise alle vier Minuten, über mehrere Tage.
 - Geprüft wird: UTC, EME2000/J2000, Erde als Zentrum, Objekt ISS (1998-067-A), plausible Beträge
   (6400-8000 km, 6-9 km/s), streng steigende Zeiten.
 - Position **und** Geschwindigkeit werden gemeinsam mit kubischen Hermite-Polynomen interpoliert.
-- Abgelehnt werden Produkte älter als 48 h, Zeiten außerhalb des Gültigkeitsbereichs, Lücken über
+- Abgelehnt werden Produkte älter als 7 Tage, Zeiten außerhalb des Gültigkeitsbereichs, Lücken über
   10 min und Interpolation über Segmentgrenzen. Keine unbegrenzte Extrapolation.
 - Veröffentlicht alle 5 s auf `iss/orbit` (MQTT) und unter `http://localhost:8137/__orbit` (HTTP),
   mit `source: "NASA_OEM"`, `kind: "predicted"`, `state`, `epoch`, `created`, `valid_from`,

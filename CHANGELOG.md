@@ -2,6 +2,16 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.27.1: NASA-Bahn wieder da, Konsolenfenster friert Dienste nicht mehr ein (25.11.)
+
+- **NASA-Bahn (OEM):** Das aktuelle NASA-Produkt vom 23.11. 18:47 UTC war am 25.11. abends älter als
+  48 h und wurde deshalb abgelehnt („older than 48 hours“), obwohl es bis 08.12. gültig ist. NASA lässt
+  manchmal mehr als zwei Tage zwischen zwei Produkten. Grenze jetzt 7 Tage; maßgeblich bleibt der
+  Gültigkeitsbereich im Produkt.
+- **Konsolenfenster:** Die Schnellbearbeitung (QuickEdit) der Windows-Konsole wird beim Start
+  abgeschaltet. Ein Klick ins Fenster startete sonst eine Textauswahl, und jede Log-Ausgabe blockierte,
+  bis Esc gedrückt wurde; dabei konnten Bridge (Telemetrie) und Bahndienst stehen bleiben.
+
 # v1.27: Ersatzquelle bei CelesTrak-Ausfall, Erde immer im Radar, Bahn auf Klick (25.11.)
 
 - **CelesTrak-Ausfall abgefangen:** Am 25.11. antwortete die ganze Seite celestrak.org mit HTTP 503
