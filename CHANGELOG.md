@@ -2,6 +2,15 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.27.3: Radar-Erde als echte Kugel mit Textur (25.11.)
+
+- Die Erde im Radar ist keine flache blaue Scheibe mehr: Sie zeigt die Blue-Marble-Kacheln (lokal, Stufe 2)
+  orthografisch projiziert und lagerichtig (Erddrehung über die Sternzeit, Lage aus der ISS-Bahn), mit
+  Tag/Nacht nach dem Sonnenstand, weicher Dämmerungszone, Randabdunklung und Atmosphärensaum.
+  Ohne Bahndaten erscheint eine schattierte Kugel.
+- Sparsam gerechnet: nur der sichtbare Teil in halber Auflösung, und nur neu, wenn Blickrichtung, Zoom
+  oder Erddrehung sich merklich ändern (sonst Zwischenspeicher; beim Drehen etwa 1-6 ms je Bild).
+
 # v1.27.2: NASA-Bahn wieder da, Konsolenfenster friert Dienste nicht mehr ein (25.11.)
 
 - **NASA-Bahn (OEM):** Das aktuelle NASA-Produkt vom 23.11. 18:47 UTC war am 25.11. abends älter als
