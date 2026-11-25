@@ -39,6 +39,8 @@ assert.ok(M.poaPayload.visible&&M.otcmPayloads[0].visible&&!M.otcmPayloads[1].vi
 // --- Luke und Swesda-Flügel ---
 t.ingest('AIRLOCK000049',755);t.updateHatches();assert.equal(M.evHatch.userData.open,false);
 t.ingest('AIRLOCK000049',0.4);t.updateHatches();assert.equal(M.evHatch.userData.open,true,'EV-Luke offen bei Vakuum');
+// v1.22: Die Luke schwenkt in HATCH_S auf; Zeit vorspulen (je Aufruf höchstens 0,25 s).
+for(let i=0;i<60;i++){M.evHatch.userData.tLast-=1000;t.updateHatches();}assert.equal(M.evHatch.userData.k,1,'Luke ganz offen');
 // Quest: druckdichte Luke schwenkt nach innen (−Y, in die Crewlock), Thermalabdeckung nach außen (+Y).
 {root.updateMatrixWorld(true);const c=o=>{const b=new THREE.Box3().setFromObject(o);return root.worldToLocal(b.getCenter(V3()));};
   assert.ok(c(M.evHatch).y<7.4,'Luke innen: '+c(M.evHatch).y.toFixed(2));assert.ok(c(M.evCover).y>7.9,'Abdeckung außen: '+c(M.evCover).y.toFixed(2));}

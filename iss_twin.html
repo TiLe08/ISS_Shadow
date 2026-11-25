@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ISS Digital Shadow v1.21</title>
+<title>ISS Digital Shadow v1.22</title>
 <!--
   iss_twin.html: Hauptseite von ISS Shadow (digitaler Schatten / Zwilling der ISS).
 
@@ -422,6 +422,7 @@ canvas.radar{display:block;width:100%;height:220px;margin:6px 0;cursor:grab;touc
     <button class="btn" id="bTlm" title="Search every public telemetry channel, graph it or add it to the dashboard">Channels</button>
     <button class="btn" id="bCsv" title="Download recorded process data as CSV">Log CSV</button>
     <button class="btn" id="bSet" title="Connection, language and display settings">Setup</button>
+    <button class="btn warn" id="bDev" title="Dev mode: trigger dockings, spacewalks and joint motion by hand (display only)" data-i18n-skip hidden>Dev</button>
     <button class="btn" id="bHelp" title="Quick guide and keyboard shortcuts (?)" aria-label="Help">?</button>
     <button class="btn warn" id="bExit" title="Stop the broker, bridge and web server" hidden>Exit</button>
   </header>
@@ -559,6 +560,7 @@ canvas.radar{display:block;width:100%;height:220px;margin:6px 0;cursor:grab;touc
       <label for="sLang">Language</label><select id="sLang" class="sel"></select>
       <label for="sSkin">Skin</label>
       <select id="sSkin" class="sel"><option value="">Holo cyan</option><option value="amber">Amber</option><option value="phosphor">Phosphor</option></select>
+      <label for="sDev" data-i18n-skip>Dev mode</label><div data-i18n-skip><input type="checkbox" id="sDev"> <span class="note">Shows a Dev button in the top bar to dock and undock vehicles, run spacewalks and move joints by hand. Display only, nothing is sent; turning it off drops every override.</span></div>
     </div>
     <p class="note" style="padding:0 10px 12px;margin:0">MQTT is the normal mode: the start file runs the broker and the telemetry bridge in the background. LIVE connects the browser straight to NASA's feed (no logging, no command acknowledgement). NASA orbit predictions are fetched independently by the launcher in both MQTT and Live modes. Orbit labels distinguish predictions from measurements. Hover the orbit badge for the NASA product date and validity. Commands are only sent in MQTT mode.</p>
     <p class="note" style="padding:0 10px 12px;margin:0"><code>CAL</code> (iss_twin.html): joint zero and sign conventions.</p>
@@ -572,6 +574,7 @@ import { PlanetOverlay } from './planet-overlay.mjs';
 import { EarthTiles } from './earth-tiles.mjs';
 import { setupCameras } from './cameras.mjs';
 import { setupCalibPanel } from './calib-panel.mjs';
+import * as DEVP from './dev-panel.mjs';
 import * as PROXOPS from './proxops.mjs';
 import * as RADAR from './radar.mjs';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -1034,11 +1037,11 @@ const ACT = { track: globalThis.ISSActivities ? new ISSActivities.Tracker() : nu
 const ACT_ICON = { eva: 'EVA', robotics: 'MSS', traffic: 'VV', arrays: 'PV', attitude: 'GNC' };
 function updateActivities(now = Date.now()) {
   const box = $('#actBox'); if (!box || !globalThis.ISSActivities) return;
-  const telemetry = !CMD.active && LINK.src !== 'sim' && LINK.lastRx > 0;
+  const telemetry = !CMD.active && ((LINK.src !== 'sim' && LINK.lastRx > 0) || devTm());
   if (ACT.src !== LINK.src + CMD.active) { ACT.src = LINK.src + CMD.active; ACT.track.reset(); }
   if (telemetry) ACT.track.sample(now, p => tv(p));
   const x = VV.extra, items = ISSActivities.derive({ now, t, telemetry, stale: LINK.sig === 'LOS', v: p => tv(p), text: p => chRead(p).text, track: ACT.track,
-    spacewalks: x.spacewalks, events: x.upcoming_events, dockings: VV.list || VV_FALLBACK, launches: x.upcoming_launches, portName: p => t(VV_PORT_NAME[p] || p || '-') });
+    spacewalks: DEV.eva ? [DEV.eva, ...(x.spacewalks || [])] : x.spacewalks, events: x.upcoming_events, dockings: VV.list || VV_FALLBACK, launches: x.upcoming_launches, portName: p => t(VV_PORT_NAME[p] || p || '-') });
   const stateTxt = { now: t('now'), soon: t('soon'), recent: t('recent'), steady: t('ongoing') };
   const info = items.filter(a => a.info); let h = items.filter(a => !a.info).map(a => `<div class="act ${a.cat} ${a.state}" title="${esc(a.src ? t('Source') + ': ' + a.src + (a.derived ? ' · ' + t('derived') : '') : '')}"><b>${ACT_ICON[a.cat]}</b><span>${esc(a.title)}</span><em>${esc(a.detail)}</em><i>${stateTxt[a.state]}</i></div>`).join('');
   h += info.map(a => `<div class="note"><b>${esc(a.title)}:</b> ${esc(a.detail)}</div>`).join('');
@@ -1141,6 +1144,7 @@ function updateVehicles(at) {
   const plan = proxPlan(at, cur);
   // Russisches Flag belegt, Fahrzeug unbekannt, aber eine Ankunft war geplant: deren Name und Typ übernehmen.
   for (const [port, c] of Object.entries(cur)) if (c.generic && plan[port]?.kind === 'arrive' && VV_PORT_TYPES[port].includes(plan[port].v.type)) { cur[port] = { ...c, name: plan[port].v.name, type: plan[port].v.type, generic: false }; delete plan[port]; }
+  const devAct = devVehicles(at, cur, plan), devPorts = new Set([...Object.keys(DEV.vv), ...Object.keys(devAct.active), ...devAct.done]);
   // Vorschau (nur Anzeige)
   const vis = { ...cur }, pv = PROX.preview;
   if (pv) {
@@ -1155,13 +1159,15 @@ function updateVehicles(at) {
     const tt = (at - p.t0) / 1000, st = PROXOPS.stateAt(p.v.type, p.kind, tt, p.preview || !VV_RUS_FLAG[port] ? NaN : kr);
     if (st.active) PROX.active[port] = { ...p, st, tt };
   }
+  Object.assign(PROX.active, devAct.active);
   for (const [key, g] of Object.entries(MODEL.vvG || {})) {
     const [port, type] = key.split(':'), c = vis[port], a = PROX.active[port], show = a ? a.v.type === type : !!c && c.type === type; g.visible = show;
     if (!show) continue;
-    const txt = a ? `${a.v.name} · ${t(PL.st.held === key ? 'Held by Canadarm2' : a.st.phase)}${a.preview ? ' (' + t('preview') + ')' : a.plan ? ' (' + t('per LL2 schedule') + ')' : ''}` : c.generic ? VV_TYPE_NAME[type] + '? · ' + VV_PORT_NAME[port] : c.name;
+    const txt = a ? `${a.v.name} · ${t(PL.st.held === key ? 'Held by Canadarm2' : a.st.phase)}${a.preview ? ' (' + t('preview') + ')' : a.dev ? ' (dev)' : a.plan ? ' (' + t('per LL2 schedule') + ')' : ''}` : c.generic ? VV_TYPE_NAME[type] + '? · ' + VV_PORT_NAME[port] : c.name;
     const el = g.userData.label?.element; if (el && el.textContent !== txt) el.textContent = txt;
   }
   if (MODEL.vvInit && !CMD.active) for (const port of new Set([...Object.keys(cur), ...Object.keys(MODEL.vvCur)])) {
+    if (devPorts.has(port)) continue;           // Entwicklermodus meldet selbst ([DEV])
     const a = MODEL.vvCur[port], b = cur[port];
     // Gleiches Fahrzeug unter dem Namen einer anderen Quelle (Manifest -> LL2): keine Ankunft.
     if (a && b && a.type === b.type && (!isFinite(a.t0) || !isFinite(b.t0) || Math.abs(a.t0 - b.t0) < 86400e3)) continue;
@@ -1170,10 +1176,32 @@ function updateVehicles(at) {
     if (b && (!a || a.name !== b.name)) logEvent(t('{0} at {1}', b.name, t(VV_PORT_NAME[port])) + ` (${b.src})`);
   }
   if (!CMD.active) for (const [port, a] of Object.entries(PROX.active)) {     // Beginn eines Ablaufs einmal melden
-    const k = port + a.kind + a.t0; if (a.preview || PROX.announced[k]) continue; PROX.announced[k] = 1;
+    const k = port + a.kind + a.t0; if (a.preview || a.dev || PROX.announced[k]) continue; PROX.announced[k] = 1;
     logEvent(t(a.kind === 'depart' ? '{0} departing from {1}' : '{0} approaching {1}', a.v.name, t(VV_PORT_NAME[port])) + ` (${a.src})`);
   }
   MODEL.vvInit = true; MODEL.vvCur = cur;
+}
+/* Entwicklermodus: Belegung von Hand (DEV.vv) ersetzt die Daten des Ports, laufende Abläufe (DEV.anim)
+   werden mit dem Zeitraffer DEV.speed (Echtzeit, nicht Simulationszeit) weitergezählt. Ein fertiger
+   Anflug setzt das Fahrzeug an den Port, ein fertiger Abflug macht ihn frei. cur und plan werden
+   angepasst; Ergebnis: { active: Port -> Eintrag wie in PROX.active, done: fertige Ports }. */
+function devVehicles(at, cur, plan) {
+  const active = {}, done = [], now = Date.now();
+  for (const [port, v] of Object.entries(DEV.vv)) { delete plan[port]; if (v) cur[port] = { ...v, t0: NaN, src: 'Dev mode', generic: false, dev: true }; else delete cur[port]; }
+  for (const [port, a] of Object.entries(DEV.anim)) {
+    delete plan[port]; delete cur[port];
+    a.el += Math.max(0, now - (a.last ?? now)) / 1000 * DEV.speed; a.last = now;
+    const st = DEVP.devState(a.v.type, a.kind, a.el);
+    if (st.done || !st.active) {
+      delete DEV.anim[port]; done.push(port);
+      DEV.vv[port] = a.kind === 'arrive' ? { name: a.v.name, type: a.v.type } : null;
+      if (a.kind === 'arrive') cur[port] = { ...a.v, t0: NaN, src: 'Dev mode', generic: false, dev: true };
+      logEvent(`[DEV] ${a.v.name} ${a.kind === 'arrive' ? 'docked at' : 'gone from'} ${VV_PORT_NAME[port]}`, 'cmd');
+      continue;
+    }
+    active[port] = { kind: a.kind, v: a.v, t0: at - a.el * 1000, src: 'Dev mode', dev: true, st, tt: a.el };
+  }
+  return { active, done };
 }
 /* Setzt die Lage der an- und abfliegenden Fahrzeuge (nach updatePayloads, damit ein von Canadarm2
    gehaltenes Fahrzeug dem Arm folgt und nicht dem Ablauf). */
@@ -1340,7 +1368,7 @@ function updatePayloads(J, now) {
   if (!MODEL.armTip) return;
   MODEL.root.updateMatrixWorld(true);
   const list = plMovables(), by = Object.fromEntries(list.map(m => [m.key, m]));
-  const live = !CMD.active && LINK.src !== 'sim';
+  const live = !CMD.active && (LINK.src !== 'sim' || 'CSASSRMS011' in DEV.tm);
   const tipSt = live ? Math.round(V('CSASSRMS011')) : NaN, captured = tipSt === 2;
   if (live && isFinite(tipSt)) {
     if (captured && !PL.st.held && PL.prev !== 2) {
@@ -1377,11 +1405,16 @@ function updatePayloads(J, now) {
 function resetPayloads() { PL.st = { held: null, away: {} }; plSave(); }
 /* Quest-EV-Luke: offen, solange die Crewlock drucklos ist (siehe buildISS). Die Luke schwenkt nach
    innen in die Crewlock, die Thermalabdeckung nach außen. */
+const HATCH_S = 8;          // s für das Auf- bzw. Zuschwenken (Schätzung; die Luke wird von Hand bewegt)
 function updateHatches() {
   const h = MODEL.evHatch; if (!h) return;
-  const p = V('AIRLOCK000049'), open = !CMD.active && LINK.src !== 'sim' && isFinite(p) && p < 5;
-  h.rotation.x = open ? 95 * D2R : 0; h.userData.open = open;
-  if (MODEL.evCover) MODEL.evCover.rotation.x = open ? -110 * D2R : 0;
+  const p = V('AIRLOCK000049'), open = !CMD.active && (LINK.src !== 'sim' || 'AIRLOCK000049' in DEV.tm) && isFinite(p) && p < 5;
+  // v1.22: schwenkt in HATCH_S statt zu springen; beim ersten Aufruf sofort in der richtigen Stellung.
+  const now = performance.now(), dt = Math.min(0.25, (now - (h.userData.tLast ?? now)) / 1000); h.userData.tLast = now;
+  const k = h.userData.k ?? (open ? 1 : 0); h.userData.k = open ? Math.min(1, k + dt / HATCH_S) : Math.max(0, k - dt / HATCH_S);
+  const e = h.userData.k * h.userData.k * (3 - 2 * h.userData.k);
+  h.rotation.x = 95 * D2R * e; h.userData.open = open; h.userData.moving = h.userData.k > 0 && h.userData.k < 1;
+  if (MODEL.evCover) MODEL.evCover.rotation.x = -110 * D2R * e;
 }
 /* Swesda-Flügel: Ein Gelenk je Flügel um Körper-Y richtet die Zellseite bei Sonnenlicht zur
    Sonne (vorhergesagt, keine Telemetrie); im Erdschatten bleiben sie stehen. */
@@ -1736,7 +1769,8 @@ function ingest(pui, raw, ts, receivedAt = Date.now(), source = LINK.src === 'si
 }
 // Lesen aus dem Telemetriespeicher: tv = Zahlenwert (oder d), notServed = von NASA nicht
 // veröffentlicht, traw = Rohwert.
-const tv = (p, d = NaN) => { const t = TM.get(p); return t && isFinite(t.num) ? t.num : d; };
+const tv = (p, d = NaN) => { const o = DEV.tm[p]; if (o) return o.v; const t = TM.get(p); return t && isFinite(t.num) ? t.num : d; };
+const tvRaw = p => { const t = TM.get(p); return t && isFinite(t.num) ? t.num : NaN; };     // ohne Eingriff des Entwicklermodus
 const notServed = p => !CMD.active && !!TM.get(p)?.notServed;
 const traw = p => TM.get(p)?.raw;
 
@@ -3578,7 +3612,8 @@ function frame(nowP) {
     if (now - lastAlt > 5000) { ALTH.push([now, D.geo.alt]); if (ALTH.length > 2000) ALTH.shift(); lastAlt = now; }
   } else { S.earth.visible = false; D.geo = null; D.el = null; D.eclipse = false; }
 
-  // Lage + Gelenke
+  // Lage + Gelenke (gesetzte Werte des Entwicklermodus laufen vorher zum Ziel)
+  if (devTm()) DEVP.stepOverrides(DEV.tm, dt, DEV.instant ? Infinity : DEV.speed);
   let J;
   if (CMD.active) {
     J = CMD.st;
@@ -3586,7 +3621,7 @@ function frame(nowP) {
   const q = J.q; S.att.quaternion.set(q[1], q[2], q[3], q[0]);
   D.ypr = q2ypr(...q);
   D.predicted = null;
-  if (!CMD.active && s && LINK.src !== 'sim') {
+  if (!CMD.active && s && LINK.src !== 'sim' && !devTm()) {      // Entwicklermodus: keine Vorhersage, kein Lernen aus gesetzten Werten
     const inv = S.att.quaternion.clone().invert(), sunB = sunL.clone().applyQuaternion(inv);
     const gap = poseGapS(now);
     if (gap) {
@@ -3858,6 +3893,12 @@ function declutterLabels(nowP) {
 
 /* ---------- Bedienelemente ---------- */
 const OPTS = { labels: true, axes: false, sunvec: true };
+/* Entwicklermodus (v1.22, dev-panel.mjs): Eingriffe von Hand, nur Anzeige. tm: PUI -> {v, goal, rate, wrap}
+   ersetzt den Telemetriewert (tv), vv: Port -> Fahrzeug oder null (frei), anim: Port -> laufender Ablauf,
+   eva: Außenbordeinsatz im Format von LL2 /spacewalks/. Ausgeschaltet ist alles leer. */
+const DEV = { on: false, tm: {}, vv: {}, anim: {}, eva: null, speed: 30, instant: false };
+const devTm = () => Object.keys(DEV.tm).length > 0;
+function devReset() { DEV.tm = {}; DEV.vv = {}; DEV.anim = {}; DEV.eva = null; }
 // Segment-Schalter: Klick binden, gedrückten Zustand setzen, Modus wechseln (Spiegeln/Kommando).
 function segBind(id, fn) { $(id).querySelectorAll('button').forEach(b => b.addEventListener('click', () => fn(b.dataset.v, b))); }
 function setPressed(id, v) { $(id).querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === v))); }
@@ -3912,10 +3953,46 @@ function init() {
   try { EXTCAM = setupCameras({ THREE, S, MODEL, t, onOpen: id => logEvent(t('Camera view: {0}', t(EXTCAM.list.find(c => c.id === id).name))) }); $('#camBtn').onclick = () => EXTCAM.open(); applyRender();
     const mt = $('#camMarksToggle'); mt.setAttribute('aria-pressed', String(EXTCAM.marksOn)); mt.onclick = () => { EXTCAM.showMarks(!EXTCAM.marksOn); mt.setAttribute('aria-pressed', String(EXTCAM.marksOn)); }; }
   catch (e) { console.error(e); logEvent('Cameras unavailable: ' + e.message, 'warn'); }
+  initDevMode();
   // Kalibrierfeld im Kamerafenster (calib-panel.mjs)
   try { CALIB_UI = setupCalibPanel({ CALIB, CAL, SSRMS_CONV, EXTCAM, MBS_IDS, applyMssCal, t, logEvent, read: p => V(p), save: () => { try { localStorage.setItem('iss.calib', JSON.stringify(CALIB)); } catch (e) {} } }); }
   catch (e) { console.error(e); }
   requestAnimationFrame(frame);
+}
+/* ---------- Entwicklermodus (v1.22, dev-panel.mjs) ----------
+   Schalter „Dev mode“ in Setup (localStorage iss.dev) blendet den Knopf „Dev“ ein. Ausschalten verwirft
+   alle Eingriffe. Kanäle für „Moving parts“ in Telemetrieeinheiten (vor CAL); Raten wie RATE bzw. geschätzt. */
+const DEV_JOINTS = () => {
+  const ang = (pui, label, rate, o = {}) => ({ pui, label, rate, min: -270, max: 270, step: 0.1, unit: '°', ...o });
+  const W = { min: 0, max: 360, wrap: true };
+  return [
+    { group: 'Solar arrays (SARJ, BGA)', items: [ang('S0000004', 'SARJ port', RATE.sarj, W), ang('S0000003', 'SARJ starboard', RATE.sarj, W),
+      ...CHANS.map(ch => ang(BGA_PUI[ch], 'BGA ' + ch, RATE.bga, W))] },
+    { group: 'Radiators (TRRJ)', items: [ang('S0000002', 'TRRJ port', RATE.trrj, { min: -115, max: 115 }), ang('S0000001', 'TRRJ starboard', RATE.trrj, { min: -115, max: 115 })] },
+    { group: 'Mobile Transporter', items: [{ pui: 'CSAMT000001', label: 'MT position', rate: RATE.mt * 100, min: -2100, max: 2100, step: 1, unit: ' cm', def: 287.02 }] },
+    { group: 'Canadarm2', items: [...['Shoulder roll', 'Shoulder yaw', 'Shoulder pitch', 'Elbow pitch', 'Wrist pitch', 'Wrist yaw', 'Wrist roll'].map((n, i) => ang(SSRMS_PUI[i], n, RATE.arm, { def: ARM_NEUTRAL[i] })),
+      { pui: 'CSASSRMS011', label: 'Tip LEE', options: [[0, 'Released'], [1, 'Captive'], [2, 'Captured']] }] },
+    { group: 'Dextre', items: [...[0, 1].flatMap(a => ['SR', 'SY', 'SP', 'EP', 'WP', 'WY', 'WR'].map((n, i) => ang('CSASPDM' + String(a * 8 + 3 + i).padStart(4, '0'), `Arm ${a + 1} ${n}`, RATE.arm))),
+      ang('CSASPDM0020', 'Body roll', RATE.arm)] },
+    { group: 'Ku-band antenna (SGANT)', items: [ang('Z1000014', 'Elevation', 2, { min: -180, max: 180 }), ang('Z1000015', 'Cross-elevation', 2, { min: -180, max: 180 })] },
+  ];
+};
+let DEVUI = null;
+function initDevMode() {
+  const box = $('#sDev'), btn = $('#bDev');
+  const set = on => {
+    DEV.on = on; btn.hidden = !on; box.checked = on; try { localStorage.setItem('iss.dev', on ? '1' : '0'); } catch (e) {}
+    if (!on) { const had = devTm() || Object.keys(DEV.vv).length || Object.keys(DEV.anim).length || DEV.eva; devReset(); DEVUI?.close(); if (had) logEvent('[DEV] dev mode off, all overrides dropped', 'cmd'); }
+  };
+  let on = false; try { on = localStorage.getItem('iss.dev') === '1'; } catch (e) {}
+  box.onchange = () => set(box.checked);
+  btn.onclick = () => { if (!DEVUI) try {
+    DEVUI = DEVP.setupDevPanel({ DEV, portName: VV_PORT_NAME, portTypes: VV_PORT_TYPES, typeName: VV_TYPE_NAME, cur: () => MODEL.vvCur || {}, active: () => PROX.active,
+      raw: tvRaw, read: p => V(p), joints: DEV_JOINTS(), log: (s, c) => logEvent(s, c || 'cmd'), resetPayloads, cmdActive: () => CMD.active, reset: devReset,
+      hatch: () => { const h = MODEL.evHatch?.userData; return !h ? '--' : h.moving ? (h.open ? 'opening' : 'closing') : h.k > 0.5 ? 'open' : 'closed'; },
+      crew: () => (VV.extra.station?.expeditions?.[0]?.crew || []).map(c => c.name).filter(Boolean) });
+  } catch (e) { console.error(e); logEvent('Dev panel unavailable: ' + e.message, 'warn'); return; } DEVUI.toggle(); };
+  set(on);
 }
 /* ---------- Sprache ---------- */
 function initLanguage() {
@@ -3931,7 +4008,7 @@ function setLanguage(lang) {
   ISSWorkspace.relang(); logEvent(t('Language: {0}', I18N.LANGS[lang]));
 }
 /* ---------- Launcher-Anbindung (Heartbeat + Beenden) ---------- */
-const PAGE_VERSION = '1.21';      // muss mit VERSION in launcher.py übereinstimmen
+const PAGE_VERSION = '1.22';      // muss mit VERSION in launcher.py übereinstimmen
 function initLauncher() {
   if (!/^https?:$/.test(location.protocol)) return;
   // Ein neuerer Launcher ersetzt den alten; ein offener Tab lädt sich dann selbst neu, statt
@@ -3952,7 +4029,7 @@ function initLauncher() {
   };
 }
 init();
-window.ISS = { get EXTCAM() { return EXTCAM; }, get CALIB_UI() { return CALIB_UI; }, CALIB, resetPayloads, PL, updatePayloads, applyJoints, liveJoints, PERF, setLanguage, setVehicleEvents, refreshVehicles, VV, liveJointsRaw, gmstRad, propagate, S, MODEL, CMD, TM, ORB, CAL, LINK, NASA_ORBIT, ingest, updateOrbit, switchSource, enterCmd, exitCmd, commandVirtual, stepCmd, autotrack };    // Handle für die Entwicklerkonsole
+window.ISS = { DEV, get EXTCAM() { return EXTCAM; }, get CALIB_UI() { return CALIB_UI; }, CALIB, resetPayloads, PL, updatePayloads, applyJoints, liveJoints, PERF, setLanguage, setVehicleEvents, refreshVehicles, VV, liveJointsRaw, gmstRad, propagate, S, MODEL, CMD, TM, ORB, CAL, LINK, NASA_ORBIT, ingest, updateOrbit, switchSource, enterCmd, exitCmd, commandVirtual, stepCmd, autotrack };    // Handle für die Entwicklerkonsole
 
 </script>
 </body>

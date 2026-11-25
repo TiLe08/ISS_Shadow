@@ -11,7 +11,7 @@ import fs from 'node:fs'; import vm from 'node:vm'; import { createRequire } fro
 import * as THREE from 'three'; import { JSDOM } from 'jsdom';
 const require = createRequire(import.meta.url), ROOT = new URL('../', import.meta.url);
 const MODULES = ['model-checks.mjs', 'iss-model.mjs'];      // Importe des Modul-Skripts, als globale Namen
-const NAMESPACES = { PROXOPS: 'proxops.mjs', RADAR: 'radar.mjs' };   // import * as NAME
+const NAMESPACES = { PROXOPS: 'proxops.mjs', RADAR: 'radar.mjs', DEVP: 'dev-panel.mjs' };   // import * as NAME
 const CLASSIC = ['virtual-controls.js', 'channel-meta.js', 'i18n-strings.js', 'i18n.js', 'widgets.js', 'workspace.js', 'activities.js'];
 export const readProject = f => fs.readFileSync(new URL(f, ROOT), 'utf8');
 export async function loadTwin(names, opts = {}) {

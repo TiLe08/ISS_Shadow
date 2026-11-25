@@ -156,3 +156,25 @@ Panels werden gespeichert. Unter 1100 px Breite stapelt sich die Oberfläche.
 - Ein nachgebildeter ISSLive-Server stellt Fehlerbilder nach: `python tests/mock_isslive.py 8090
   tests/live_sample_20261014.json` (braucht `pip install aiohttp`), dann den Launcher mit
   `ISS_LS_SERVER=http://127.0.0.1:8090` starten oder die URL unter Setup → Lightstreamer eintragen.
+
+## Entwicklermodus (Dev, v1.22)
+
+Zum Prüfen von Animationen, ohne auf echte Ereignisse zu warten. In **Setup** „Dev mode“ ankreuzen; dann
+erscheint oben neben Setup der Knopf **Dev** und öffnet ein verschiebbares Fenster (nur englisch). Alles
+ist reine Anzeige: Es wird nichts gesendet, Meldungen stehen mit „[DEV]“ im Ereignisprotokoll.
+Ausschalten des Schalters verwirft alle Eingriffe; „Reset all“ ebenso, ohne den Modus zu verlassen.
+
+- **Speed:** Zeitraffer 1× bis 300× für An- und Abflüge, Crewlock und Gelenke.
+- **Vehicles:** je Port an einem freien Port ein Fahrzeug (Typ passend zum Port, Name frei) anfliegen
+  lassen (**▶ Dock**, Ablauf aus `proxops.mjs`) oder sofort hinsetzen (**Place**); ein angedocktes
+  Fahrzeug abfliegen lassen (**▶ Undock**) oder sofort entfernen (**Remove**). „Skip to end“, „Cancel“,
+  „Back to data“. Cygnus und HTV-X werden verkürzt angelegt: Anflug bis zum Einfangpunkt, kurz halten,
+  dann geradlinig an den CBM (der Arm bewegt sich dabei nicht).
+- **Spacewalk:** Crewlock auspumpen, die Quest-Luke schwenkt bei unter 5 mmHg nach innen auf,
+  Stationsmodus „External ops“, Eintrag unter Current activities wie von Launch Library 2. „End
+  spacewalk“ befüllt die Crewlock wieder, die Luke schließt.
+- **Moving parts:** Telemetriewerte (Rohwerte vor `CAL`) für SARJ, BGA, TRRJ, Mobile Transporter,
+  Canadarm2 mit Spitzen-LEE (Released/Captive/Captured, löst Greifen und Loslassen aus), Dextre und
+  Ku-Antenne. Der Wert läuft mit der Gelenkrate zum Ziel, „Instant“ springt. ✕ gibt den Kanal an die
+  Telemetrie zurück. Solange ein Wert gesetzt ist, ruhen Posenvorhersage und Lernen der Kalibrierung.
+  Im Kommandomodus wirken die Gelenkwerte nicht (dort gelten die eigenen Regler).
