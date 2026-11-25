@@ -61,4 +61,11 @@ const wpos = o => new THREE.Vector3().setFromMatrixPosition(o.matrixWorld);
 { const lee = part('MBS POA (LEE)'), mt = MODEL.pivots.mt, loc = mt.worldToLocal(wpos(lee));
   const tip = mt.worldToLocal(new THREE.Vector3(0, -0.745, 0).applyMatrix4(lee.matrixWorld));
   assert.ok(new THREE.Vector3(3.870 + 0.259, -1.770 - 1.467, 0).distanceTo(tip) < 0.01 && loc.y < -1.77, 'POA-Endeffektor nach DOUG: ' + tip.toArray()); }
-console.log(`PASS DOUG: Canadarm2-Spitze über ${Q.length} Posen auf ${(worstP * 1000).toFixed(1)} mm und Rahmen exakt, MBS-Greifpunkte, MT-Arbeitsplätze, UHF-Antennen, POA`);
+// Dextre-Arme (v1.28): Handgelenk-Rollen beider Arme in der Paketpose gegen DOUG (SPDM_A1/A2_WR im SPDM_EE-System).
+{ const { setDougJoint } = await import('../iss-model.mjs');
+  const A = [[-50, -40, 80, 30, -80, -120, -50], [-120, -40, -80, -60, 40, -120, -20]], WR = [[3.171, 1.639, -0.940], [2.990, 1.856, 0.603]];
+  setDougJoint(MODEL.dextreBody, -45); MODEL.dextre.forEach((J, s) => J.forEach((j, i) => setDougJoint(j, A[s][i]))); MODEL.root.updateMatrixWorld(true);
+  const inv = MODEL.dextreBody.parent.matrixWorld.clone().invert();
+  MODEL.dextre.forEach((J, s) => { const p = new THREE.Vector3().setFromMatrixPosition(inv.clone().multiply(J[6].matrixWorld));
+    assert.ok(p.distanceTo(new THREE.Vector3(...WR[s])) < 0.005, 'Dextre Arm ' + (s + 1) + ' Handgelenk: ' + p.toArray()); }); }
+console.log(`PASS DOUG: Canadarm2-Spitze über ${Q.length} Posen auf ${(worstP * 1000).toFixed(1)} mm und Rahmen exakt, MBS-Greifpunkte, MT-Arbeitsplätze, UHF-Antennen, POA, Dextre-Arme`);
