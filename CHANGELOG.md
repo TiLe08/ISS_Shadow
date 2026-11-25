@@ -2,7 +2,7 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
-# v1.28: Darstellung „Realistisch“, realistischer Tag-Nacht-Übergang der Erde (25.11.)
+# v1.29: Darstellung „Realistisch“, realistischer Tag-Nacht-Übergang der Erde (25.11.)
 
 - **Neue Darstellung *Realistic* (Realistisch)** neben Holo und Solid (Display → Station): texturierte
   PBR-Materialien je Bauteilart (Trümmerschutzbleche mit Fugen und Nieten, gesteppte Isolationsdecken,
@@ -18,6 +18,15 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 - **Erde in Solid und Realistic:** Beleuchtung nach Sonnenhöhe (flacher Stand dunkler), weiche Dämmerung
   mit rötlichem Saum, dunkle Nachtseite mit Stadtlichtern (NASA VIIRS, zur Laufzeit geladen),
   Sonnenglanz auf dem Meer und ein dünner, an der Dämmerung rötlicher Atmosphärensaum. Holo bleibt wie bisher.
+
+# v1.28: Dextre-Arme und Rumpfkameras nach NASA DOUG (25.11.)
+
+- **Arme von Dextre falsch geknickt:** Dem Schulter-Nickgelenk beider Arme fehlte die feste Drehung aus DOUG
+  (yaw 90°, roll −90°, `DEXTRE_CHAIN` in `iss-model.mjs`). Alles ab der Schulter stand dadurch verdreht, das
+  Handgelenk bis zu 3 m neben der richtigen Stelle. Jetzt liegen beide Handgelenke in der Paketpose von DOUG auf
+  1 mm genau (`tests/test_doug.mjs`). Die Telemetrie vom 24.11. meldet dieselben Gelenkwinkel wie das DOUG-Paket.
+- **Schwebende Rumpfkameras:** Die beiden CLPAs von Dextre sitzen nach DOUG 1,02 m neben der Rumpfachse und
+  hatten keinen Halter. Ein Halter vom Rumpf zu jeder Kamera ist ergänzt (Querschnitt geschätzt).
 
 # v1.27.2: NASA-Bahn wieder da, Konsolenfenster friert Dienste nicht mehr ein (25.11.)
 
