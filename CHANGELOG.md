@@ -2,6 +2,13 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.27.1: Radar zeigt nur Objekte innerhalb der Kugel (25.11.)
+
+- Objekte außerhalb des eingestellten Bildradius werden nicht mehr als Pfeil am Kugelrand mit Entfernung
+  gezeichnet, sondern erscheinen erst, wenn man weit genug herauszoomt. Die Liste unter dem Radar nennt
+  weiterhin die nächsten Objekte mit Abstand; „Auto“ wählt den Bildradius so, dass das nächste Objekt
+  hineinpasst. Der blaue Erdbogen am Rand bleibt.
+
 # v1.27: Ersatzquelle bei CelesTrak-Ausfall, Erde immer im Radar, Bahn auf Klick (25.11.)
 
 - **CelesTrak-Ausfall abgefangen:** Am 25.11. antwortete die ganze Seite celestrak.org mit HTTP 503
