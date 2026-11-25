@@ -87,7 +87,7 @@ Protokollierung.
 | `ephemeris.py` | NASA-Bahnvorhersage (OEM) laden, prüfen, interpolieren, zwischenspeichern |
 | `vehicles.py` | Andockereignisse, Crew, Ereignisplan, Starts und Außenbordeinsätze (`/spacewalks/`) aus Launch Library 2 |
 | `streams.py` | Laufende ISS-Livestreams von NASA (YouTube-Stream-Seite) und Sen (Schnittstelle von sen.com, sonst YouTube) ermitteln (`/__streams`), weil feste Video-Kennungen nach einiger Zeit privat werden |
-| `tle.py` | Bahnelemente der CelesTrak-Gruppen „stations“ und „last-30-days“ als OMM/JSON höchstens alle 2 h holen (nach einer HTTP-Fehlerantwort 2 h Pause), Zwischenspeicher `cache/gp.json`, liefert `/__tle` für das Radar |
+| `tle.py` | Bahnelemente der CelesTrak-Gruppen „stations“ und „last-30-days“ als OMM/JSON höchstens alle 2 h holen (nach Fehlern 15/30/60 min, dann 2 h; Ersatzquelle SatNOGS), Zwischenspeicher `cache/gp.json`, liefert `/__tle` für das Radar |
 | `tools/doug_cameras.mjs` | Rechnet die Kameraknoten des DOUG-Pakets in `DOUG_RIGS` (`cameras.mjs`) um |
 | `pruefwerkzeuge/camshot.mjs` | Zwillingsansicht einer Kamera mit Telemetrie aus einer JSON-Datei aufnehmen (Node, Playwright) |
 | `tools/export_viewer.mjs`, `tools/viewer_template.html` | Erzeugen `ISS_Model_Viewer_v1.3.html`: bauen das Modell wie die Seite, backen Geometrie, Materialien und Texturen ein und schreiben einen eigenständigen Viewer (Node.js) |
