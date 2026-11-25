@@ -2,6 +2,15 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.28: Dextre-Arme und Rumpfkameras nach NASA DOUG (25.11.)
+
+- **Arme von Dextre falsch geknickt:** Dem Schulter-Nickgelenk beider Arme fehlte die feste Drehung aus DOUG
+  (yaw 90°, roll −90°, `DEXTRE_CHAIN` in `iss-model.mjs`). Alles ab der Schulter stand dadurch verdreht, das
+  Handgelenk bis zu 3 m neben der richtigen Stelle. Jetzt liegen beide Handgelenke in der Paketpose von DOUG auf
+  1 mm genau (`tests/test_doug.mjs`). Die Telemetrie vom 24.11. meldet dieselben Gelenkwinkel wie das DOUG-Paket.
+- **Schwebende Rumpfkameras:** Die beiden CLPAs von Dextre sitzen nach DOUG 1,02 m neben der Rumpfachse und
+  hatten keinen Halter. Ein Halter vom Rumpf zu jeder Kamera ist ergänzt (Querschnitt geschätzt).
+
 # v1.27.2: NASA-Bahn wieder da, Konsolenfenster friert Dienste nicht mehr ein (25.11.)
 
 - **NASA-Bahn (OEM):** Das aktuelle NASA-Produkt vom 23.11. 18:47 UTC war am 25.11. abends älter als

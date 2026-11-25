@@ -492,7 +492,7 @@ const DEXTRE_ARMS = [
 // [Gelenkknoten-Vorlauf (xyz, pyr), Gelenk-pyr]: SY, SP, EP, WP, WY, WR (SR steht in DEXTRE_ARMS).
 const DEXTRE_CHAIN = [
   [[[0, 0, 0], [-90, 0, 90]], [[-9.6, -5.36, 0], [0, 0, 0]], [0, 0, 0]],
-  [[[9.6, -9.65, 9.37], [90, 0, 90]], [0, 0, 0]],
+  [[[9.6, -9.65, 9.37], [90, 0, 90]], [0, 90, -90]],
   [[[0, -32.98, 0], [90, 0, 90]], [0, 90, -90]],
   [[[0, -33.03, 0], [90, 0, 90]], [0, 90, -90]],
   [[[0, -9.65, -9.32], [0, 0, 0]], [0, 0, 0]],
@@ -535,6 +535,9 @@ function buildDextre(mt) {
   box(bodyY, 0.4, 0.4, 0.4, [0, 1.1, 0.65], 'gold', 'Dextre torso head (cameras)', o);
   const b1 = dougNode(body, [68.7, 0, 0], [90, -45, -180]); MODEL.dextreTorso = b1;   // SPDM_body: Träger der Schulterbalken und der beiden Rumpfkameras
   tube(b1, [0, -46.9 * DIN, 46.9 * DIN], [0, 46.9 * DIN, 46.9 * DIN], 0.2, 0.2, 'arm', 'Dextre torso shoulder beam', o);
+  // Halter der beiden Rumpfkameras: DOUG setzt die CLPAs (SPDM_CLPA_1/2) 1,02 m neben die Rumpfachse, 1,17 m über
+  // dem Fuß-LEE. Ohne Halter schwebten sie neben dem Rumpf; Querschnitt geschätzt (v1.28).
+  for (const s of [-1, 1]) tube(b1, [5.4 * DIN, s * 0.3, 85.2 * DIN], [5.4 * DIN, s * 40 * DIN, 85.2 * DIN], 0.06, 0.06, 'arm', 'Dextre camera bracket', o);
   MODEL.dextre = []; MODEL.dextreTools = [];
   DEXTRE_ARMS.forEach((arm, side) => {
     const nm = i => 'Dextre arm ' + (side + 1) + ' joint ' + (i + 1), J = [];
