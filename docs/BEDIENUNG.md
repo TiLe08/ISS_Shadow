@@ -48,8 +48,13 @@ Tastenkürzel: **D** Dashboard, **C** Kanal-Browser, **?** Hilfe, **Esc** Menüs
 - **Display:** Darstellung *Holo* (Drahtgitter) oder *Solid* (beleuchtete Flächen); Erde *Earth photo* (NASA Blue Marble)
   oder *Earth radar* (Küsten und Grenzen); Einblendungen *ISS labels*, *Axes* (Körperachsen), *Sun*
   (Richtung zur Sonne); *Earth labels* für Ortsnamen.
-- **Pillen in der Ansicht:** *Sunlit/Shadow* (Beleuchtung aus Bahngeometrie und Flügelspannungen) und
-  der Modus.
+- **Pillen in der Ansicht:** Countdown *Sunrise in / Sunset in* (Sonnenauf- bzw. -untergang an der
+  Station, siehe unten), *Sunlit/Shadow* (Beleuchtung aus Bahngeometrie und Flügelspannungen) und
+  der Modus. Der Countdown steht auch im Orbit-Panel (*Next sunrise / Next sunset*) und in der
+  Kopfzeile der Zwillingsansicht im Kamerafenster. Gemeint ist der Austritt aus bzw. Eintritt in den
+  Erdschatten auf Bahnhöhe (die Station ist dort länger beleuchtet als der Boden darunter), nicht das
+  Überfliegen des Terminators; gleiches Schattenmodell wie die Pille *Sunlit/Shadow*, etwa ±10 s
+  (Halbschatten, Atmosphäre). Bei hohem Beta-Winkel ohne Schatten: *Continuous sunlight*.
 - **Statuszeilen:** Kennzeichnung der Systemdaten (LIVE, SIMULATED, RECORDED, VIRTUAL …), Hinweise
   auf fehlende Daten, rotes **Überlappungsbanner** bei Kollisionen (Klick speichert einen
   Bericht).

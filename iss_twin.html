@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ISS Digital Shadow v1.23</title>
+<title>ISS Digital Shadow v1.23.1</title>
 <!--
   iss_twin.html: Hauptseite von ISS Shadow (digitaler Schatten / Zwilling der ISS).
 
@@ -466,7 +466,7 @@ canvas.radar{display:block;width:100%;height:220px;margin:6px 0;cursor:grab;touc
           </div>
         </details>
         <div class="grow"></div>
-        <div class="ov-pills"><span class="pill" id="pLight"><i></i><span>Sunlit</span></span><span class="pill" id="pMode"><i></i><span>Mirroring</span></span></div>
+        <div class="ov-pills"><span class="pill" id="pSunEv" hidden title="Orbital sunrise/sunset at the station: exit from or entry into Earth's shadow at the ISS's altitude (geometric, about ±10 s), not the ground terminator"><i></i><span></span></span><span class="pill" id="pLight"><i></i><span>Sunlit</span></span><span class="pill" id="pMode"><i></i><span>Mirroring</span></span></div>
       </div>
       <div class="ov-status" id="ovStatus">
         <div class="banner" id="banner" hidden>Command mode · virtual ISS only</div>
@@ -788,6 +788,46 @@ function inShadow(s, sun) {
   const d = r.dot(sun);
   if (d > 0) return false;
   return r.clone().sub(sun.clone().multiplyScalar(d)).length() < RE;
+}
+/* Nächster Sonnenaufgang bzw. -untergang an der Station (Orbital Sunrise/Sunset): Austritt aus bzw.
+   Eintritt in den Erdschatten auf Bahnhöhe, nicht das Überfliegen des Terminators am Boden. Gleiches
+   Schattenmodell wie inShadow() (Zylinder mit Erdradius entlang der Sonnenrichtung), damit der
+   Countdown genau dann null wird, wenn die Anzeige „Schatten/Sonne“ umspringt. Die Bahn wird in
+   20-s-Schritten propagiert, der Übergang dann auf 0,5 s eingegrenzt. Halbschatten (~10 s) und
+   Atmosphäre sind nicht berücksichtigt. Ergebnis: { at: ms, sunrise: bool } oder null, wenn innerhalb
+   von horizonMin Minuten kein Übergang kommt (hoher Beta-Winkel: Dauersonne). */
+function nextSunEvent(s, ms, horizonMin = 200) {
+  const STEP = 20, lit = (st, tt) => !inShadow(st, sunEci(tt)), lit0 = lit(s, ms);
+  let st = s, t = ms;
+  for (let k = 0; k < horizonMin * 60 / STEP; k++) {
+    const st2 = propagate(st, STEP), t2 = t + STEP * 1000;
+    if (lit(st2, t2) !== lit0) {
+      let a = 0, b = STEP;
+      while (b - a > 0.5) { const m = (a + b) / 2; if (lit(propagate(st, m), t + m * 1000) !== lit0) b = m; else a = m; }
+      return { at: t + b * 1000, sunrise: !lit0 };
+    }
+    st = st2; t = t2;
+  }
+  return null;
+}
+// Zwischengespeichert: neu gerechnet nach dem Ereignis, spätestens jede Minute und nach Bahnsprüngen.
+const SUNEV = { calcAt: -Infinity, ev: null, s0: null };
+function sunEventFor(s, now) {
+  if (!s) { SUNEV.ev = null; SUNEV.calcAt = -Infinity; return null; }
+  const jumped = SUNEV.s0 && Math.hypot(s[0] - SUNEV.s0[0], s[1] - SUNEV.s0[1], s[2] - SUNEV.s0[2]) > 1 + 8 * Math.abs(now - SUNEV.calcAt) / 1000;
+  if (jumped || Math.abs(now - SUNEV.calcAt) > 60000 || (SUNEV.ev && now >= SUNEV.ev.at) || (!SUNEV.ev && Math.abs(now - SUNEV.calcAt) > 30000)) {
+    SUNEV.ev = nextSunEvent(s, now); SUNEV.calcAt = now; SUNEV.s0 = s.slice(0, 3);
+  }
+  return SUNEV.ev;
+}
+const fmtClock = sec => { sec = Math.max(0, Math.round(sec)); const h = Math.floor(sec / 3600), m = Math.floor(sec / 60) % 60, x = String(sec % 60).padStart(2, '0'); return h ? h + ':' + String(m).padStart(2, '0') + ':' + x : m + ':' + x; };
+// Kurztext für Anzeigen: „Sunrise in 12:34“, „Sunset in 45:10“, „Continuous sunlight“; '' ohne Bahn
+// oder bei erzwungener Beleuchtung im Kommandomodus.
+function sunEventText(now) {
+  if (!D.geo || (CMD.active && CMD.sys.environment !== 'auto')) return '';
+  const ev = D.sunEvent;
+  if (!ev) return t(D.eclipse ? 'No sunrise within 3 h' : 'Continuous sunlight');
+  return t(ev.sunrise ? 'Sunrise in {0}' : 'Sunset in {0}', fmtClock((ev.at - now) / 1000));
 }
 /* Quaternion (q0 = Skalarteil) -> Gieren/Nicken/Rollen, Reihenfolge 3-2-1, Grad */
 function q2ypr(q0, q1, q2, q3) {
@@ -2621,7 +2661,7 @@ function buildPanels() {
       <div class="grid2">${row('oLat', 'Lat', '°')}${row('oLon', 'Lon', '°')}</div>
       <div class="grid2">${row('oApo', 'Apogee', 'km')}${row('oPer', 'Perigee', 'km')}</div>
       <div class="grid2">${row('oInc', 'Incl', '°')}${row('oPd', 'Period', 'min')}</div>
-      ${row('oBeta', 'Solar β angle', '°')}${row('oSun', 'Lighting')}${row('oSrc', 'State vector')}
+      ${row('oBeta', 'Solar β angle', '°')}${row('oSun', 'Lighting')}${row('oSunEv', 'Next sunrise', '', "Orbital sunrise/sunset at the station: exit from or entry into Earth's shadow at the ISS's altitude (geometric, about ±10 s), not the ground terminator")}${row('oSrc', 'State vector')}
       ${spark('skAlt')}${tileSection('orbit')}`) +
     panelHTML('pGnc', 'GNC', 'ADCO', `
       ${row('gMode', 'US GNC mode', '', '', 'USLAB000012')}${row('gIss', 'Station mode', '', '', 'USLAB000086')}
@@ -2771,10 +2811,13 @@ function updatePanels(D) {
     setV('oLat', fmt(D.geo.lat, 2), '°'); setV('oLon', fmt(D.geo.lon, 2), '°');
     setV('oApo', fmt(D.el.apo, 1), 'km'); setV('oPer', fmt(D.el.peri, 1), 'km'); setV('oInc', fmt(D.el.inc, 2), '°'); setV('oPd', fmt(D.el.per / 60, 2), 'min');
     setV('oSun', t(D.eclipse ? 'ECLIPSE' : 'SUNLIT'), '', D.eclipse ? 'acc' : 'acc2');
+    { const ev = D.sunEvent, forced = CMD.active && CMD.sys.environment !== 'auto', k = document.getElementById('oSunEv')?.previousElementSibling;
+      if (k) k.textContent = t(ev && !ev.sunrise ? 'Next sunset' : 'Next sunrise');
+      setV('oSunEv', forced ? '---' : ev ? 'T−' + fmtClock((ev.at - simulationNow()) / 1000) : t(D.eclipse ? '> 3 h' : 'none (continuous sunlight)'), '', ev?.sunrise ? 'acc' : 'acc2'); }
     setV('oSrc', t(orbitLabel()), '', CMD.active ? 'acc2' : ORB.predicted ? 'warn' : 'ok');
   }
   if (!D.geo) {
-    ['oAlt','oVel','oLat','oLon','oApo','oPer','oInc','oPd','oSun'].forEach(id => setV(id, '---'));
+    ['oAlt','oVel','oLat','oLon','oApo','oPer','oInc','oPd','oSun','oSunEv'].forEach(id => setV(id, '---'));
     setV('oSrc', t('UNAVAILABLE'), '', 'warn');
   }
   const beta = ORB.s ? Math.asin(clamp(-sunEci(now).dot(lvlhBasis(ORB.s).y), -1, 1)) * R2D : NaN;
@@ -3415,7 +3458,7 @@ function predictPass() {
 /* ================================================================
    HAUPTSCHLEIFE
    ================================================================ */
-const D = { geo: null, el: null, eclipse: false, ypr: { yaw: 0, pitch: 0, roll: 0 }, thrusters: false };
+const D = { geo: null, el: null, eclipse: false, sunEvent: null, ypr: { yaw: 0, pitch: 0, roll: 0 }, thrusters: false };
 let lastFrame = performance.now(), lastUi = 0, lastAlt = 0;
 
 // Gelenkwinkel J auf das 3D-Modell übertragen: SARJ, BGA, TRRJ, Antennen, Transporter,
@@ -3612,13 +3655,14 @@ function frame(nowP) {
     const B = lvlhBasis(s);
     sunL = new THREE.Vector3(sun.dot(B.x), sun.dot(B.y), sun.dot(B.z));
     D.geo = eciToGeo(s, now); D.el = orbitElems(s); D.eclipse = CMD.active&&CMD.sys.environment!=='auto' ? CMD.sys.environment==='eclipse' : inShadow(s, sun);
+    D.sunEvent = sunEventFor(s, now);
     // Erde: LVLH <- ECI <- ECEF ; Mittelpunkt im Nadirabstand
     const rm = Math.hypot(s[0], s[1], s[2]) * 1000;
     const M = new THREE.Matrix4().set(B.x.x, B.x.y, B.x.z, 0, B.y.x, B.y.y, B.y.z, 0, B.z.x, B.z.y, B.z.z, 0, 0, 0, 0, 1);
     const Rz = new THREE.Matrix4().makeRotationZ(gmstRad(now));
     S.earth.matrix.makeTranslation(0, 0, rm).multiply(M).multiply(Rz); S.earth.visible = true;
     if (now - lastAlt > 5000) { ALTH.push([now, D.geo.alt]); if (ALTH.length > 2000) ALTH.shift(); lastAlt = now; }
-  } else { S.earth.visible = false; D.geo = null; D.el = null; D.eclipse = false; }
+  } else { S.earth.visible = false; D.geo = null; D.el = null; D.eclipse = false; D.sunEvent = sunEventFor(null, now); }
 
   // Lage + Gelenke (gesetzte Werte des Entwicklermodus laufen vorher zum Ziel)
   if (devTm()) DEVP.stepOverrides(DEV.tm, dt, DEV.instant ? Infinity : DEV.speed);
@@ -3729,6 +3773,9 @@ function frame(nowP) {
   pl.className = 'pill ' + (disagree ? 'warn' : geo === 'Sunlit' ? 'acc2' : '');
   { const txt = !geo ? t(lit === null ? 'Lighting unknown' : lit ? 'Sunlit · arrays' : 'Eclipse · arrays') : disagree ? t(geo) + ' (' + t('orbit') + ') · ' + t(lit ? 'arrays lit' : 'arrays dark') : t(geo) + ' · ' + t(lit === null ? 'orbit' : 'orbit + arrays');
     if (pl.lastChild.textContent !== txt) pl.lastChild.textContent = txt; }
+  { const se = $('#pSunEv'), txt = sunEventText(now); se.hidden = !txt;
+    if (txt && se.lastChild.textContent !== txt) se.lastChild.textContent = txt;
+    se.className = 'pill' + (D.sunEvent?.sunrise ? '' : ' acc2'); }
   pl.title = 'Orbit geometry: ' + (geo || 'no orbit') + '\nArray voltages: ' + (lit === null ? 'no recent readings' : lit ? 'illuminated (>= 151.5 V)' : 'below 151.5 V (eclipse)');
 
   perf('hud');
@@ -3958,7 +4005,7 @@ function init() {
   // auf den Simulator ausweichen, wenn der Live-Feed nie etwas liefert
   if (src === 'live') setTimeout(() => { if (LINK.src === 'live' && !TM.size) { logEvent('No onboard telemetry after 20 s; NASA orbit prediction is independent', 'warn'); } }, 20000);
   setInterval(() => { try { linkWatchdog(); } catch (e) { console.error(e); } }, 2000);
-  try { EXTCAM = setupCameras({ THREE, S, MODEL, t, onOpen: id => logEvent(t('Camera view: {0}', t(EXTCAM.list.find(c => c.id === id).name))) }); $('#camBtn').onclick = () => EXTCAM.open(); applyRender();
+  try { EXTCAM = setupCameras({ THREE, S, MODEL, t, sunNote: () => sunEventText(simulationNow()), onOpen: id => logEvent(t('Camera view: {0}', t(EXTCAM.list.find(c => c.id === id).name))) }); $('#camBtn').onclick = () => EXTCAM.open(); applyRender();
     const mt = $('#camMarksToggle'); mt.setAttribute('aria-pressed', String(EXTCAM.marksOn)); mt.onclick = () => { EXTCAM.showMarks(!EXTCAM.marksOn); mt.setAttribute('aria-pressed', String(EXTCAM.marksOn)); }; }
   catch (e) { console.error(e); logEvent('Cameras unavailable: ' + e.message, 'warn'); }
   initDevMode();
@@ -4016,7 +4063,7 @@ function setLanguage(lang) {
   ISSWorkspace.relang(); logEvent(t('Language: {0}', I18N.LANGS[lang]));
 }
 /* ---------- Launcher-Anbindung (Heartbeat + Beenden) ---------- */
-const PAGE_VERSION = '1.23';      // muss mit VERSION in launcher.py übereinstimmen
+const PAGE_VERSION = '1.23.1';      // muss mit VERSION in launcher.py übereinstimmen
 function initLauncher() {
   if (!/^https?:$/.test(location.protocol)) return;
   // Ein neuerer Launcher ersetzt den alten; ein offener Tab lädt sich dann selbst neu, statt
@@ -4037,7 +4084,7 @@ function initLauncher() {
   };
 }
 init();
-window.ISS = { DEV, get EXTCAM() { return EXTCAM; }, get CALIB_UI() { return CALIB_UI; }, CALIB, resetPayloads, PL, updatePayloads, applyJoints, liveJoints, PERF, setLanguage, setVehicleEvents, refreshVehicles, VV, liveJointsRaw, gmstRad, propagate, S, MODEL, CMD, TM, ORB, CAL, LINK, NASA_ORBIT, ingest, updateOrbit, switchSource, enterCmd, exitCmd, commandVirtual, stepCmd, autotrack };    // Handle für die Entwicklerkonsole
+window.ISS = { DEV, nextSunEvent, get sunEvent() { return D.sunEvent; }, get EXTCAM() { return EXTCAM; }, get CALIB_UI() { return CALIB_UI; }, CALIB, resetPayloads, PL, updatePayloads, applyJoints, liveJoints, PERF, setLanguage, setVehicleEvents, refreshVehicles, VV, liveJointsRaw, gmstRad, propagate, S, MODEL, CMD, TM, ORB, CAL, LINK, NASA_ORBIT, ingest, updateOrbit, switchSource, enterCmd, exitCmd, commandVirtual, stepCmd, autotrack };    // Handle für die Entwicklerkonsole
 
 </script>
 </body>

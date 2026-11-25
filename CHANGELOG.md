@@ -2,6 +2,18 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.23.1: Countdown bis Sonnenaufgang/-untergang (25.11.)
+
+- **Countdown „Sunrise in 12:34“ / „Sunset in 45:10“** als Pille in der 3D-Ansicht, als Zeile im
+  Orbit-Panel (*Next sunrise/Next sunset*, T−mm:ss) und in der Kopfzeile der Zwillingsansicht im
+  Kamerafenster. Gerechnet wird der Austritt aus bzw. Eintritt in den Erdschatten **an der Station**
+  (Bahnhöhe), nicht das Überfliegen des Terminators am Boden: `nextSunEvent()` propagiert die Bahn in
+  20-s-Schritten mit demselben Schattenzylinder wie `inShadow()` und grenzt den Übergang auf 0,5 s ein;
+  neu gerechnet nach jedem Ereignis, jede Minute und nach Bahnsprüngen. Genauigkeit etwa ±10 s
+  (Halbschatten und Atmosphäre nicht modelliert). Hoher Beta-Winkel ohne Schatten: „Continuous sunlight“.
+  Im Kommandomodus mit erzwungener Beleuchtung ausgeblendet. Übersetzungen in allen sechs Sprachen.
+- Neuer Test `tests/test_sun_event.mjs` (Ereignis auf 1 s am Umschlag, Phasenlängen, Beta 90°, Zwischenspeicher).
+
 # v1.23: Nullpunkt der Solarflügel (BGA) nach NASA (25.11.)
 
 - **BGA wie SSP 30219 und NASA DOUG:** Offset Steuerbord −90 statt −135, Backbord +90 statt +45 (`CAL` in
@@ -14,7 +26,7 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
   Sonnenoptimum steht (`PRED.bias`), und hält diesen Abstand, statt auf das Optimum zu springen.
 - Ein im Kalibrierfeld von Hand gesetzter BGA-Zusatzoffset von +45° ist damit doppelt: auf 0 zurückstellen.
 
-# v1.22.1: Sichtbares Konsolenfenster als Ausschalter (25.11.)
+# v1.23.1: Sichtbares Konsolenfenster als Ausschalter (25.11.)
 
 - `Start ISS Shadow.bat` startet den Launcher mit `python` statt `pythonw` in einem eigenen Konsolenfenster
   „ISS Digital Shadow“, das offen bleibt, solange das Programm läuft.
