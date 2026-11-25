@@ -2,7 +2,7 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
-# v1.27.3: Radar-Erde als echte Kugel mit Textur (25.11.)
+# v1.28.1: Radar-Erde als echte Kugel mit Textur (25.11.)
 
 - Die Erde im Radar ist keine flache blaue Scheibe mehr: Sie zeigt die Blue-Marble-Kacheln (lokal, Stufe 2)
   orthografisch projiziert und lagerichtig (Erddrehung über die Sternzeit, Lage aus der ISS-Bahn), mit
@@ -10,6 +10,14 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
   Ohne Bahndaten erscheint eine schattierte Kugel.
 - Sparsam gerechnet: nur der sichtbare Teil in halber Auflösung, und nur neu, wenn Blickrichtung, Zoom
   oder Erddrehung sich merklich ändern (sonst Zwischenspeicher; beim Drehen etwa 1-6 ms je Bild).
+# v1.28: Dextre-Arme und Rumpfkameras nach NASA DOUG (25.11.)
+
+- **Arme von Dextre falsch geknickt:** Dem Schulter-Nickgelenk beider Arme fehlte die feste Drehung aus DOUG
+  (yaw 90°, roll −90°, `DEXTRE_CHAIN` in `iss-model.mjs`). Alles ab der Schulter stand dadurch verdreht, das
+  Handgelenk bis zu 3 m neben der richtigen Stelle. Jetzt liegen beide Handgelenke in der Paketpose von DOUG auf
+  1 mm genau (`tests/test_doug.mjs`). Die Telemetrie vom 24.11. meldet dieselben Gelenkwinkel wie das DOUG-Paket.
+- **Schwebende Rumpfkameras:** Die beiden CLPAs von Dextre sitzen nach DOUG 1,02 m neben der Rumpfachse und
+  hatten keinen Halter. Ein Halter vom Rumpf zu jeder Kamera ist ergänzt (Querschnitt geschätzt).
 
 # v1.27.2: NASA-Bahn wieder da, Konsolenfenster friert Dienste nicht mehr ein (25.11.)
 
