@@ -135,6 +135,8 @@ assert.equal(new Date(R.tleEpoch('1 25544U 98067A   26322.50000000  .00016717  0
   assert.ok(texts.includes('Earth'), 'Erde sichtbar beim Herauszoomen');
   texts.length = 0; R.drawRadar(ctx2, 300, 260, [], { scale: 1e4, earth: r.earth, colors: { fg: '#fff', dim: '#888', accent: '#0ff', warn: '#ff0', model: '#fa0' } });
   assert.ok(!texts.includes('Earth'), 'Erde nicht im Bild bei 10 km');
+  texts.length = 0; R.drawRadar(ctx2, 300, 260, [{ label: 'FAR', rel: [50e3, 0, 0], range: 50e3, rate: 0, kind: 'tle' }, { label: 'NEAR', rel: [5e3, 0, 0], range: 5e3, rate: 0, kind: 'tle' }], { scale: 1e4, colors: { fg: '#fff', dim: '#888', accent: '#0ff', warn: '#ff0', model: '#fa0' } });
+  assert.ok(texts.some(s => s.startsWith('NEAR')) && !texts.some(s => s.startsWith('FAR')), 'Objekte außerhalb der Kugel werden nicht gezeichnet: ' + texts.join('|'));
   assert.equal(R.zoomScale(1e4, 1), 1.25e4); assert.equal(R.zoomScale(R.MIN_SCALE, -1), R.MIN_SCALE);
 }
 { // OMM/JSON von CelesTrak, auch mit sechsstelligen Katalognummern (das TLE-Format kann sie nicht)
