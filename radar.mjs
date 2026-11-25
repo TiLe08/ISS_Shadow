@@ -233,17 +233,17 @@ export function drawRadar(ctx, w, h, items, o) {
       ctx.fillStyle = col; ctx.fillRect(x - 1.5, y - 1.5, 3, 3); ctx.textAlign = 'left'; ctx.fillText((q.dt > 0 ? '+' : '') + q.dt + ' min', x + 4, y + 8);
     }
   }
-  // Objekte von hinten nach vorn, außerhalb der Kugel am Rand mit Pfeil, hinter der Erde schwach
-  const pts = items.map(i => { const k = Math.min(1, scale * 1.08 / Math.max(i.range, 1e-6)), p = i.rel.map(x => x * k); return { i, out: k < 1, s: P(p) }; }).sort((a, b) => a.s[3] - b.s[3]);
+  // Objekte von hinten nach vorn, nur innerhalb der Kugel (v1.27.1: keine Randmarken mehr), hinter der Erde schwach
+  const pts = items.filter(i => i.range <= scale * 1.02).map(i => ({ i, s: P(i.rel) })).sort((a, b) => a.s[3] - b.s[3]);
   const hits = [];
-  for (const { i, out, s } of pts) {
+  for (const { i, s } of pts) {
     const [x, y, gy] = s, col = i.sel ? c.accent : i.kind === 'model' ? c.model : c.fg;
     hits.push({ item: i, x, y });
     ctx.globalAlpha = hidden(s) ? 0.3 : 1;
     ctx.strokeStyle = col; ctx.setLineDash([2, 2]); ctx.beginPath(); ctx.moveTo(x, gy); ctx.lineTo(x, y); ctx.stroke(); ctx.setLineDash([]);
     ctx.beginPath(); ctx.arc(x, gy, 1.5, 0, 2 * Math.PI); ctx.fillStyle = c.dim; ctx.fill();
     ctx.fillStyle = col; ctx.beginPath();
-    if (out) { ctx.moveTo(x, y - 4); ctx.lineTo(x + 4, y + 3); ctx.lineTo(x - 4, y + 3); ctx.closePath(); } else ctx.arc(x, y, 3, 0, 2 * Math.PI);
+    ctx.arc(x, y, 3, 0, 2 * Math.PI);
     ctx.fill();
     ctx.textAlign = x > cx + R * 0.5 ? 'right' : 'left';
     if (i.sel) { ctx.beginPath(); ctx.arc(x, y, 6, 0, 2 * Math.PI); ctx.strokeStyle = c.accent; ctx.stroke(); }

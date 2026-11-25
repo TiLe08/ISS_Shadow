@@ -2,7 +2,7 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
-# v1.27.1: NASA-Bahn wieder da, Konsolenfenster friert Dienste nicht mehr ein (25.11.)
+# v1.27.2: NASA-Bahn wieder da, Konsolenfenster friert Dienste nicht mehr ein (25.11.)
 
 - **NASA-Bahn (OEM):** Das aktuelle NASA-Produkt vom 23.11. 18:47 UTC war am 25.11. abends älter als
   48 h und wurde deshalb abgelehnt („older than 48 hours“), obwohl es bis 08.12. gültig ist. NASA lässt
@@ -11,6 +11,13 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 - **Konsolenfenster:** Die Schnellbearbeitung (QuickEdit) der Windows-Konsole wird beim Start
   abgeschaltet. Ein Klick ins Fenster startete sonst eine Textauswahl, und jede Log-Ausgabe blockierte,
   bis Esc gedrückt wurde; dabei konnten Bridge (Telemetrie) und Bahndienst stehen bleiben.
+
+# v1.27.1: Radar zeigt nur Objekte innerhalb der Kugel (25.11.)
+
+- Objekte außerhalb des eingestellten Bildradius werden nicht mehr als Pfeil am Kugelrand mit Entfernung
+  gezeichnet, sondern erscheinen erst, wenn man weit genug herauszoomt. Die Liste unter dem Radar nennt
+  weiterhin die nächsten Objekte mit Abstand; „Auto“ wählt den Bildradius so, dass das nächste Objekt
+  hineinpasst. Der blaue Erdbogen am Rand bleibt.
 
 # v1.27: Ersatzquelle bei CelesTrak-Ausfall, Erde immer im Radar, Bahn auf Klick (25.11.)
 
