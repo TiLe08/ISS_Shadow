@@ -23,7 +23,7 @@ ROOT = os.path.dirname(HERE)                                # Projektordner (Sta
 WEB = os.path.join(ROOT, "web")                             # Oberfläche, wird unter / ausgeliefert
 DOCS = os.path.join(ROOT, "docs")                           # Dokumentation, wird unter /docs/ ausgeliefert
 HTTP_PORT, MQTT_PORT, WS_PORT = 8137, 1883, 9001
-VERSION = "1.28.1"             # muss mit PAGE_VERSION in web/iss_twin.html übereinstimmen
+VERSION = "1.29.1"             # muss mit PAGE_VERSION in web/iss_twin.html übereinstimmen
 IDLE_TIMEOUT = 240          # s ohne Dashboard-Heartbeat bis zum Beenden
 URL = f"http://localhost:{HTTP_PORT}/iss_twin.html#mqtt"
 

@@ -7,6 +7,12 @@ wurden am 08.10.2026 heruntergeladen; feinere Stufen lädt `earth-tiles.mjs` zur
 - https://nasa-gibs.github.io/gibs-api-docs/
 - https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/BlueMarble_ShadedRelief_Bathymetry/default/500m/{z}/{y}/{x}.jpeg
 
+**Stadtlichter (Nachtseite in Solid/Realistic):** NASA GIBS VIIRS_CityLights_2012, 500 m, EPSG:4326,
+Stufe 2 (15 Kacheln), zur Laufzeit geladen (`earth-tiles.mjs`, `ensureNight`). NASA-Bilddaten sind
+gemeinfrei (NASA Media Usage Guidelines). Ohne Netz bleibt die Nachtseite dunkel.
+
+- https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/VIIRS_CityLights_2012/default/500m/{z}/{y}/{x}.jpeg
+
 **Vektordaten (`boundaries.json`):** Küstenlinien, Ländergrenzen und Beschriftungspunkte aus Natural
 Earth 1:50m Admin 0 Countries, gemeinfrei. Am 09.10.2026 aus dem Natural-Earth-Repository
 heruntergeladen. Für eine kompakte Speicherung auf vier Nachkommastellen gerundet; Linienzüge und
