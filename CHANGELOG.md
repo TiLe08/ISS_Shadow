@@ -9,6 +9,11 @@ Neueste Version oben. Datumsangaben beziehen sich auf 2026.
   zerknitterte Goldfolie, gebürstetes Metall der Träger, Solarzellen mit Leiterbahnen), Spiegelung und
   diffuses Licht von Erde und Weltraum (Umgebungskarte nach Sonnenstand, neu nur bei ≈ 2° Änderung)
   und Schatten der Sonne auf der Station (2048², nur jedes dritte Bild neu gezeichnet).
+- **Abgleich mit Fotos und Live-Bildern (CP3, CP8, CP13):** Die Aluminium-Schutzbleche der Module sind satiniert
+  metallisch und spiegeln Erde und All, und an den Druckmodulen sitzen Reihen von EVA-Handläufen (gelblich,
+  auf Stützen, ≈ 300 Stück, je Modul ein Zeichenaufruf, nur in Realistisch, nicht Teil der Kollisionsprüfung).
+  Die NASA-3D-Modelle der ISS (3D Resources „ISS (A)“ 6 600 und „ISS (B)“ 174 000 Dreiecke) wurden geprüft:
+  ohne Texturen, starr und ältere Konfiguration, also nicht besser als das eigene Modell (230 000 Dreiecke, beweglich).
 - Geometrie, Gelenke, Nullpunkte und Kamerakalibrierung bleiben unverändert: Der Modus tauscht nur
   Materialien und Licht (`tests/test_realistic.mjs` prüft gleiche Geometrie und Sichtbarkeit wie Solid).
 - Alle Texturen entstehen zur Laufzeit aus Rauschen und Rastern, es gibt keine heruntergeladenen

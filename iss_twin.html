@@ -571,7 +571,7 @@ canvas.radar{display:block;width:100%;height:260px;margin:6px 0;cursor:grab;touc
 <script type="module">
 import * as THREE from 'three';
 import { CollisionMonitor, radiatorTarget } from './model-checks.mjs';
-import { realMaterials, SpaceEnvironment, configureSunShadow } from './realistic.mjs';
+import { realMaterials, SpaceEnvironment, configureSunShadow, setGreebles } from './realistic.mjs';
 import { MODEL, MAT, setRenderStyle, setLabelFactory, buildStation, solarAngles, solarNormal, radiatorNormal, SSRMS_AX, MBS_IDS, setMbsFixtureRoll, setDougJoint, DEXTRE_CLOCK } from './iss-model.mjs';
 import { PlanetOverlay } from './planet-overlay.mjs';
 import { EarthTiles } from './earth-tiles.mjs';
@@ -1747,6 +1747,7 @@ function applyRender() {
   if (real && !S.spaceEnv) S.spaceEnv = new SpaceEnvironment(S.renderer);
   if (!real) S.scene.environment = null;
   configureSunShadow(S.renderer, S.sunL, real);
+  setGreebles(MODEL.parts, real);
   const u = S.earth?.userData.mat.uniforms; if (u) { u.real.value = holo ? 0 : 1; S.earth.userData.am.uniforms.real.value = holo ? 0 : 1; }
 }
 const CAMS = {

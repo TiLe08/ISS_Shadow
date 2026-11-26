@@ -145,12 +145,12 @@ export function realMaterials() {
   const panels = panelSurface(), quilt = quiltSurface(), quiltFine = quiltSurface(256, 13, 8), foil = foilSurface(), brushed = brushedSurface();
   const std = p => new THREE.MeshStandardMaterial(p);
   REAL = {
-    module: triMaterial({ color: 0xcfcec8, roughness: 0.55, metalness: 0.15 }, panels, 2.6, 1.0),
+    module: triMaterial({ color: 0xd6d6d2, roughness: 0.4, metalness: 0.5 }, panels, 2.6, 1.0),     // Aluminium-Schutzbleche: satiniert, spiegeln Erde und All (Fotos CP3/CP8)
     silver: triMaterial({ color: 0xc8ccd1, roughness: 0.35, metalness: 0.6 }, panels, 3.0, 0.8),
     white: triMaterial({ color: 0xeeeee8, roughness: 0.88, metalness: 0.0 }, quilt, 1.4, 0.7),
     rus: triMaterial({ color: 0xc4c9b6, roughness: 0.9, metalness: 0.0 }, quilt, 1.0, 0.6),
     truss: triMaterial({ color: 0xa3a7ab, roughness: 0.42, metalness: 0.65 }, brushed, 1.2, 0.4),
-    gold: triMaterial({ color: 0xd8a64a, roughness: 0.3, metalness: 1.0 }, foil, 0.7, 2.2),
+    gold: triMaterial({ color: 0xd8a64a, roughness: 0.38, metalness: 1.0 }, foil, 1.6, 0.8),
     dark: triMaterial({ color: 0x2a2c30, roughness: 0.6, metalness: 0.3 }, brushed, 1.0, 0.3),
     pma: triMaterial({ color: 0x55585c, roughness: 0.85, metalness: 0.05 }, quiltFine, 1.2, 0.7),
     glass: std({ color: 0x03070c, roughness: 0.04, metalness: 0.0, envMapIntensity: 2.5 }),
@@ -231,4 +231,63 @@ export function configureSunShadow(renderer, sunL, on) {
     const c = sunL.shadow.camera; c.left = c.bottom = -80; c.right = c.top = 80; c.near = 380; c.far = 620; c.updateProjectionMatrix();
     sunL.shadow.mapSize.set(2048, 2048); sunL.shadow.bias = -0.0004; sunL.shadow.normalBias = 0.04; sunL.userData.shadowReady = true;
   }
+}
+
+/* ---------- Kleinteile (nur Realistisch) ---------- */
+// Auf Fotos tragen die Druckmodule entlang ihrer Länge Reihen von EVA-Handläufen (gelblich eloxiert,
+// auf Stützen ≈ 10 cm über der Hülle). Sie werden einmal je Modul als InstancedMesh (ein Zeichenaufruf)
+// erzeugt und hängen am Modul-Mesh; sie bewegen sich also mit, gehören aber nicht zu MODEL.parts
+// (keine Kollisions- und Flimmerprüfung, nicht anklickbar). Die Hüllfläche wird per Strahl gesucht,
+// so liegen die Handläufe auch auf Kegeln und Profilen richtig; wo die Hülle unter dem Handlauf
+// nicht eben ist (Enden, Kegel, Stutzen), entfällt er.
+const GREEBLE_KINDS = new Set(['module', 'silver', 'rus']);
+let GREEBLES = null;
+function handrailGeometry() {
+  const parts = [[1.0, 0.032, 0.032, 0, 0.1, 0], [0.035, 0.1, 0.035, -0.45, 0.05, 0], [0.035, 0.1, 0.035, 0.45, 0.05, 0]];
+  const pos = [], nrm = [];
+  for (const [sx, sy, sz, x, y, z] of parts) {
+    const g = new THREE.BoxGeometry(sx, sy, sz).translate(x, y, z).toNonIndexed();
+    pos.push(...g.attributes.position.array); nrm.push(...g.attributes.normal.array);
+  }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nrm, 3)); return g;
+}
+// Handläufe an alle großen Rotationskörper der Module setzen (einmalig) und ein- oder ausblenden.
+export function setGreebles(parts, on) {
+  if (!GREEBLES && on) {
+    GREEBLES = [];
+    const geo = handrailGeometry(), mat = new THREE.MeshStandardMaterial({ color: 0xd9b64a, roughness: 0.45, metalness: 0.6 });
+    const ray = new THREE.Raycaster(), V = THREE.Vector3;
+    for (const p of parts) {
+      const g = p.mesh.geometry;
+      if (!GREEBLE_KINDS.has(p.kind) || p.proxy || g.type !== 'LatheGeometry') continue;
+      g.computeBoundingBox(); const s = g.boundingBox.getSize(new V()), c = g.boundingBox.getCenter(new V());
+      const ext = [s.x, s.y, s.z], ai = ext.indexOf(Math.max(...ext)), L = ext[ai], R = Math.min(...ext) / 2;
+      if (L < 3 || R < 1.0) continue;
+      const axis = new V().setComponent(ai, 1), u = new V().setComponent((ai + 1) % 3, 1), w = new V().crossVectors(axis, u);
+      const hull = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ side: THREE.DoubleSide }));   // Strahltest im Objektsystem
+      const radiusAt = (t, dir) => {
+        const from = c.clone().addScaledVector(dir, R * 2 + 1);
+        from.setComponent(ai, t); ray.set(from, dir.clone().negate()); ray.far = R * 2 + 1;
+        const h = ray.intersectObject(hull, false)[0]; return h ? R * 2 + 1 - h.distance : null;
+      };
+      const mats = [];
+      const lo = g.boundingBox.min.getComponent(ai) + 0.7, hi = g.boundingBox.max.getComponent(ai) - 0.7;
+      for (let k = 0; k < 6; k++) {
+        const ang = (k + 0.5) / 6 * Math.PI * 2, dir = u.clone().multiplyScalar(Math.cos(ang)).addScaledVector(w, Math.sin(ang));
+        for (let t = lo; t + 1.0 <= hi; t += 1.35) {
+          const r0 = radiusAt(t, dir), r1 = radiusAt(t + 1.0, dir), rm = radiusAt(t + 0.5, dir);
+          if (r0 == null || r1 == null || rm == null || Math.abs(r0 - r1) > 0.04 || Math.abs(rm - r0) > 0.04) continue;
+          const pos = c.clone().addScaledVector(dir, (r0 + r1) / 2); pos.setComponent(ai, t + 0.5);
+          const side = new V().crossVectors(axis, dir);
+          mats.push(new THREE.Matrix4().makeBasis(axis, dir, side).setPosition(pos));
+        }
+      }
+      if (!mats.length) continue;
+      const inst = new THREE.InstancedMesh(geo, mat, mats.length); mats.forEach((m, i) => inst.setMatrixAt(i, m));
+      inst.castShadow = true; inst.receiveShadow = true; inst.raycast = () => {}; inst.userData.greeble = true;
+      p.mesh.add(inst); GREEBLES.push(inst);
+    }
+  }
+  if (GREEBLES) for (const m of GREEBLES) m.visible = on;
+  return GREEBLES ? GREEBLES.reduce((n, m) => n + m.count, 0) : 0;
 }
