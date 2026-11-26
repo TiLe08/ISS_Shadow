@@ -39,6 +39,11 @@ for (const id of ['cp3', 'cp8', 'cp9', 'cp13']) { const [a, b] = DOUG_RIGS[id].s
   near(b, DOUG_RIGS[id].pan.pre.slice(0, 3), 1e-3, id + ' Schwenkgehäuse am Rohrkopf'); }
 // Auslegerkameras: 2,65 m vom Ellbogen (DOUG), Neigeachse 0,27 m über der Grundplatte.
 assert.ok(Math.abs(DOUG_RIGS.boom1.pan.pre[0] - -4.453) < 0.01 && Math.abs(DOUG_RIGS.boom2.pan.pre[0] - -2.646) < 0.01);
+// MBS-Kamera (v1.29.3): an der Strebe MBS_POA_BRACE, die an der MBS-Vorderseite (x 3,5 m im MT-System) ansetzt;
+// der Kamerafuß liegt auf der Schwenkachse hinter der Grundplatte (sonst schwebt die Kamera 1,4 m vor der MBS).
+{ const R = DOUG_RIGS.mbs, [a, f] = R.mast.map(p => new THREE.Vector3(...p)); assert.ok(Math.abs(a.x - 3.5) < 0.02 && Math.abs(a.y) < 2.2 && Math.abs(a.z) < 1.15, 'Strebe an der MBS');
+  const q = new THREE.Quaternion(...R.pan.pre.slice(3)), loc = f.clone().sub(new THREE.Vector3(...R.pan.pre.slice(0, 3))).applyQuaternion(q.invert());
+  assert.ok(Math.hypot(loc.x, loc.y) < 0.05 && loc.z > 0.1 && loc.z < 0.5, 'Kamerafuß auf der Schwenkachse: ' + loc.toArray()); }
 // LEE-Kameras sitzen hinter der Stirnfläche seitlich am LEE (DOUG-Leuchte bei 0,41 m / 0,35 m), nicht davor.
 for (const id of ['leeTip', 'leeBase']) assert.ok(cam(id).pos[1] > 0 && cam(id).pos[0] > 0.38, id);
 // Einbett-Adressen

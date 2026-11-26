@@ -67,7 +67,10 @@ const lee = { leeTip: [MODEL.armTip, 'CLA_2_light'], leeBase: [MODEL.armBase, 'C
 for (const [k, [obj, light]] of Object.entries(lee)) if (N[light]) leeOut[k] = pack(armLocal(obj, rel(light, 'LEE1hi', armZero))).slice(0, 3);
 // MBS-Kamera: MT-System. Das Modell setzt den MT-Drehpunkt bei x = 0, DOUG den MT-Knoten bei x = 2,459 m.
 const mt = new THREE.Matrix4().makeTranslation(node('MT').xyz[0] * IN, 0, node('MT').xyz[2] * IN);
-out.mbs = rig('MBS_CAMERA_PAN', 'MBS_CAMERA_TILT', null, mt.multiply(rel(node('MBS_CAMERA_PAN').parent, 'MT')));
+out.mbs = rig('MBS_CAMERA_PAN', 'MBS_CAMERA_TILT', null, mt.clone().multiply(rel(node('MBS_CAMERA_PAN').parent, 'MT')));
+// Träger der MBS-Kamera (v1.29.3): DOUG hängt die Kamera an MBS_POA_BRACE, eine Strebe von der MBS-Vorderseite nach
+// vorn. Mast = Ursprung der Strebe (an der MBS) und Kamerafuß MBS_CAMERA_BASE, beide im MT-System des Modells.
+out.mbs.mast = ['MBS_POA_BRACE', 'MBS_CAMERA_BASE'].map(n => new THREE.Vector3().setFromMatrixPosition(mt.clone().multiply(rel(n, 'MT'))).toArray().map(v => +v.toFixed(3)));
 // Dextre: die beiden Rumpfkameras (CLPA) am oberen Rumpf (SPDM_body, im Modell MODEL.dextreTorso).
 for (const i of [1, 2]) out['dextre' + i] = rig('cam_pan_SPDM' + i, 'cam_tilt_SPDM' + i, null, rel(node('cam_pan_SPDM' + i).parent, 'SPDM_body_2'));
 console.log('// LEE-Leuchten (CLA) im Greifsystem: ' + JSON.stringify(leeOut));

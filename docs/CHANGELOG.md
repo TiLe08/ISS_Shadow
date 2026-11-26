@@ -2,6 +2,20 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.29.3: MBS-Kamera befestigt, Tooltip-Hinweis umgebrochen (26.11.)
+
+- **MBS-Kamera schwebte frei** 1,4 m vor der MBS. NASA DOUG (Stage 75-7) setzt sie an die Strebe
+  `MBS_POA_BRACE`, die an der MBS-Vorderseite ansetzt (MT-System x 3,49 m) und 1,1 m nach vorn bis zum
+  Kamerafuß `MBS_CAMERA_BASE` reicht. Neu: Strebe *MBS POA brace* und Sockel vom Fuß bis zur Grundplatte
+  der Kamera. Die Lagen kommen aus DOUG (`DOUG_RIGS.mbs.mast`, erzeugt mit `tools/doug_cameras.mjs`), die
+  Querschnitte sind geschätzt. Kamerakette und Blickrichtung unverändert. Prüfung in `tests/test_cameras.mjs`.
+- **Dextre-Neigung geprüft, ist echt:** Dextre steht auf MBS PDGF2, und dieser Greifpunkt ist laut DOUG schräg
+  eingebaut (Knoten `MBS_PDGF2`, pyr 18,5° / 33,5° / −136°). Der Rumpf zeigt deshalb rund 35° nach Steuerbord
+  aus der Flugrichtung und 15° zum Zenit; dazu kommt das gemeldete Körperrollen (CSASPDM0020, am 24.11. 60°),
+  das DOUG ohne Vorzeichenwechsel übernimmt (`isp_spdm_mapping.tcl`). Keine Änderung.
+- Tooltip der ORU-Platzhalter: Der Hinweis „ISSLive meldet nur Greifzustände …“ steht jetzt als eigene,
+  umbrechende Zeile unter den Werten; vorher lief er als Wertspalte ohne Umbruch aus dem Kasten.
+
 # v1.29.2: Aktualisierung per Doppelklick (26.11.)
 
 - Neue Datei `Update Version.bat` im Hauptordner (mit `server/update.ps1`): holt den neuesten Stand von
