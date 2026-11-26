@@ -2,6 +2,15 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.29.2: Aktualisierung per Doppelklick (26.11.)
+
+- Neue Datei `Update Version.bat` im Hauptordner (mit `server/update.ps1`): holt den neuesten Stand von
+  `main` auf GitHub. Bei einem Git-Klon `git pull --ff-only` (bricht bei lokalen Änderungen ab), sonst
+  ZIP-Download ohne Git: Programmordner werden gespiegelt, `logs/`, `cache/`, `Dokumentation/`,
+  `node_modules/` bleiben. Prüft vorher über die GitHub-API, ob es einen neuen Commit gibt, beendet eine
+  laufende Instanz aus demselben Ordner und löscht `.deps_ok`, wenn sich `server/requirements.txt`
+  geändert hat. Bietet danach den Start an.
+
 # v1.29.1: Ordnerstruktur aufgeräumt (26.11.)
 
 - Im Hauptordner liegt nur noch die Startdatei `Start ISS Shadow.bat` (dazu README und npm-Dateien).

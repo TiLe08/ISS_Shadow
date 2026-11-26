@@ -1,4 +1,4 @@
-# ISS Digital Shadow (v1.29.1)
+# ISS Digital Shadow (v1.29.2)
 
 Digitaler Schatten der Internationalen Raumstation auf Basis der öffentlichen NASA-Telemetrie
 **ISSLive** (337 öffentliche Kanäle), ergänzt um die unabhängige NASA/JSC-Bahnvorhersage. Ein
@@ -33,13 +33,33 @@ Grundbild, wenn Detailkacheln nicht geladen werden können.
 
 Eine ausführliche Anleitung zur Oberfläche steht in **[docs/BEDIENUNG.md](docs/BEDIENUNG.md)**.
 
+## Aktualisieren
+
+Doppelklick auf **`Update Version.bat`** holt den neuesten Stand von GitHub (Branch `main`), ein
+erneuter Download von Hand ist nicht nötig. Danach fragt das Fenster, ob ISS Shadow gleich starten
+soll.
+
+- **Als ZIP heruntergeladen** (kein Git nötig): lädt das aktuelle ZIP von GitHub, ersetzt die
+  Programmordner und meldet „Already up to date“, wenn es nichts Neues gibt. Im Repository
+  gelöschte Dateien verschwinden dabei auch lokal.
+- **Als Git-Klon:** `git pull --ff-only`. Bei lokalen Änderungen an Programmdateien bricht das Update
+  ab, statt sie zu überschreiben.
+- **Bleibt erhalten:** `logs/`, `cache/`, `Dokumentation/`, `node_modules/` sowie die Einstellungen
+  des Dashboards (sie liegen im Browser). Haben sich die Python-Pakete geändert, installiert die
+  Startdatei sie beim nächsten Start neu.
+- **Läuft das Programm noch,** beendet das Update es vorher.
+- **Voraussetzung:** Das Repository muss öffentlich sein, denn der ZIP-Weg lädt ohne Anmeldung. Wird
+  es privat, stattdessen einmal mit Git klonen (`git clone https://github.com/TiLe08/ISS_Shadow`,
+  Anmeldung über den Git Credential Manager); danach nutzt das Update `git pull` mit dieser Anmeldung.
+
 ## Ordnerstruktur
 
 | Ordner / Datei | Inhalt |
 |---|---|
-| `Start ISS Shadow.bat` | Startdatei für Windows (einzige Programmdatei im Hauptordner) |
+| `Start ISS Shadow.bat` | Startdatei für Windows |
+| `Update Version.bat` | Holt den neuesten Stand von GitHub (siehe „Aktualisieren“); die Arbeit macht `server/update.ps1` |
 | `web/` | Die Oberfläche: `iss_twin.html`, alle `.js`/`.mjs`/`.css`-Module, `assets/` (Erdkacheln, Grenzen), eigenständiger 3D-Viewer. Der Webserver liefert diesen Ordner unter `http://localhost:8137/` aus |
-| `server/` | Python-Dienste: `launcher.py` (Einstieg), `bridge.py`, `ephemeris.py`, `vehicles.py`, `tle.py`, `streams.py`, `requirements.txt` |
+| `server/` | Python-Dienste: `launcher.py` (Einstieg), `bridge.py`, `ephemeris.py`, `vehicles.py`, `tle.py`, `streams.py`, `requirements.txt`, `update.ps1` (Aktualisierung) |
 | `docs/` | Entwicklerdokumentation, `CHANGELOG.md`, `COVERAGE.md`, `GEOMETRY.md`, `CHANNELS.csv`, Übergabe (`HANDOFF.md`), Referenzbilder (`docs/referenz/`); im Browser unter `/docs/` erreichbar |
 | `tests/` | JavaScript- und Python-Tests mit Testdaten |
 | `tools/` | Übersetzungstabellen und Generatoren (Strings, Viewer, DOUG-Kameras) |
@@ -47,7 +67,7 @@ Eine ausführliche Anleitung zur Oberfläche steht in **[docs/BEDIENUNG.md](docs
 | `package.json` | Nur für die JavaScript-Tests (`three`, `jsdom`) |
 
 Laufzeitdaten entstehen im Hauptordner und stehen nicht im Repository: `logs/` (Protokolle),
-`cache/` (zwischengespeicherte Bahn-, Fahrzeug- und TLE-Daten), `.deps_ok` (Merker der
+`cache/` (zwischengespeicherte Bahn-, Fahrzeug- und TLE-Daten, Stand der letzten Aktualisierung in `cache/update.json`), `.deps_ok` (Merker der
 Paketinstallation).
 
 ## Dokumentation
