@@ -3279,7 +3279,7 @@ function buildCmdPanel() {
     ${sp.radDeploy.map((v,i)=>sl('cRadDeploy'+i,`${i<3?'S1':'P1'} wing ${i%3+1}`,0,1,v,.01,'')).join('')}
     <p class="note">PV radiators: seven linked panels each; these move with the SARJ assembly and do not have TRRJ sun-tracking joints.</p>
     ${sp.pvDeploy.map((v,i)=>sl('cPvDeploy'+i,['S4 PVR','S6 PVR','P4 PVR','P6 PVR'][i],0,1,v,.01,'')).join('')}
-    <div class="note"><a href="COVERAGE.md" target="_blank">Channel and mechanism coverage / limitations</a></div>
+    <div class="note"><a href="../docs/COVERAGE.md" target="_blank">Channel and mechanism coverage / limitations</a></div>
   </div></details></div></div>`;
   $('#cExit').onclick = () => setMode('shadow');
   $('#cPause').onclick=()=>setPaused(!CMD.paused);

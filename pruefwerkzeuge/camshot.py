@@ -22,7 +22,7 @@ async def main():
   if os.environ.get('T0'):
     await ctx.add_init_script("(()=>{const R=Date,off=R.parse('%s')-R.now();class F extends R{constructor(...a){if(a.length===0)super(R.now()+off);else super(...a);}static now(){return R.now()+off;}};window.Date=F;})()" % os.environ['T0'])
   await ctx.add_init_script("try{localStorage.setItem('iss.cams',JSON.stringify({view:{%s:{optic:'%s',pan:%g,tilt:%g,fov:%g}},stream:''}))}catch(e){}"%(CAM,OPT,PAN,TILT,FOV))
-  await pg.goto(f'http://127.0.0.1:{PORT}/iss_twin.html#sim'); await pg.wait_for_function('window.ISS&&ISS.MODEL&&ISS.TM.size>50',timeout=120000); await pg.wait_for_timeout(2500)
+  await pg.goto(f'http://127.0.0.1:{PORT}/web/iss_twin.html#sim'); await pg.wait_for_function('window.ISS&&ISS.MODEL&&ISS.TM.size>50',timeout=120000); await pg.wait_for_timeout(2500)
   await pg.click('#dispMenu summary'); await pg.click('#rendSeg button[data-v="solid"]'); await pg.click('#dispMenu summary')
   await pg.evaluate("tm=>{const I=ISS;if(Object.keys(tm).length){I.switchSource('mqtt');for(const [p,v] of Object.entries(tm))I.ingest(p,v);}document.querySelector('#camWin')||0;I.EXTCAM.open('%s');const w=document.querySelector('#camWin');w.style.width='2300px';w.style.height='1300px';}"%CAM, TM)
   await pg.wait_for_timeout(3500)

@@ -3,7 +3,7 @@
 // Lädt iss_twin.html ohne WebGL in jsdom: Die Skripte der Seite laufen in einer VM, das
 // Modul-Skript wird mit einem Export globalThis.TEST um die benötigten internen Funktionen ergänzt.
 import fs from 'node:fs';import assert from 'node:assert/strict';import * as THREE from 'three';import{loadTwin}from'./harness.mjs';
-import{CollisionMonitor,meshesIntersect}from'../model-checks.mjs';
+import{CollisionMonitor,meshesIntersect}from'../web/model-checks.mjs';
 // Exakter Überlappungstest: Ein Teil parallel zu einem 2,2-m-Modul, 10 cm neben der Hülle unter 45°, liegt
 // in der Bounding-Box des Moduls, ist aber frei; 10 cm in der Hülle ist es das nicht.
 {const mod=new THREE.Mesh(new THREE.CylinderGeometry(2.2,2.2,7,24).rotateZ(-Math.PI/2)),p=new THREE.Mesh(new THREE.CylinderGeometry(.33,.33,1,12).rotateZ(-Math.PI/2));

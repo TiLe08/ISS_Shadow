@@ -26,7 +26,7 @@ try {
   if (T0) await ctx.addInitScript(t0 => { const R = Date, off = R.parse(t0) - R.now(); class F extends R { constructor(...a) { if (a.length === 0) super(R.now() + off); else super(...a); } static now() { return R.now() + off; } } window.Date = F; }, T0);
   await ctx.addInitScript(v => { try { localStorage.setItem('iss.cams', JSON.stringify({ view: { [v.cam]: { optic: 'sd', pan: v.pan, tilt: v.tilt, roll: v.roll, fov: v.fov } }, stream: '', rigV: 1 })); } catch (e) {} },
     { cam: CAM, pan: +PAN, tilt: +TILT, roll: ROLL, fov: +FOV });
-  await pg.goto(`http://127.0.0.1:${PORT}/iss_twin.html#sim`); await pg.waitForFunction('window.ISS && ISS.MODEL && ISS.TM.size > 50', null, { timeout: 120000 }); await pg.waitForTimeout(2500);
+  await pg.goto(`http://127.0.0.1:${PORT}/web/iss_twin.html#sim`); await pg.waitForFunction('window.ISS && ISS.MODEL && ISS.TM.size > 50', null, { timeout: 120000 }); await pg.waitForTimeout(2500);
   await pg.click('#dispMenu summary'); await pg.click('#rendSeg button[data-v="solid"]'); await pg.click('#dispMenu summary');
   await pg.evaluate(([tm, cam]) => { if (Object.keys(tm).length) { ISS.switchSource('mqtt'); for (const [p, v] of Object.entries(tm)) ISS.ingest(p, v); }
     ISS.EXTCAM.open(cam); const w = document.querySelector('#camWin'); w.style.width = '1300px'; w.style.height = '1100px'; }, [TM, CAM]);

@@ -188,7 +188,7 @@ angewendet“ quittiert. Die echte ISS ist für die Öffentlichkeit nicht komman
 
 Die Bridge schreibt jeden empfangenen Wert in `logs/iss_tm_JJJJMMTT.csv` (eine Datei pro UTC-Tag,
 Spalten `rx_utc, pui, value, sc_hours_of_year`). Eine solche Datei lässt sich wiedergeben:
-`python bridge.py --replay logs/iss_tm_20261026.csv --speed 10`. Die Seite kennzeichnet dann alles als
+`python server/bridge.py --replay logs/iss_tm_20261026.csv --speed 10`. Die Seite kennzeichnet dann alles als
 RECORDED. Unabhängig davon lädt „Log CSV“ in der oberen Leiste den im Browser gesammelten Verlauf
 ausgewählter Kanäle als Tabelle herunter (eine Zeile pro Sekunde, eine Spalte pro Kanal); im
 Kommandomodus wird stattdessen die virtuelle Sitzung als JSON exportiert.

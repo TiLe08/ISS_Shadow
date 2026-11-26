@@ -9,7 +9,7 @@ die Beschriftungen unten nennen die englischen Namen, wie sie im Code stehen. NA
 - **Windows:** Doppelklick auf `Start ISS Shadow.bat`. Voraussetzung ist Python 3.10 oder neuer
   (python.org, bei der Installation „Add python.exe to PATH“ ankreuzen). Beim ersten Start installiert
   ein Fenster drei Python-Pakete (etwa eine Minute); spätere Starts zeigen kein Fenster.
-- **Andere Systeme:** `pip install -r requirements.txt`, dann `python launcher.py`.
+- **Andere Systeme:** `pip install -r server/requirements.txt`, dann `python server/launcher.py`.
 - Das Dashboard öffnet sich unter `http://localhost:8137/iss_twin.html#mqtt`.
 - **Beenden:** „Exit“ in der oberen Leiste oder den Tab schließen; etwa 4 min nach dem letzten Tab
   beendet sich alles von selbst. Ein zweiter Doppelklick öffnet nur das Dashboard erneut.

@@ -36,7 +36,7 @@ Praktische Hinweise für alle, die das Projekt verändern wollen.
 2. In `tools/strings-ui.tsv` (Beschriftungen), `strings-status.tsv` (Meldungen, Tooltips) oder
    `strings-command.tsv` (Kommandofenster) eine Zeile ergänzen:
    `English|Deutsch|Español|Русский|Français|日本語`.
-3. `python tools/build_strings.py` ausführen; das erzeugt `i18n-strings.js` neu.
+3. `python tools/build_strings.py` ausführen; das erzeugt `web/i18n-strings.js` neu.
 4. `node tests/test_ui.mjs` prüft, dass alle Sprachen dieselben Schlüssel haben.
 
 Statisches HTML wird von `i18n.js` automatisch erfasst und beim Sprachwechsel neu übersetzt.
@@ -56,7 +56,7 @@ Statisches HTML wird von `i18n.js` automatisch erfasst und beim Sprachwechsel ne
 `CAL` in `iss_twin.html`. Vorher eine Aufzeichnung machen, in der das Gelenk nachweislich etwas tut
 (z. B. Autotrack bei Sonne), als JSON unter `tests/` ablegen und in `test_regression.mjs` einen Test ergänzen,
 der die neue Abbildung gegen eine unabhängige Größe (Sonnenrichtung, Kollisionsfreiheit) prüft. Die
-Begründung gehört in [../GEOMETRY.md](../GEOMETRY.md).
+Begründung gehört in [GEOMETRY.md](GEOMETRY.md).
 
 ### Geometrie ändern
 
@@ -73,7 +73,7 @@ Abflüge ohne Codeänderung.
 
 ### Version erhöhen
 
-`PAGE_VERSION` in `iss_twin.html`, `VERSION` in `launcher.py` (müssen gleich sein), Titel und
+`PAGE_VERSION` in `web/iss_twin.html`, `VERSION` in `server/launcher.py` (müssen gleich sein), Titel und
 Kopfzeile in `iss_twin.html`, Überschrift in `README.md`, Eintrag in `CHANGELOG.md`.
 
 ## Fehlersuche
@@ -88,7 +88,7 @@ Kopfzeile in `iss_twin.html`, Überschrift in `README.md`, Eintrag in `CHANGELOG
 - **Feed-Probleme:** Tooltip der Feed-Pille (letzter Uhr-Tick, Uhrabweichung, Neuaufbauten), Topic
   `iss/bridge` (Status der Bridge), `logs/launcher.log`. Zum Nachstellen: `tests/mock_isslive.py` mit
   `/admin/freeze`, `/admin/drop`, `/admin/skew?s=40` usw.
-- **Bridge allein:** `python bridge.py --broker localhost --port 1883` (braucht einen laufenden
+- **Bridge allein:** `python server/bridge.py --broker localhost --port 1883` (braucht einen laufenden
   Broker) oder Wiedergabe `--replay logs/iss_tm_JJJJMMTT.csv --speed 10`.
 - **Gespeicherte Zustände zurücksetzen:** Websitedaten für `localhost:8137` im Browser löschen
   (Layout, Dashboard, Kalibrierung, Sprache).

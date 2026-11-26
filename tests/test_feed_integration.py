@@ -52,7 +52,7 @@ class FeedIntegration(unittest.TestCase):
         for _ in range(50):
             try: urllib.request.urlopen(f"http://127.0.0.1:{cls.ls_port}/admin/stats", timeout=1).read(); break
             except Exception: time.sleep(0.2)
-        sys.path.insert(0, str(ROOT))
+        sys.path.insert(0, str(ROOT / "server"))
         import bridge
         args = types.SimpleNamespace(broker="127.0.0.1", port=cls.mq_port, user=None, password=None, root="iss",
                                      ls=f"http://127.0.0.1:{cls.ls_port}", logdir="", replay=None, speed=1.0)

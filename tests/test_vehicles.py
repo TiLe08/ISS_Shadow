@@ -3,7 +3,7 @@
 import json, pathlib, sys, tempfile, time, unittest
 
 HERE = pathlib.Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE.parent))
+sys.path.insert(0, str(HERE.parent / "server"))
 import vehicles  # noqa: E402
 
 SAMPLE = json.loads((HERE / "ll2_docking_sample.json").read_text(encoding="utf-8"))

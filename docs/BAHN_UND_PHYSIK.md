@@ -143,4 +143,4 @@ begrenzten Raten etwa wie die echten (`slewLin`); der Canadarm2 folgt beim Umset
 Die virtuelle Station ist ein ingenieurmäßiges Lehrmodell, keine Flugsoftware: keine echte
 Doppelkardan-Steuerung der CMGs, keine Strukturdynamik, keine wandernden Schwerpunkte, keine
 aerodynamischen Momente, keine detaillierte Strömungs- oder Batteriephysik. Düsen-IDs und -Lagen sind
-Konstrukte des Simulators. Ausführlich in [../COVERAGE.md](../COVERAGE.md).
+Konstrukte des Simulators. Ausführlich in [COVERAGE.md](COVERAGE.md).

@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { readProject } from './harness.mjs';
-const { MODEL, buildStation, SSRMS_AX, MBS_IDS } = await import('../iss-model.mjs');
+const { MODEL, buildStation, SSRMS_AX, MBS_IDS } = await import('../web/iss-model.mjs');
 const html = readProject('iss_twin.html');
 const CONV = Function('return ' + html.match(/const SSRMS_CONVS = (\{[^;]*\});/)[1])().doug;
 const WS = Function('return ' + html.match(/const MT_WORKSITES = (\{[^;]*\});/)[1])();
@@ -62,7 +62,7 @@ const wpos = o => new THREE.Vector3().setFromMatrixPosition(o.matrixWorld);
   const tip = mt.worldToLocal(new THREE.Vector3(0, -0.745, 0).applyMatrix4(lee.matrixWorld));
   assert.ok(new THREE.Vector3(3.870 + 0.259, -1.770 - 1.467, 0).distanceTo(tip) < 0.01 && loc.y < -1.77, 'POA-Endeffektor nach DOUG: ' + tip.toArray()); }
 // Dextre-Arme (v1.28): Handgelenk-Rollen beider Arme in der Paketpose gegen DOUG (SPDM_A1/A2_WR im SPDM_EE-System).
-{ const { setDougJoint } = await import('../iss-model.mjs');
+{ const { setDougJoint } = await import('../web/iss-model.mjs');
   const A = [[-50, -40, 80, 30, -80, -120, -50], [-120, -40, -80, -60, 40, -120, -20]], WR = [[3.171, 1.639, -0.940], [2.990, 1.856, 0.603]];
   setDougJoint(MODEL.dextreBody, -45); MODEL.dextre.forEach((J, s) => J.forEach((j, i) => setDougJoint(j, A[s][i]))); MODEL.root.updateMatrixWorld(true);
   const inv = MODEL.dextreBody.parent.matrixWorld.clone().invert();

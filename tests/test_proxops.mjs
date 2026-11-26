@@ -6,7 +6,7 @@
 //     LL2-Ereignisplan; Vorschau ohne Protokolleintrag; Cygnus am Arm folgt dem Arm, nicht dem Ablauf.
 //   - Radar: TLE-Epoche, LVLH-Achsen, Erkennung angedockter Fahrzeuge, Zeichnen ohne Fehler.
 import assert from 'node:assert/strict'; import * as THREE from 'three';
-import * as P from '../proxops.mjs'; import * as R from '../radar.mjs';
+import * as P from '../web/proxops.mjs'; import * as R from '../web/radar.mjs';
 import { loadTwin } from './harness.mjs';
 
 // --- Abläufe ---

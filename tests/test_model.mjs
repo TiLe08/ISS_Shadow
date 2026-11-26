@@ -4,9 +4,9 @@
 // Lädt iss_twin.html ohne WebGL in jsdom: Die Skripte der Seite laufen in einer VM, das
 // Modul-Skript wird mit einem Export globalThis.TEST um die benötigten internen Funktionen ergänzt.
 import fs from 'node:fs';import assert from 'node:assert/strict';import * as THREE from 'three';import{loadTwin}from'./harness.mjs';
-import{CollisionMonitor}from'../model-checks.mjs';
-import{tileBounds,tileGeometry}from'../earth-tiles.mjs';
-import{radiatorTarget}from'../model-checks.mjs';
+import{CollisionMonitor}from'../web/model-checks.mjs';
+import{tileBounds,tileGeometry}from'../web/earth-tiles.mjs';
+import{radiatorTarget}from'../web/model-checks.mjs';
 const{t,w,dom}=await loadTwin(['buildISS','MODEL','applyJoints','liveJoints','autotrack','radiatorGoal','radiatorStatus','SIMST','simTick','simInitOrbit','sunEci','lvlhBasis','inShadow','LINK','TM','solarNormal','solarAngles','slewQuaternion','q2ypr','ypr2q','enterCmd','exitCmd','CMD','stepCmd','buildPanels','commandVirtual','ORB','virtTm','DICT']);const root=t.buildISS();t.buildPanels();
 const columbus=t.MODEL.parts.find(p=>p.mesh.userData.name==='Columbus (ESA)').mesh;
 const kibo=t.MODEL.parts.find(p=>p.mesh.userData.name==='Kibo JEM-PM (JAXA)').mesh;

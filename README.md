@@ -25,13 +25,30 @@ Doppelklick auf **`Start ISS Shadow.bat`**. Das Dashboard öffnet sich im Browse
 - **Läuft schon:** Ein zweiter Doppelklick öffnet nur das Dashboard erneut. Eine neue Version ersetzt
   eine noch laufende alte automatisch.
 - **Fehlersuche:** `logs/launcher.log`.
-- **Ohne Windows:** `pip install -r requirements.txt`, dann `python launcher.py`.
+- **Ohne Windows:** `pip install -r server/requirements.txt`, dann `python server/launcher.py`.
 
 **Sim** (oben links) erzeugt synthetische Telemetrie ohne NASA-Feed. Die Browser-Bibliotheken kommen
 von einem CDN, der erste Start braucht also Internet. Mitgelieferte Erdkacheln sorgen für ein
 Grundbild, wenn Detailkacheln nicht geladen werden können.
 
 Eine ausführliche Anleitung zur Oberfläche steht in **[docs/BEDIENUNG.md](docs/BEDIENUNG.md)**.
+
+## Ordnerstruktur
+
+| Ordner / Datei | Inhalt |
+|---|---|
+| `Start ISS Shadow.bat` | Startdatei für Windows (einzige Programmdatei im Hauptordner) |
+| `web/` | Die Oberfläche: `iss_twin.html`, alle `.js`/`.mjs`/`.css`-Module, `assets/` (Erdkacheln, Grenzen), eigenständiger 3D-Viewer. Der Webserver liefert diesen Ordner unter `http://localhost:8137/` aus |
+| `server/` | Python-Dienste: `launcher.py` (Einstieg), `bridge.py`, `ephemeris.py`, `vehicles.py`, `tle.py`, `streams.py`, `requirements.txt` |
+| `docs/` | Entwicklerdokumentation, `CHANGELOG.md`, `COVERAGE.md`, `GEOMETRY.md`, `CHANNELS.csv`, Übergabe (`HANDOFF.md`), Referenzbilder (`docs/referenz/`); im Browser unter `/docs/` erreichbar |
+| `tests/` | JavaScript- und Python-Tests mit Testdaten |
+| `tools/` | Übersetzungstabellen und Generatoren (Strings, Viewer, DOUG-Kameras) |
+| `pruefwerkzeuge/` | Aufnahme- und Vergleichswerkzeuge (Kamerabilder, Langzeitlauf) |
+| `package.json` | Nur für die JavaScript-Tests (`three`, `jsdom`) |
+
+Laufzeitdaten entstehen im Hauptordner und stehen nicht im Repository: `logs/` (Protokolle),
+`cache/` (zwischengespeicherte Bahn-, Fahrzeug- und TLE-Daten), `.deps_ok` (Merker der
+Paketinstallation).
 
 ## Dokumentation
 
@@ -51,18 +68,18 @@ Die Dateien unter `docs/` sind die Entwicklerdokumentation:
 | [docs/KAMERAS.md](docs/KAMERAS.md) | Außenkameras, Sichtfelder, Kamerafenster, Auswahl des Livestreams |
 | [docs/TESTS.md](docs/TESTS.md) | Testdateien und Testdaten |
 | [docs/WEITERENTWICKLUNG.md](docs/WEITERENTWICKLUNG.md) | Typische Änderungen, Konventionen, Fehlersuche, offene Punkte |
-| [GEOMETRY.md](GEOMETRY.md) | Herkunft der Geometrie, Prüfungen gegen Live-Daten |
-| [COVERAGE.md](COVERAGE.md) | Abdeckung der Kanäle und Mechanismen, Grenzen der Modelle |
-| [CHANGELOG.md](CHANGELOG.md) | Änderungen je Version |
-| `ISS_Model_Viewer_v1.3.html` | Nur das 3D-Modell zum Drehen (Holo/Solid), eigenständige Datei; neu erzeugen mit `node tools/export_viewer.mjs` |
-| [CHANNELS.csv](CHANNELS.csv) | Alle 337 Kanäle mit Einheit, Beschreibung, 3D-Verwendung und virtueller Abdeckung |
+| [docs/GEOMETRY.md](docs/GEOMETRY.md) | Herkunft der Geometrie, Prüfungen gegen Live-Daten |
+| [docs/COVERAGE.md](docs/COVERAGE.md) | Abdeckung der Kanäle und Mechanismen, Grenzen der Modelle |
+| [docs/CHANGELOG.md](docs/CHANGELOG.md) | Änderungen je Version |
+| `web/ISS_Model_Viewer_v1.3.html` | Nur das 3D-Modell zum Drehen (Holo/Solid), eigenständige Datei; neu erzeugen mit `node tools/export_viewer.mjs` |
+| [docs/CHANNELS.csv](docs/CHANNELS.csv) | Alle 337 Kanäle mit Einheit, Beschreibung, 3D-Verwendung und virtueller Abdeckung |
 
 Der Quellcode ist durchgehend deutsch kommentiert; jede Datei beginnt mit einer Beschreibung ihres
 Zwecks und ihrer Schnittstelle.
 
 ## Was im Hintergrund läuft
 
-`launcher.py` startet alles in einem Prozess mit eigenem Konsolenfenster:
+`server/launcher.py` startet alles in einem Prozess mit eigenem Konsolenfenster:
 
 | Baustein | Einzelheiten |
 |---|---|
@@ -140,18 +157,18 @@ in [docs/TESTS.md](docs/TESTS.md).
 ## Bekannte Grenzen
 
 - Nullpunkte und Vorzeichen der Gelenke stehen nicht im öffentlichen Verzeichnis. `CAL` in
-  `iss_twin.html` ist gegen Live-Daten und die berechnete Sonnenrichtung geprüft (siehe GEOMETRY.md);
+  `web/iss_twin.html` ist gegen Live-Daten und die berechnete Sonnenrichtung geprüft (siehe docs/GEOMETRY.md);
   das TRRJ-Vorzeichen auf Backbord stützt sich auf ein Livebild und wird im Autotrack automatisch
   nachgeprüft (die Radiatoren waren in jeder Aufzeichnung geparkt).
 - Die Anordnung stammt aus dem NASA-IGOAL-Modell; die Gelenkkonvention von Canadarm2 und die
   Rollwinkel der MBS-Greifpunkte sind dokumentierte Annahmen.
 - Die US-Andockports (IDA-2/3, Unity/Harmony Nadir) haben keine öffentliche Telemetrie; ihre Belegung
   ist nur so aktuell wie Launch Library 2.
-- An- und Abflüge (`proxops.mjs`) folgen veröffentlichten Missionsabläufen mit geschätzten Zeiten und
+- An- und Abflüge (`web/proxops.mjs`) folgen veröffentlichten Missionsabläufen mit geschätzten Zeiten und
   liegen ganz auf der Andockachse. Gemessen ist nur der Kurs-Abstand russischer Fahrzeuge.
 - Das Nahbereichsradar ist experimentell: Bahnen aus CelesTrak-Elementen (OMM/JSON, SGP4) sind auf etwa 1 km bis einige km genau.
 - Die Geometrie ist prozedural und vereinfacht; die virtuelle Station ist ein Lehrmodell, keine
-  Flugsoftware. Ausführlich in COVERAGE.md.
+  Flugsoftware. Ausführlich in docs/COVERAGE.md.
 
 ## Kursanforderungen
 

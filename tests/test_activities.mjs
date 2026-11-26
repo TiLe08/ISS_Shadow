@@ -5,7 +5,7 @@
 //   - Verkehr aus Andockereignissen: Ankunft und Abflug in den nächsten 72 h, Kurs-Anflug.
 //   - SARJ nicht im AUTOTRACK, Lagemanöver, Panel wird gefüllt.
 import assert from 'node:assert/strict'; import { createRequire } from 'node:module'; import { loadTwin } from './harness.mjs';
-const A = createRequire(import.meta.url)('../activities.js');
+const A = createRequire(import.meta.url)('../web/activities.js');
 const now = Date.parse('2026-11-18T15:00:00Z'), H = 3600e3;
 const ids = r => r.map(x => x.id);
 

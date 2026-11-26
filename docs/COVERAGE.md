@@ -3,7 +3,7 @@
 **Dies ist ein digitaler Zwilling für die Lehre, kein vollständiger ISS- oder Flugsimulator.**
 Dieses Dokument beschreibt, welche öffentlichen Kanäle genutzt werden, was das Modell und die
 virtuelle Station tatsächlich nachbilden und wo die Grenzen liegen. Die Herkunft der Geometrie
-steht in [GEOMETRY.md](GEOMETRY.md), der Aufbau des Programms in [docs/ARCHITEKTUR.md](docs/ARCHITEKTUR.md).
+steht in [GEOMETRY.md](GEOMETRY.md), der Aufbau des Programms in [ARCHITEKTUR.md](ARCHITEKTUR.md).
 
 ## Kurzüberblick nach Version
 
@@ -45,7 +45,7 @@ solche gekennzeichnet; ihre Bedeutung wurde nicht erfunden.
 Zeitstempel 0, insbesondere alle acht Flügelströme (S4000002/5, S6000002/5, P4000002/5,
 P6000002/5). Das Dashboard zeigt sie als „nicht veröffentlicht“ (n/a), nicht als 0. Eine Leistung
 (V × I) gibt es deshalb nur im Simulator und in der virtuellen Station; im Live-Betrieb zeigt das
-Energie-Panel stattdessen den Zustand aus der Spannung (siehe [docs/TELEMETRIE.md](docs/TELEMETRIE.md)).
+Energie-Panel stattdessen den Zustand aus der Spannung (siehe [TELEMETRIE.md](TELEMETRIE.md)).
 
 **136 Kanäle erhalten virtuelle Werte.** Andere Kanäle behalten im Kommandomodus ihren Wert vom
 Zeitpunkt der Abspaltung mit der Kennzeichnung FROZEN REFERENCE oder zeigen UNMODELED, wenn es
@@ -185,7 +185,7 @@ MT bzw. feste Anbringung, Normalen der ausgefahrenen Radiatoren und Solarflügel
 Kollisions-/Trennungsfälle, Ausnahmen für absichtliche Verbindungen, Kachelgrenzen, abgeschaltete
 Antriebe, Regler, Pause, Quellen-Rückfall, Umgang mit veralteten Daten, Zeitbasis und Epochen,
 eingefrorene Feeds, Bahnwirkung von Schub und Luftwiderstand, Dekodierung der Stationsmodi sowie
-das Umsetzen von Canadarm2. Die Liste je Testdatei steht in [docs/TESTS.md](docs/TESTS.md).
+das Umsetzen von Canadarm2. Die Liste je Testdatei steht in [TESTS.md](TESTS.md).
 Vollständiges WebGL-Rendering in einem echten Browser und der Start per Doppelklick unter Windows
 werden nicht automatisch getestet; das bleiben manuelle Abnahmeprüfungen auf dem Zielrechner.
 

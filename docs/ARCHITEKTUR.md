@@ -12,9 +12,9 @@ Projekt übernimmt. Die übrigen Dokumente vertiefen einzelne Themen:
 | [BEDIENUNG.md](BEDIENUNG.md) | Rundgang durch die Oberfläche |
 | [TESTS.md](TESTS.md) | Jede Testdatei und jede Testdatendatei |
 | [WEITERENTWICKLUNG.md](WEITERENTWICKLUNG.md) | Typische Änderungen, Konventionen, Fehlersuche |
-| [../GEOMETRY.md](../GEOMETRY.md) | Herkunft jeder Koordinate, Prüfungen gegen Live-Daten |
-| [../COVERAGE.md](../COVERAGE.md) | Was abgedeckt ist und wo die Grenzen liegen |
-| [../CHANGELOG.md](../CHANGELOG.md) | Änderungen je Version |
+| [GEOMETRY.md](GEOMETRY.md) | Herkunft jeder Koordinate, Prüfungen gegen Live-Daten |
+| [COVERAGE.md](COVERAGE.md) | Was abgedeckt ist und wo die Grenzen liegen |
+| [CHANGELOG.md](CHANGELOG.md) | Änderungen je Version |
 
 ## Worum es geht
 
@@ -54,7 +54,7 @@ Protokollierung.
                                    iss/cmd/<Ziel> ─▶ Bridge ─▶ iss/ack/<id>
 ```
 
-**Im Browser** (alles statische Dateien, kein Build-Schritt):
+**Im Browser**, Ordner `web/` (alles statische Dateien, kein Build-Schritt; der Launcher liefert `web/` unter `http://localhost:8137/` aus):
 
 | Datei | Aufgabe |
 |---|---|
@@ -78,7 +78,7 @@ Protokollierung.
 | `radar.mjs` | Nahbereichsradar im LVLH-System aus CelesTrak-Bahnelementen (SGP4 mit satellite.js 6.0.1 vom CDN), Kurs-Abstand und modellierten An- und Abflügen (v1.20, experimentell) |
 | `assets/earth/` | Grundkacheln (Stufe 2) und Natural-Earth-Vektordaten |
 
-**In Python** (nur Standardbibliothek plus `paho-mqtt`, `lightstreamer-client-lib`, `amqtt`):
+**In Python**, Ordner `server/` (nur Standardbibliothek plus `paho-mqtt`, `lightstreamer-client-lib`, `amqtt`):
 
 | Datei | Aufgabe |
 |---|---|
@@ -90,12 +90,12 @@ Protokollierung.
 | `tle.py` | Bahnelemente der CelesTrak-Gruppen „stations“ und „last-30-days“ als OMM/JSON höchstens alle 2 h holen (nach Fehlern 15/30/60 min, dann 2 h; Ersatzquelle SatNOGS), Zwischenspeicher `cache/gp.json`, liefert `/__tle` für das Radar |
 | `tools/doug_cameras.mjs` | Rechnet die Kameraknoten des DOUG-Pakets in `DOUG_RIGS` (`cameras.mjs`) um |
 | `pruefwerkzeuge/camshot.mjs` | Zwillingsansicht einer Kamera mit Telemetrie aus einer JSON-Datei aufnehmen (Node, Playwright) |
-| `tools/export_viewer.mjs`, `tools/viewer_template.html` | Erzeugen `ISS_Model_Viewer_v1.3.html`: bauen das Modell wie die Seite, backen Geometrie, Materialien und Texturen ein und schreiben einen eigenständigen Viewer (Node.js) |
+| `tools/export_viewer.mjs`, `tools/viewer_template.html` | Erzeugen `web/ISS_Model_Viewer_v1.3.html`: bauen das Modell wie die Seite, backen Geometrie, Materialien und Texturen ein und schreiben einen eigenständigen Viewer (Node.js) |
 | `tests/harness.mjs` | Gemeinsamer Aufbau aller JavaScript-Tests und des Viewer-Exports: lädt die Seite ohne WebGL in jsdom |
-| `tools/build_strings.py` | Erzeugt `i18n-strings.js` aus den Übersetzungstabellen |
+| `tools/build_strings.py` | Erzeugt `web/i18n-strings.js` aus den Übersetzungstabellen |
 | `Start ISS Shadow.bat` | Windows-Startdatei: Python suchen, Pakete einmalig installieren, Launcher starten |
 
-**Tests und Daten:** `tests/` (siehe [TESTS.md](TESTS.md)), `CHANNELS.csv` (alle 337 Kanäle mit
+**Tests und Daten:** `tests/` (siehe [TESTS.md](TESTS.md)), `docs/CHANNELS.csv` (alle 337 Kanäle mit
 Einheit, Beschreibung, 3D-Verwendung und virtueller Abdeckung), `package.json` (nur für die
 JavaScript-Tests: `three`, `jsdom`).
 

@@ -9,7 +9,7 @@
 // den Quelltext des Modul-Skripts vor dem Ausführen ändert).
 import fs from 'node:fs'; import vm from 'node:vm'; import { createRequire } from 'node:module';
 import * as THREE from 'three'; import { JSDOM } from 'jsdom';
-const require = createRequire(import.meta.url), ROOT = new URL('../', import.meta.url);
+const require = createRequire(import.meta.url), ROOT = new URL('../web/', import.meta.url);   // Oberfläche (web/)
 const MODULES = ['model-checks.mjs', 'iss-model.mjs'];      // Importe des Modul-Skripts, als globale Namen
 const NAMESPACES = { PROXOPS: 'proxops.mjs', RADAR: 'radar.mjs', DEVP: 'dev-panel.mjs' };   // import * as NAME
 const CLASSIC = ['virtual-controls.js', 'channel-meta.js', 'i18n-strings.js', 'i18n.js', 'widgets.js', 'workspace.js', 'activities.js'];
@@ -17,7 +17,7 @@ export const readProject = f => fs.readFileSync(new URL(f, ROOT), 'utf8');
 export async function loadTwin(names, opts = {}) {
   const html = readProject('iss_twin.html');
   const dom = new JSDOM(html.replace(/<script[\s\S]*?<\/script>/g, ''), { url: opts.url || 'http://localhost:8137', runScripts: 'outside-only', pretendToBeVisual: !!opts.visual }), w = dom.window;
-  w.THREE = THREE; w.VirtualStation = require('../virtual-station.js'); w.OrbitData = require('../orbit-source.js');
+  w.THREE = THREE; w.VirtualStation = require('../web/virtual-station.js'); w.OrbitData = require('../web/orbit-source.js');
   // Ersatz für CSS2DObject (keine Beschriftungen ohne Renderer).
   w.CSS2DObject = class extends THREE.Object3D { constructor(el) { super(); this.element = el; } };
   w.HTMLCanvasElement.prototype.getContext = () => new Proxy({ measureText: () => ({ width: 20 }) }, { get: (t, k) => t[k] || (() => {}) });

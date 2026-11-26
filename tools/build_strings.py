@@ -20,7 +20,7 @@ for f in sorted(HERE.glob('strings-*.tsv')):
         if len(parts) != 6: raise SystemExit(f'{f.name}:{n}: expected 6 columns, got {len(parts)}')
         for l, v in zip(L, parts[1:]): D[l][parts[0]] = v
 # Ausgabe: ein klassisches Skript, das globalThis.I18N_STRINGS = {Sprache: {Englisch: Übersetzung}} setzt
-out = HERE.parent / 'i18n-strings.js'
+out = HERE.parent / 'web' / 'i18n-strings.js'
 out.write_text('/* Übersetzungen der Oberfläche, Schlüssel ist der englische Text (siehe i18n.js). Erzeugt von tools/build_strings.py, nicht von Hand bearbeiten. */\nglobalThis.I18N_STRINGS = '
                + json.dumps(D, ensure_ascii=False, indent=0, sort_keys=True) + ';\n', encoding='utf-8')
 print(f'{len(D["de"])} strings x {len(L)} languages -> {out.name}')

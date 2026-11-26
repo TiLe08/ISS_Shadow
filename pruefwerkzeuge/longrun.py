@@ -20,7 +20,7 @@ async def main():
   ctx=await b.new_context(viewport={'width':1200,'height':800})
   pg=await ctx.new_page(); errs=[]; pg.on('pageerror',lambda e: errs.append(str(e)))
   await pg.route('**/*',route)
-  await pg.goto(f'http://127.0.0.1:{PORT}/iss_twin.html#sim'); await pg.wait_for_function('window.ISS&&ISS.MODEL&&ISS.TM.size>50',timeout=90000)
+  await pg.goto(f'http://127.0.0.1:{PORT}/web/iss_twin.html#sim'); await pg.wait_for_function('window.ISS&&ISS.MODEL&&ISS.TM.size>50',timeout=90000)
   await pg.wait_for_timeout(4000)
   r=await pg.evaluate("""async()=>{const I=ISS;I.enterCmd();await new Promise(r=>setTimeout(r,500));I.CMD.paused=true;
     const m=I.CMD.sys,q0=m.q.slice(),ang=(a,b)=>{const d=Math.abs(a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3]);return 2*Math.acos(Math.min(1,d))*180/Math.PI;};

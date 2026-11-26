@@ -15,7 +15,7 @@ const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? proces
 const AT = Date.parse(arg('--at', new Date().toISOString())), VIEWER = '1.3';
 const { t, w, dom, html } = await loadTwin(['buildISS', 'MODEL', 'applyJoints', 'liveJoints', 'updateVehicles', 'updateIrosa']);
 const VERSION = html.match(/const PAGE_VERSION = '([^']+)'/)[1];
-const OUT = arg('--out', fileURLToPath(new URL(`../ISS_Model_Viewer_v${VIEWER}.html`, import.meta.url)));
+const OUT = arg('--out', fileURLToPath(new URL(`../web/ISS_Model_Viewer_v${VIEWER}.html`, import.meta.url)));
 const { MAT, AMBER_KINDS } = w;
 t.buildISS(); t.applyJoints(t.liveJoints()); t.updateVehicles(AT); t.updateIrosa(AT);
 const root = t.MODEL.root; root.updateMatrixWorld(true); const inv = root.matrixWorld.clone().invert();

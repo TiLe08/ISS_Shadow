@@ -4,7 +4,7 @@ die um einige zehn Sekunden falsch geht.
 """
 import ast, logging, pathlib, unittest
 
-SRC = pathlib.Path(__file__).resolve().parents[1] / "bridge.py"
+SRC = pathlib.Path(__file__).resolve().parents[1] / "server" / "bridge.py"
 tree = ast.parse(SRC.read_text(encoding="utf-8"))
 nodes = [n for n in tree.body if (isinstance(n, ast.ClassDef) and n.name == "TimeBase") or (isinstance(n, ast.FunctionDef) and n.name == "feed_lag_h")]
 ns = {"log": logging.getLogger("test")}

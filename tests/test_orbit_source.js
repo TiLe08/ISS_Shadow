@@ -2,7 +2,7 @@
 // NASA-Vorhersage, Simulator), Rückfall nach Datenlücken, Ablauf, veraltete gespeicherte Werte,
 // Wiedergabe und Jahreswechsel.
 const assert = require('node:assert/strict');
-const O = require('../orbit-source.js');
+const O = require('../web/orbit-source.js');
 const now = Date.UTC(2026,9,8,10), hours = (now-Date.UTC(2026,0,1))/3600000;
 const state = [6790,0,0,0,7.66,0];
 const oem = {source:'NASA_OEM',available:true,state,frame:'EME2000',units:'km,km/s',epoch:now/1000,created:now/1000-3600,valid_from:now/1000-86400,valid_to:now/1000+86400};
