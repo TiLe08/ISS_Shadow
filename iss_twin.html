@@ -1281,6 +1281,15 @@ const RD = { lib: null, libErr: '', tles: null, tleAt: 0, checked: 0, tleErr: ''
 /* Bahnelemente: über den Launcher (/__tle), nur ohne Launcher direkt von CelesTrak (OMM/JSON, 2 h im
    Browser zwischengespeichert). Nach einer HTTP-Fehlerantwort von CelesTrak 2 h Pause (Abrufregeln);
    ohne Daten springt SatNOGS ein (v1.27, wie im Launcher). */
+/* Erdtextur für die Radarkugel (v1.27.3): die 15 lokalen Blue-Marble-Kacheln der Stufe 2 (je 72°) als
+   Plattkarte 1024 × 512 zusammengesetzt, einmalig beim ersten Öffnen des Radars. */
+function radarEarthTex() {
+  if (RD.texLoading) return; RD.texLoading = true;
+  const W = 1024, H = 512, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const g = cv.getContext('2d'), s = W / 5, jobs = [];
+  for (let y = 0; y < 3; y++) for (let x = 0; x < 5; x++) jobs.push(new Promise(res => { const im = new Image(); im.onload = () => { g.drawImage(im, x * s, y * s, s, s); res(); }; im.onerror = res; im.src = `assets/earth/2/${y}/${x}.jpeg`; }));
+  Promise.all(jobs).then(() => { try { RD.earthTex = { w: W, h: H, data: g.getImageData(0, 0, W, H).data }; RD.globeCache = {}; RD.last = 0; } catch (e) {} });
+}
 function radarSelect(key) { RD.sel = key; RD.path = null; RD.last = 0; updateRadar(); }
 async function radarLoad() {
   if (RD.loading) return; RD.loading = true;
@@ -1350,7 +1359,8 @@ function updateRadar(force) {
   if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
   const ctx = cv.getContext('2d'), cs = getComputedStyle(document.documentElement), col = k => cs.getPropertyValue(k).trim() || '#888';
   ctx.setTransform?.(dpr, 0, 0, dpr, 0, 0);
-  RD.hits = RADAR.drawRadar(ctx, w, h, items, { scale, az: RD.az, el: RD.el, kurs, earth: RD.res?.earth || RADAR.DEFAULT_EARTH, earthLabel: t('Earth'), colors: { fg: col('--fg'), dim: col('--dim'), accent: col('--acc'), warn: col('--warn'), model: col('--acc2'), earth: '#4a90d9' } });
+  if (!RD.earthTex) radarEarthTex();
+  RD.hits = RADAR.drawRadar(ctx, w, h, items, { scale, az: RD.az, el: RD.el, kurs, earthTex: RD.earthTex, globeCache: RD.globeCache, dpr, makeCanvas: (a, b) => Object.assign(document.createElement('canvas'), { width: a, height: b }), earth: RD.res?.earth || RADAR.DEFAULT_EARTH, earthLabel: t('Earth'), colors: { fg: col('--fg'), dim: col('--dim'), accent: col('--acc'), warn: col('--warn'), model: col('--acc2'), earth: '#4a90d9' } });
   if (force === true) return;
   const att = (RD.res?.items || []).filter(i => i.state === 'attached').map(i => i.name), stale = (RD.res?.items || []).filter(i => i.state === 'stale' && i.range < 1e6).length;
   const rows = items.slice().sort((a, b) => a.range - b.range).slice(0, 8).map(i => `<div class="row${i.sel ? ' sel' : ''}" data-key="${esc(i.key)}" style="cursor:pointer" title="${esc(i.note)}"><span class="k">${esc(i.label)}</span><span class="v${i.kind === 'model' ? ' prox' : ''}">${RADAR.fmtRange(i.range)} · ${RADAR.fmtRate(i.rate)}</span></div>`).join('')
