@@ -66,12 +66,27 @@ export class EarthTiles {
       const done=texture=>{
         if(!this.cache.has(t.id)){texture.dispose();this.inflight--;this.pump();return;}
         texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=this.anisotropy;texture.minFilter=THREE.LinearMipmapLinearFilter;texture.magFilter=THREE.LinearFilter;
-        const mat=this.material.clone();mat.uniforms.sunDir=this.material.uniforms.sunDir;mat.uniforms.rim=this.material.uniforms.rim;mat.uniforms.map.value=texture;
+        const mat=this.material.clone();mat.uniforms.sunDir=this.material.uniforms.sunDir;mat.uniforms.rim=this.material.uniforms.rim;if(this.material.uniforms.real){mat.uniforms.real=this.material.uniforms.real;mat.uniforms.night=this.material.uniforms.night;}mat.uniforms.map.value=texture;
         t.mesh=new THREE.Mesh(tileGeometry(t.z,t.y,t.x,this.radius),mat);t.mesh.renderOrder=t.z;t.mesh.visible=false;this.photoGroup.add(t.mesh);this.inflight--;this.pump();
       };
       const fail=()=>{t.error=true;this.errors++;this.inflight--;this.pump();};
       this.loader.load(t.z===2?`assets/earth/2/${t.y}/${t.x}.jpeg`:remote,done,undefined,()=>{if(t.z===2)this.loader.load(remote,done,undefined,fail);else fail();});
     }
+  }
+  // Stadtlichter für die Nachtseite (Massiv/Realistisch): die 15 Kacheln der Stufe 2 von NASA GIBS
+  // VIIRS_CityLights_2012 (gemeinfrei) einmal zu einer Weltkarte 2560 × 1536 px zusammensetzen
+  // (deckt 90° N bis 126° S, wie das Kachelraster). Ohne Netz bleibt die Nachtseite einfach dunkel.
+  ensureNight(){
+    if(this.nightStarted||!this.material.uniforms.night||typeof document==='undefined')return;this.nightStarted=true;
+    const c=document.createElement('canvas');c.width=2560;c.height=1536;const g=c.getContext('2d');g.fillStyle='#000';g.fillRect(0,0,c.width,c.height);
+    const tex=new THREE.CanvasTexture(c);tex.flipY=false;tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=this.anisotropy;let left=15;
+    for(let y=0;y<3;y++)for(let x=0;x<5;x++){
+      const img=new Image();img.crossOrigin='anonymous';
+      img.onload=()=>{g.drawImage(img,x*512,y*512);tex.needsUpdate=true;if(--left===0)this.nightOk=true;};
+      img.onerror=()=>{left--;};
+      img.src=`https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/VIIRS_CityLights_2012/default/500m/2/${y}/${x}.jpeg`;
+    }
+    this.material.uniforms.night.value=tex;
   }
   // Umschalten zwischen 'photo' (Kacheln) und Radarmodus (nur Unterlage).
   setMode(mode){

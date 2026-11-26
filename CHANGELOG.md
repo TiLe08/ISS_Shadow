@@ -2,6 +2,28 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.29: Darstellung „Realistisch“, realistischer Tag-Nacht-Übergang der Erde (25.11.)
+
+- **Neue Darstellung *Realistic* (Realistisch)** neben Holo und Solid (Display → Station): texturierte
+  PBR-Materialien je Bauteilart (Trümmerschutzbleche mit Fugen und Nieten, gesteppte Isolationsdecken,
+  zerknitterte Goldfolie, gebürstetes Metall der Träger, Solarzellen mit Leiterbahnen), Spiegelung und
+  diffuses Licht von Erde und Weltraum (Umgebungskarte nach Sonnenstand, neu nur bei ≈ 2° Änderung)
+  und Schatten der Sonne auf der Station (2048², nur jedes dritte Bild neu gezeichnet).
+- **Abgleich mit Fotos und Live-Bildern (CP3, CP8, CP13):** Die Aluminium-Schutzbleche der Module sind satiniert
+  metallisch und spiegeln Erde und All, und an den Druckmodulen sitzen Reihen von EVA-Handläufen (gelblich,
+  auf Stützen, ≈ 300 Stück, je Modul ein Zeichenaufruf, nur in Realistisch, nicht Teil der Kollisionsprüfung).
+  Die NASA-3D-Modelle der ISS (3D Resources „ISS (A)“ 6 600 und „ISS (B)“ 174 000 Dreiecke) wurden geprüft:
+  ohne Texturen, starr und ältere Konfiguration, also nicht besser als das eigene Modell (230 000 Dreiecke, beweglich).
+- Geometrie, Gelenke, Nullpunkte und Kamerakalibrierung bleiben unverändert: Der Modus tauscht nur
+  Materialien und Licht (`tests/test_realistic.mjs` prüft gleiche Geometrie und Sichtbarkeit wie Solid).
+- Alle Texturen entstehen zur Laufzeit aus Rauschen und Rastern, es gibt keine heruntergeladenen
+  Modelle oder Bilder (keine Lizenzfragen). Das NASA-3D-Modell der ISS wurde bewusst nicht verwendet:
+  Es ist ein starres Gesamtnetz in älterer Konfiguration und ließe sich nicht mit SARJ, BGA, TRRJ und
+  Arm bewegen. Kostet mehr Grafikleistung als Solid und wird erst bei der ersten Wahl aufgebaut.
+- **Erde in Solid und Realistic:** Beleuchtung nach Sonnenhöhe (flacher Stand dunkler), weiche Dämmerung
+  mit rötlichem Saum, dunkle Nachtseite mit Stadtlichtern (NASA VIIRS, zur Laufzeit geladen),
+  Sonnenglanz auf dem Meer und ein dünner, an der Dämmerung rötlicher Atmosphärensaum. Holo bleibt wie bisher.
+
 # v1.28.1: Radar-Erde als echte Kugel mit Textur (25.11.)
 
 - Die Erde im Radar ist keine flache blaue Scheibe mehr: Sie zeigt die Blue-Marble-Kacheln (lokal, Stufe 2)

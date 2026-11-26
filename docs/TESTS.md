@@ -43,6 +43,7 @@ Kommentaren.) Aufruf: `const { t, w } = await loadTwin(['buildISS', 'MODEL', …
 | `test_orbit_thrust.mjs` | Bahnwirkung: Dichte und Richtung des Luftwiderstands, 1 m/s Anhebung → Δa = 1775 m (Theorie 1775 m), Treibstoffverbrauch, Absenkung durch Luftwiderstand pro Tag (40-300 m, ergibt ~94 m) |
 | `test_radiators.mjs` | Hauptradiatoren: Rollen um die X-Achse (kein Klappen), Maße 22 m × 10,9 m, Vorzeichen mit den Live-Werten vom 10.11.2026, Regelziel bei Sonne und im Schatten, Vorzeichenprüfung aus Autotrack-Daten (bestätigen und umkehren), Freiraum über ±105° für beide Seiten, Abstand zu Bishop |
 | `test_zfight.mjs` | `zfight.mjs` sucht deckungsgleiche, verschieden aussehende, von derselben Seite sichtbare Flächen: Selbsttest des Prüfers, Grundstellung, drei Gelenkstellungen, jedes Fahrzeug an jedem Port; in Solid keine Linien auf Flächen |
+| `test_realistic.mjs` | Darstellung Realistisch: Material für jede Bauteilart, Shader-Ersetzungen greifen in three.js, gleiche Geometrie und Sichtbarkeit wie Solid, Schatten nur in Realistisch, Holo/Solid unverändert |
 | `test_cameras.mjs` | Sichtfelder der Optiken gegen die NASA-Werte, Einbaustellen der Kameraports, Einbett-Adressen, Stream-Auswahl, Einpassen des Bildformats |
 | `test_payloads.mjs` | Greifen, Bewegen und Absetzen von Bishop, Platzhalter für unbekannte Nutzlasten, POA und OTCM, EV-Luke, Swesda-Flügel, Lage der virtuellen Station über 12 h |
 

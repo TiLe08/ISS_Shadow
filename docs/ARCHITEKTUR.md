@@ -66,7 +66,8 @@ Protokollierung.
 | `workspace.js` | Kanalmenü, Kanal-Browser und modulares Dashboard (`window.ISSWorkspace`) |
 | `channel-meta.js` | Zusatzangaben zu Kanälen: Einheiten, Statustexte, Wertebereiche (`window.CHANNEL_META`) |
 | `i18n.js`, `i18n-strings.js` | Übersetzung der Oberfläche in sechs Sprachen (`window.I18N`); die Tabellen werden aus `tools/strings-*.tsv` erzeugt |
-| `iss-model.mjs` | Das prozedurale 3D-Modell: `MODEL`, Materialien für Holo und Solid, Bauteil-Fabrik, Druckmodule, Träger, Solarflügel, Radiatoren, Besuchsfahrzeuge, Canadarm2, Dextre (`buildStation`), Montagekonventionen (`solarNormal`, `radiatorNormal`) |
+| `iss-model.mjs` | Das prozedurale 3D-Modell: `MODEL`, Materialien für Holo und Solid (`setRenderStyle('holo'|'solid'|'real')`), Bauteil-Fabrik, Druckmodule, Träger, Solarflügel, Radiatoren, Besuchsfahrzeuge, Canadarm2, Dextre (`buildStation`), Montagekonventionen (`solarNormal`, `radiatorNormal`) |
+| `realistic.mjs` | Darstellung „Realistisch“: prozedurale Oberflächen (triplanar im Objektsystem), PBR-Materialsatz je Bauteilart, Umgebungslicht aus Erde und Weltraum (`SpaceEnvironment`, PMREM), Sonnenschatten (`configureSunShadow`); ändert keine Geometrie |
 | `model-checks.mjs` | Radiator-Zielwinkel und Kollisionsprüfung (Sweep-and-Prune, OBB, GJK); Detailteile (`decor`) sind ausgenommen |
 | `earth-tiles.mjs` | Erdkugel aus NASA-GIBS-Kacheln mit Detailstufen |
 | `planet-overlay.mjs` | Küstenlinien, Grenzen, Gradnetz und Ortsbeschriftungen (Radarmodus der Erdkugel) |
