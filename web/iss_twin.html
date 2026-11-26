@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ISS Digital Shadow v1.29.2</title>
+<title>ISS Digital Shadow v1.29.3</title>
 <!--
   iss_twin.html: Hauptseite von ISS Shadow (digitaler Schatten / Zwilling der ISS).
 
@@ -300,6 +300,8 @@ body.resizing iframe,body.resizing canvas{pointer-events:none}
 .tip{position:absolute;z-index:7;pointer-events:none;background:var(--panel-solid);border:1px solid var(--acc);padding:6px 8px;font-size:11px;min-width:180px;max-width:280px;display:flex;flex-direction:column;gap:2px;box-shadow:0 6px 18px rgba(0,0,0,.45)}
 .tip h3{margin:0 0 3px;font:700 11px/1 var(--f-disp);letter-spacing:.16em;color:var(--acc);text-transform:uppercase}
 .tip .row .k{font-size:10.5px}
+/* Hinweiszeile im Tooltip: eigene Zeile über die volle Breite mit Umbruch (v1.29.3; als Wertspalte lief sie aus dem Kasten). */
+.tip .tnote{color:var(--dim);font-size:10.5px;line-height:1.35;white-space:normal;margin-top:2px;border-top:1px solid var(--line,#1f4458);padding-top:3px}
 .data-note{max-width:100%;padding:4px 8px;background:rgba(9,19,28,.88);border-left:2px solid var(--warn);color:var(--warn);font-size:10px;line-height:1.4}
 .hint{max-width:min(520px,100%);padding:10px 14px;border:1px solid var(--warn);background:var(--panel-solid);color:var(--warn);font:500 12px/1.5 var(--f-mono);text-align:center;pointer-events:auto}
 .banner{font:700 11px/1 var(--f-disp);letter-spacing:.3em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--acc2);color:var(--acc2);background:rgba(20,13,6,.85)}
@@ -3920,7 +3922,7 @@ function sysRows(sys) {
   if (sys.startsWith('eps:')) { const ch = sys.slice(4), [vp, ip] = EPS_PUI[ch]; return r('Channel', ch) + r('β gimbal', isFinite(V(BGA_PUI[ch])) ? wrap360(V(BGA_PUI[ch])).toFixed(1) + '°' : '---') + r('Array voltage', f(vp, 1, ' V')) + r('Array current', notServed(ip) ? 'not in public feed' : f(ip, 1, ' A')) + irosaRow(ch, r); }
   switch (sys) {
     case 'sarj': return r('Port SARJ', f('S0000004', 1, '°')) + r('Stbd SARJ', f('S0000003', 1, '°')) + r('Mode P / S', en('jointMode', V('S0000008')) + ' / ' + en('jointMode', V('S0000009')));
-    case 'payload': return r('Tip LEE', en('lee', V('CSASSRMS011'))) + r('MBS POA', en('lee', V('CSAMBA00004'))) + r('OTCM 1 / 2', en('lee', V('CSASPDM0010')) + ' / ' + en('lee', V('CSASPDM0019'))) + r('Note', t('ISSLive reports only grasp states, not which object is held'));
+    case 'payload': return r('Tip LEE', en('lee', V('CSASSRMS011'))) + r('MBS POA', en('lee', V('CSAMBA00004'))) + r('OTCM 1 / 2', en('lee', V('CSASPDM0010')) + ' / ' + en('lee', V('CSASPDM0019'))) + `<div class="tnote">${t('ISSLive reports only grasp states, not which object is held')}</div>`;
     case 'bishop': return r('State', t(PL.st.held === 'bishop' ? 'held by Canadarm2' : PL.st.away.bishop ? 'released away from its port' : 'at Tranquility port')) + r('Tip LEE', en('lee', V('CSASSRMS011')));
     case 'zvezdaArray': return r('Pointing', t('predicted: Sun tracking (no telemetry)'));
     case 'tcs': return r('TRRJ P / S', f('S0000002', 0, '°') + ' / ' + f('S0000001', 0, '°')) + r('Loop A temp', f('S1000003', 2)) + r('Loop B temp', f('P1000003', 2));
@@ -4143,7 +4145,7 @@ function setLanguage(lang) {
   ISSWorkspace.relang(); logEvent(t('Language: {0}', I18N.LANGS[lang]));
 }
 /* ---------- Launcher-Anbindung (Heartbeat + Beenden) ---------- */
-const PAGE_VERSION = '1.29.2';    // muss mit VERSION in server/launcher.py übereinstimmen
+const PAGE_VERSION = '1.29.3';    // muss mit VERSION in server/launcher.py übereinstimmen
 function initLauncher() {
   if (!/^https?:$/.test(location.protocol)) return;
   // Ein neuerer Launcher ersetzt den alten; ein offener Tab lädt sich dann selbst neu, statt
