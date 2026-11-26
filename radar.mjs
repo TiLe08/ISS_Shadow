@@ -85,9 +85,22 @@ export function toLvlh(rI, vI, rO, vO) {
 }
 
 /* Erde im LVLH-System der ISS: Mittelpunkt (m) und Richtung der Erdachse (ECI +z). */
-export function earthLvlh(rI, vI) {
+export function earthLvlh(rI, vI, t) {
   const r = vec(rI), v = vec(vI), R = unit(r.map(x => -x)), H = unit(cross(v, r)), Vb = cross(H, R), z = [0, 0, 1];
-  return { center: [0, 0, Math.hypot(...r) * 1000], pole: [dot(z, Vb), dot(z, H), dot(z, R)] };
+  const e = { center: [0, 0, Math.hypot(...r) * 1000], pole: [dot(z, Vb), dot(z, H), dot(z, R)] };
+  if (t != null) { const sun = sunEci(t); e.basis = { V: Vb, H, R }; e.gmst = gmst(t); e.sun = [dot(sun, Vb), dot(sun, H), dot(sun, R)]; }
+  return e;
+}
+// Sternzeit Greenwich (rad) und Sonnenrichtung im ECI-System (Einheitsvektor, Genauigkeit ~0,01°), für die Erdkugel
+export function gmst(t) {
+  const d = (t - Date.UTC(2000, 0, 1, 12)) / 86400e3;
+  return ((280.46061837 + 360.98564736629 * d) % 360 + 360) % 360 * Math.PI / 180;
+}
+export function sunEci(t) {
+  const d = (t - Date.UTC(2000, 0, 1, 12)) / 86400e3, rad = Math.PI / 180;
+  const L = (280.460 + 0.9856474 * d) * rad, g = (357.528 + 0.9856003 * d) * rad;
+  const lam = L + (1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * rad, eps = (23.439 - 4e-7 * d) * rad;
+  return [Math.cos(lam), Math.cos(eps) * Math.sin(lam), Math.sin(eps) * Math.sin(lam)];
 }
 
 /* Bahnelemente aller Objekte zum Zeitpunkt t (ms) relativ zur ISS. lib: satellite.js.
@@ -118,7 +131,7 @@ export function propagateAll(lib, tles, t, dockedNames = [], same = () => false)
     items.push({ name: x.name, id: x.id, ...o, ageD, state });
   }
   items.sort((a, b) => a.range - b.range);
-  return { iss: true, earth: earthLvlh(iss.position, iss.velocity), items };
+  return { iss: true, earth: earthLvlh(iss.position, iss.velocity, t), items };
 }
 
 /* Bahn eines Objekts relativ zur ISS (LVLH der ISS zum jeweiligen Zeitpunkt) von t − before bis t + after
@@ -184,8 +197,17 @@ export function drawRadar(ctx, w, h, items, o) {
       ctx.fillText(`${o.earthLabel || 'Earth'} ${fmtRange(alt)}`, Math.max(40, Math.min(w - 40, cx + Math.cos(a) * (R + 12))), Math.max(8, Math.min(h - 18, cy + Math.sin(a) * (R + 12))));
     } else if (Math.hypot(ex - cx, ey - cy) - er < Math.hypot(w, h) / 2) {   // Oberfläche nah am Bildradius: Erde als Kugel
       E = { ex, ey, ed, er, d: EARTH_R / scale };
-      ctx.beginPath(); ctx.arc(ex, ey, er, 0, 2 * Math.PI); ctx.fillStyle = c.earth || c.dim; ctx.globalAlpha = 0.18; ctx.fill(); ctx.globalAlpha = 1;
-      ctx.strokeStyle = c.earth || c.dim; ctx.stroke();
+      const img = o.earthTex && earth.basis ? renderGlobe(o, w, h, ex, ey, er, earth, scale, az, el) : null;
+      if (img) { ctx.drawImage(img.canvas, img.x, img.y, img.w, img.h); }
+      else {   // ohne Textur: schattierte Kugel
+        const gr = ctx.createRadialGradient?.(ex - er * 0.3, ey - er * 0.3, er * 0.1, ex, ey, er);
+        if (gr?.addColorStop) { gr.addColorStop(0, '#2f6fae'); gr.addColorStop(1, '#0b2440'); ctx.fillStyle = gr; } else ctx.fillStyle = c.earth || c.dim;
+        ctx.beginPath(); ctx.arc(ex, ey, er, 0, 2 * Math.PI); ctx.globalAlpha = gr?.addColorStop ? 0.9 : 0.18; ctx.fill(); ctx.globalAlpha = 1;
+      }
+      // Atmosphärensaum
+      const ag = ctx.createRadialGradient?.(ex, ey, er * 0.9, ex, ey, er * 1.04);
+      if (ag?.addColorStop) { ag.addColorStop(0, 'rgba(110,170,255,0)'); ag.addColorStop(0.69, 'rgba(110,170,255,0.18)'); ag.addColorStop(0.72, 'rgba(120,180,255,0.5)'); ag.addColorStop(1, 'rgba(110,170,255,0)'); ctx.fillStyle = ag; ctx.beginPath(); ctx.arc(ex, ey, er * 1.035, 0, 2 * Math.PI); ctx.fill(); }
+      ctx.strokeStyle = c.earth || c.dim; ctx.globalAlpha = 0.6; ctx.beginPath(); ctx.arc(ex, ey, er, 0, 2 * Math.PI); ctx.stroke(); ctx.globalAlpha = 1;
       if (earth.pole) {
         const p = unit(earth.pole), a0 = Math.abs(p[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0], e1 = unit(cross(p, a0)), e2 = cross(p, e1);
         circle(earth.center, e1.map(x => x * EARTH_R), e2.map(x => x * EARTH_R), c.earth || c.dim, { back: false, dash: [] });
@@ -252,6 +274,44 @@ export function drawRadar(ctx, w, h, items, o) {
   }
   return hits;
 }
+/* Erdkugel als Bild: orthografische Projektion der Blue-Marble-Textur (o.earthTex = { w, h, data } als
+   Plattkarte, Länge −180..180, Breite 90..−90) mit Tag/Nacht nach dem Sonnenstand. Gerechnet wird nur der
+   sichtbare Teil der Scheibe in halber Auflösung (höchstens etwa 200 × 180 Pixel) und nur neu, wenn sich
+   Blickrichtung, Zoom oder Lage merklich ändern (o.globeCache). Braucht ein Canvas (OffscreenCanvas oder
+   o.makeCanvas); sonst null. */
+function renderGlobe(o, w, h, ex, ey, er, earth, scale, az, el) {
+  const k = 0.5 * (o.dpr || 1), x0 = Math.max(0, Math.floor(ex - er)), y0 = Math.max(0, Math.floor(ey - er)), x1 = Math.min(w, Math.ceil(ex + er)), y1 = Math.min(h, Math.ceil(ey + er));
+  if (x1 <= x0 || y1 <= y0) return null;
+  const W = Math.max(1, Math.round((x1 - x0) * k)), Hh = Math.max(1, Math.round((y1 - y0) * k));
+  const cache = o.globeCache || {}, key = [x0, y0, x1, y1, W, Hh, Math.round(ex), Math.round(ey), Math.round(er), az.toFixed(3), el.toFixed(3), earth.gmst.toFixed(3), earth.sun.map(v => v.toFixed(3)).join(), earth.pole.map(v => v.toFixed(3)).join()].join('|');
+  if (cache.key === key && cache.img) return cache.img;
+  let cv = cache.img?.canvas;
+  if (!cv || cv.width !== W || cv.height !== Hh) { cv = o.makeCanvas ? o.makeCanvas(W, Hh) : typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(W, Hh) : null; if (!cv) return null; cv.width = W; cv.height = Hh; }
+  const g = cv.getContext('2d'), out = g.createImageData(W, Hh), D = out.data, T = o.earthTex, tw = T.w, th = T.h, td = T.data;
+  const r = [Math.cos(az), Math.sin(az), 0], u = [-Math.sin(az) * Math.sin(el), Math.cos(az) * Math.sin(el), -Math.cos(el)], dv = [Math.sin(az) * Math.cos(el), -Math.cos(az) * Math.cos(el), -Math.sin(el)];
+  const { V, H, R } = earth.basis, cg = Math.cos(earth.gmst), sg = Math.sin(earth.gmst), sun = earth.sun;
+  // Einheitsvektoren der Bildachsen im ECEF-System (je Pixel nur noch Linearkombinationen)
+  const toEcef = a => { const e = [0, 1, 2].map(i => a[0] * V[i] + a[1] * H[i] + a[2] * R[i]); return [cg * e[0] + sg * e[1], -sg * e[0] + cg * e[1], e[2]]; };
+  const rE = toEcef(r), uE = toEcef(u), dE = toEcef(dv), sR = dot(sun, r), sU = dot(sun, u), sD = dot(sun, dv);
+  for (let j = 0; j < Hh; j++) {
+    const py = y0 + (j + 0.5) / k, b = -(py - ey) / er;
+    for (let i = 0; i < W; i++) {
+      const px = x0 + (i + 0.5) / k, a = (px - ex) / er, q = 1 - a * a - b * b, p = (j * W + i) * 4;
+      if (q <= 0) { D[p + 3] = 0; continue; }
+      const c = Math.sqrt(q), nx = a * rE[0] + b * uE[0] + c * dE[0], ny = a * rE[1] + b * uE[1] + c * dE[1], nz = a * rE[2] + b * uE[2] + c * dE[2];
+      const lon = Math.atan2(ny, nx), lat = Math.asin(Math.max(-1, Math.min(1, nz)));
+      const tx = Math.min(tw - 1, Math.max(0, ((lon / Math.PI + 1) / 2 * tw) | 0)), ty = Math.min(th - 1, Math.max(0, ((0.5 - lat / Math.PI) * th) | 0)), t4 = (ty * tw + tx) * 4;
+      const lam = a * sR + b * sU + c * sD, day = Math.min(1, Math.max(0, lam * 4 + 0.35)), f = 0.2 + 0.8 * day * (0.55 + 0.45 * Math.max(0, lam));
+      const rim = 0.85 + 0.15 * c;   // leichte Randabdunklung
+      D[p] = td[t4] * f * rim; D[p + 1] = td[t4 + 1] * f * rim; D[p + 2] = Math.min(255, td[t4 + 2] * f * rim + 18 * (1 - day)); D[p + 3] = 255;
+    }
+  }
+  g.putImageData(out, 0, 0);
+  const img = { canvas: cv, x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+  if (o.globeCache) { o.globeCache.key = key; o.globeCache.img = img; }
+  return img;
+}
+
 // Klick auf das Radarbild: nächstes Objekt innerhalb von r Pixeln (hits aus drawRadar) oder null
 export function pick(hits, x, y, r = 10) {
   let best = null, bd = r;

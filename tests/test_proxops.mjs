@@ -137,6 +137,15 @@ assert.equal(new Date(R.tleEpoch('1 25544U 98067A   26322.50000000  .00016717  0
   assert.ok(!texts.includes('Earth'), 'Erde nicht im Bild bei 10 km');
   texts.length = 0; R.drawRadar(ctx2, 300, 260, [{ label: 'FAR', rel: [50e3, 0, 0], range: 50e3, rate: 0, kind: 'tle' }, { label: 'NEAR', rel: [5e3, 0, 0], range: 5e3, rate: 0, kind: 'tle' }], { scale: 1e4, colors: { fg: '#fff', dim: '#888', accent: '#0ff', warn: '#ff0', model: '#fa0' } });
   assert.ok(texts.some(s => s.startsWith('NEAR')) && !texts.some(s => s.startsWith('FAR')), 'Objekte außerhalb der Kugel werden nicht gezeichnet: ' + texts.join('|'));
+  { // Erdkugel mit Textur: Bild wird gerechnet und gezeichnet, beim nächsten Bild aus dem Zwischenspeicher
+    const tex = { w: 8, h: 4, data: new Uint8ClampedArray(8 * 4 * 4).fill(200) }, made = [], drawn = [];
+    const mk = (w, h) => { const c = { width: w, height: h, getContext: () => ({ createImageData: (a, b) => ({ data: new Uint8ClampedArray(a * b * 4) }), putImageData: () => made.push(c) }) }; return c; };
+    const c3 = new Proxy({}, { get: (o, k) => k in o ? o[k] : k === 'drawImage' ? (...a) => drawn.push(a) : () => {}, set: (o, k, v) => (o[k] = v, true) });
+    const e = R.earthLvlh({ x: 6778, y: 0, z: 0 }, { x: 0, y: 7.67, z: 0 }, Date.parse('2026-11-25T12:00:00Z')), cache = {};
+    for (let i = 0; i < 2; i++) R.drawRadar(c3, 300, 260, [], { scale: 5e6, earth: e, earthTex: tex, globeCache: cache, makeCanvas: mk, colors: {} });
+    assert.equal(made.length, 1, 'Kugelbild nur einmal gerechnet'); assert.equal(drawn.length, 2, 'Kugelbild gezeichnet');
+    assert.ok(Math.abs(Math.hypot(...e.sun) - 1) < 1e-9 && e.basis && isFinite(e.gmst));
+  }
   assert.equal(R.zoomScale(1e4, 1), 1.25e4); assert.equal(R.zoomScale(R.MIN_SCALE, -1), R.MIN_SCALE);
 }
 { // OMM/JSON von CelesTrak, auch mit sechsstelligen Katalognummern (das TLE-Format kann sie nicht)
