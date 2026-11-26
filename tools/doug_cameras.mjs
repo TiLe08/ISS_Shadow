@@ -11,8 +11,8 @@
 // Aufruf (im Projektordner, nach npm install):  node tools/doug_cameras.mjs <Pfad>/doug_stage75-7_nodes.json
 import fs from 'node:fs'; import * as THREE from 'three';
 const N = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
-const { MODEL, buildStation, SSRMS_AX } = await import('../iss-model.mjs');
-const html = fs.readFileSync(new URL('../iss_twin.html', import.meta.url), 'utf8');
+const { MODEL, buildStation, SSRMS_AX } = await import('../web/iss-model.mjs');
+const html = fs.readFileSync(new URL('../web/iss_twin.html', import.meta.url), 'utf8');
 const CONV = Function('return ' + html.match(/const SSRMS_CONVS = (\{[^;]*\});/)[1])().doug;
 buildStation({});
 const IN = 0.0254, D = Math.PI / 180, rot = (ax, a) => new THREE.Matrix4()['makeRotation' + ax.toUpperCase()](a * D);

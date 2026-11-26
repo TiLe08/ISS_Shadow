@@ -4,8 +4,8 @@
 //   - setRenderStyle('real') ändert keine Geometrie, Position oder Sichtbarkeit gegenüber Massiv
 //   - Holo und Massiv bleiben wie bisher (true/false weiter gültig)
 import assert from 'node:assert/strict'; import * as THREE from 'three';
-import { realMaterials } from '../realistic.mjs';
-import { MODEL, MAT, setRenderStyle, buildStation } from '../iss-model.mjs';
+import { realMaterials } from '../web/realistic.mjs';
+import { MODEL, MAT, setRenderStyle, buildStation } from '../web/iss-model.mjs';
 const R = realMaterials();
 for (const k of Object.keys(MAT.solid)) assert.ok(R[k], 'realistisches Material fehlt für ' + k);
 assert.equal(realMaterials(), R, 'Materialsatz wird nur einmal erzeugt');
@@ -26,7 +26,7 @@ setRenderStyle('real', R); const real = snap();
 assert.deepEqual(real, solid, 'Realistisch: gleiche Geometrie und Sichtbarkeit wie Massiv');
 assert.ok(MODEL.parts.every(p => p.proxy ? p.mesh.material === MAT.hidden : Object.values(R).includes(p.mesh.material)), 'Realistisch: nur Materialien des Satzes, Hüllkörper unsichtbar');
 assert.ok(MODEL.parts.filter(p => !p.proxy).every(p => p.mesh.castShadow && p.mesh.receiveShadow), 'Realistisch: Schatten');
-import { setGreebles } from '../realistic.mjs';
+import { setGreebles } from '../web/realistic.mjs';
 const nParts = MODEL.parts.length, rails = setGreebles(MODEL.parts, true);
 assert.ok(rails > 150, 'Handläufe auf den Modulen: ' + rails); assert.equal(MODEL.parts.length, nParts, 'Handläufe sind keine Bauteile (keine Kollision/Flimmerprüfung)');
 setGreebles(MODEL.parts, false); MODEL.root?.updateMatrixWorld?.(true);

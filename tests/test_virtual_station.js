@@ -2,7 +2,7 @@
 // freies Driften, Pulse, Treibstoff, Bahnanhebung, Batterieenergie, Stromausfall, Kreiselgrenzen,
 // Luftschleuse, Lebenserhaltung, Langzeitstabilität und Lageregelung aus großen Abweichungen.
 const assert=require('node:assert/strict');
-const {Station,JETS,cross,rotate}=require('../virtual-station.js');
+const {Station,JETS,cross,rotate}=require('../web/virtual-station.js');
 const env={illumination:Array(8).fill(1),sunIncidence:Array(8).fill(1),radiator:[1,1],radius:6790};
 // approx: Gleichheit mit Toleranz; free(): Station ohne Drehimpuls und Gravitationsgradient im freien Flug.
 const approx=(a,b,t=1e-8)=>assert.ok(Math.abs(a-b)<=t,`${a} != ${b}`);
@@ -56,7 +56,7 @@ console.log('PASS recovery: 30° capture on all axes, tumbling recovery, momentu
 // Triebwerksanordnung: Jede Düse und beide Haupttriebwerke sitzen am Heck von Swesda (wo die
 // Triebwerke der echten Station sind); jedes Düsenpaar erzeugt ein Moment um seine eigene Achse mit
 // richtigem Vorzeichen; Rollpaare sind reine Kräftepaare; Haupttriebwerke schieben nach +X (Anhebung).
-{const {ENGINES}=require('../virtual-station.js');
+{const {ENGINES}=require('../web/virtual-station.js');
  for(const j of JETS)assert.ok(j.r[0]<-34,'jet '+j.id+' on Zvezda aft');
  for(const e of ENGINES){assert.ok(e.r[0]<-35);assert.deepEqual(e.dir,[1,0,0]);}
  for(const axis of [0,1,2])for(const sign of [1,-1]){

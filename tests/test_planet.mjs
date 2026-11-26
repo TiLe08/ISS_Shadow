@@ -1,6 +1,6 @@
 // test_planet.mjs: Erdkacheln (earth-tiles.mjs): keine überlappenden Detailstufen bei asynchronem
 // Eintreffen, begrenzter Cache, Wechsel Foto/Radar. Der Kachel-Loader ist nachgebildet (pending).
-import assert from 'node:assert/strict';import * as THREE from 'three';import{EarthTiles}from'../earth-tiles.mjs';
+import assert from 'node:assert/strict';import * as THREE from 'three';import{EarthTiles}from'../web/earth-tiles.mjs';
 const elements=[];globalThis.document={createElement:()=>({}),body:{append:e=>elements.push(e)}};globalThis.innerHeight=1000;
 const group=new THREE.Group(),material=new THREE.ShaderMaterial({uniforms:{map:{value:new THREE.Texture()},sunDir:{value:new THREE.Vector3()},rim:{value:new THREE.Color()}}});
 const tiles=new EarthTiles(group,material,{capabilities:{getMaxAnisotropy:()=>8}},6378000),pending=[];

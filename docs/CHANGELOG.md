@@ -2,6 +2,17 @@
 
 Neueste Version oben. Datumsangaben beziehen sich auf 2026.
 
+# v1.29.1: Ordnerstruktur aufgeräumt (26.11.)
+
+- Im Hauptordner liegt nur noch die Startdatei `Start ISS Shadow.bat` (dazu README und npm-Dateien).
+  Oberfläche nach `web/` (`iss_twin.html`, alle `.js`/`.mjs`/`.css`, `assets/`, 3D-Viewer), Python-Dienste
+  und `requirements.txt` nach `server/`, `CHANGELOG.md`, `COVERAGE.md`, `GEOMETRY.md`, `HANDOFF.md`,
+  `CHANNELS.csv` und `referenz/` nach `docs/`.
+- Der Webserver liefert `web/` unter `/` aus, die Adresse `http://localhost:8137/iss_twin.html` bleibt
+  gleich; `docs/` ist unter `/docs/` erreichbar. `logs/`, `cache/` und `.deps_ok` bleiben im Hauptordner.
+- Startdatei, Tests, `tools/` und `pruefwerkzeuge/` an die neuen Pfade angepasst; Prüfwerkzeuge öffnen
+  `/web/iss_twin.html`. Keine Änderung an Verhalten oder Darstellung.
+
 # v1.29: Darstellung „Realistisch“, realistischer Tag-Nacht-Übergang der Erde (25.11.)
 
 - **Neue Darstellung *Realistic* (Realistisch)** neben Holo und Solid (Display → Station): texturierte

@@ -13,20 +13,23 @@ Dashboard EXIT gedrückt wird; sonst einige Minuten, nachdem der letzte Dashboar
 wurde. Broker, Bridge und Dienste sind Threads dieses Prozesses, es bleibt also nichts zurück.
 Protokoll: logs/launcher.log
 Unter Windows wird der Launcher über „Start ISS Shadow.bat“ gestartet (installiert beim ersten
-Start die Python-Pakete aus requirements.txt).
+Start die Python-Pakete aus server/requirements.txt).
 """
 import asyncio, json, logging, os, signal, socket, sys, threading, time, types, urllib.request, webbrowser
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.abspath(__file__))          # server/: Python-Dienste
+ROOT = os.path.dirname(HERE)                                # Projektordner (Startdatei, logs/, cache/)
+WEB = os.path.join(ROOT, "web")                             # Oberfläche, wird unter / ausgeliefert
+DOCS = os.path.join(ROOT, "docs")                           # Dokumentation, wird unter /docs/ ausgeliefert
 HTTP_PORT, MQTT_PORT, WS_PORT = 8137, 1883, 9001
-VERSION = "1.29"             # muss mit PAGE_VERSION in iss_twin.html übereinstimmen
+VERSION = "1.29.1"             # muss mit PAGE_VERSION in web/iss_twin.html übereinstimmen
 IDLE_TIMEOUT = 240          # s ohne Dashboard-Heartbeat bis zum Beenden
 URL = f"http://localhost:{HTTP_PORT}/iss_twin.html#mqtt"
 
-os.makedirs(os.path.join(HERE, "logs"), exist_ok=True)
+os.makedirs(os.path.join(ROOT, "logs"), exist_ok=True)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-                    handlers=[logging.FileHandler(os.path.join(HERE, "logs", "launcher.log"), encoding="utf-8")]
+                    handlers=[logging.FileHandler(os.path.join(ROOT, "logs", "launcher.log"), encoding="utf-8")]
                     + ([logging.StreamHandler()] if sys.stderr else []))
 log = logging.getLogger("launcher")
 for _n in ("transitions", "amqtt", "lightstreamer", "websockets"):
@@ -97,18 +100,25 @@ def install_stop_handlers():
 class Handler(SimpleHTTPRequestHandler):
     # Explizite Typen: Manche Windows-Registrys ordnen .js als text/plain zu und kennen keinen
     # .mjs-Typ, dann verweigern Browser die ES-Module des Dashboards.
-    """HTTP-Handler: liefert die Projektdateien aus und beantwortet die internen Endpunkte
+    """HTTP-Handler: liefert die Oberfläche (web/) und unter /docs/ die Dokumentation (docs/) aus und beantwortet die internen Endpunkte
     /__orbit (Bahnvorhersage), /__vehicles (Besuchsfahrzeuge), /__streams (laufende Livestreams),
     /__tle (Bahnelemente von CelesTrak für das Nahbereichsradar),
     /__alive (Heartbeat des Dashboards,
-    Version und Ordner) und /__shutdown. Protokolle, Cache, Tests und Python-Dateien werden nicht
-    ausgeliefert.
+    Version und Ordner) und /__shutdown. Protokolle, Cache, Tests und Python-Dateien liegen außerhalb
+    von web/ und docs/ und werden nicht ausgeliefert.
     """
     extensions_map = {**SimpleHTTPRequestHandler.extensions_map, ".js": "text/javascript", ".mjs": "text/javascript",
                       ".css": "text/css", ".json": "application/json", ".html": "text/html", ".md": "text/plain; charset=utf-8"}
 
-    # Dateien immer aus dem Projektordner ausliefern.
-    def __init__(self, *a, **kw): super().__init__(*a, directory=HERE, **kw)
+    # Dateien aus web/ ausliefern, /docs/... aus docs/.
+    def __init__(self, *a, **kw): super().__init__(*a, directory=WEB, **kw)
+
+    def translate_path(self, path):
+        """/docs/... auf den Ordner docs/ abbilden, alles andere auf web/."""
+        clean = path.split("?", 1)[0].split("#", 1)[0]
+        if clean == "/docs" or clean.startswith("/docs/"):
+            self.directory = DOCS; path = path[len("/docs"):] or "/"
+        return super().translate_path(path)
 
     # Zugriffsprotokoll unterdrücken.
     def log_message(self, *a): pass
@@ -138,10 +148,10 @@ class Handler(SimpleHTTPRequestHandler):
             sv = STATE.get("streams")
             return self._reply(sv.snapshot() if sv else {"fetched": 0, "streams": [], "errors": {"service": "starting"}})
         if self.path.startswith("/__alive"):
-            STATE["ping"] = time.time(); return self._reply({"launcher": "iss-shadow", "mqtt": f"ws://localhost:{WS_PORT}", "version": VERSION, "folder": HERE})
+            STATE["ping"] = time.time(); return self._reply({"launcher": "iss-shadow", "mqtt": f"ws://localhost:{WS_PORT}", "version": VERSION, "folder": ROOT})
         if self.path.startswith("/__shutdown"):
             self._reply({"ok": True}); log.info("shutdown requested from dashboard"); STATE["quit"].set(); return
-        if self.path.startswith(("/logs", "/cache", "/tests")) or self.path.endswith(".py"):
+        if self.path.split("?", 1)[0].endswith(".py"):
             self.send_error(404); return
         return super().do_GET()
 
@@ -196,11 +206,11 @@ def main():
             pass
         if not info or info.get("launcher") != "iss-shadow":
             fatal(f"Port {HTTP_PORT} is used by another program. Close it and start again.")
-        same = info.get("version") == VERSION and os.path.normcase(os.path.abspath(info.get("folder") or "")) == os.path.normcase(HERE)
+        same = info.get("version") == VERSION and os.path.normcase(os.path.abspath(info.get("folder") or "")) == os.path.normcase(ROOT)
         if same:
             log.info("already running, opening browser"); webbrowser.open(URL); return
         log.warning("replacing running ISS Shadow (version %s, folder %s) with version %s from %s",
-                    info.get("version", "<1.6"), info.get("folder", "?"), VERSION, HERE)
+                    info.get("version", "<1.6"), info.get("folder", "?"), VERSION, ROOT)
         try: urllib.request.urlopen(f"http://localhost:{HTTP_PORT}/__shutdown", timeout=3).read()
         except Exception: pass
         for _ in range(60):                 # die alte Instanz beendet sich innerhalb von ~10 s
@@ -225,16 +235,16 @@ def main():
     import bridge as bridge_mod
     bridge_mod.log = logging.getLogger("bridge")
     args = types.SimpleNamespace(broker="127.0.0.1", port=MQTT_PORT, user=None, password=None, root="iss",
-                                 ls=os.environ.get("ISS_LS_SERVER", "https://push.lightstreamer.com"), logdir=os.path.join(HERE, "logs"), replay=None, speed=1.0)
+                                 ls=os.environ.get("ISS_LS_SERVER", "https://push.lightstreamer.com"), logdir=os.path.join(ROOT, "logs"), replay=None, speed=1.0)
     br = bridge_mod.Bridge(args)
     STATE["orbit"] = br.orbit
     import vehicles
     vehicles.log = logging.getLogger("vehicles")
-    STATE["vehicles"] = vehicles.VehicleService(os.path.join(HERE, "cache"))
+    STATE["vehicles"] = vehicles.VehicleService(os.path.join(ROOT, "cache"))
     STATE["vehicles"].start()
     import tle
     tle.log = logging.getLogger("tle")
-    STATE["tle"] = tle.TleService(os.path.join(HERE, "cache"))
+    STATE["tle"] = tle.TleService(os.path.join(ROOT, "cache"))
     STATE["tle"].start()
     import streams
     streams.log = logging.getLogger("streams")

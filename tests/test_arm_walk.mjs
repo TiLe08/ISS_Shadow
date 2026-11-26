@@ -1,7 +1,7 @@
 // test_arm_walk.mjs: Umsetzen von Canadarm2: Plan -> koordinierte Bewegung -> Greifen -> Lösen, von beiden
 // verankerten Enden aus, über die echten Schaltflächen des Dashboards und die Schrittschleife der virtuellen Station.
 import fs from 'node:fs';import assert from 'node:assert/strict';import * as THREE from 'three';import{loadTwin}from'./harness.mjs';
-import{CollisionMonitor}from'../model-checks.mjs';
+import{CollisionMonitor}from'../web/model-checks.mjs';
 const{t,w,dom}=await loadTwin(['buildISS','MODEL','applyJoints','buildPanels','initLayout','enterCmd','exitCmd','CMD','stepCmd','ingest','armWalk','armFreeEndError','fixtureMatrix','armChain','LINK','TM'],{visual:true});const root=t.buildISS();t.buildPanels();t.initLayout();
 const live=JSON.parse(fs.readFileSync(new URL('./live_sample_20261014.json',import.meta.url),'utf8'));
 for(const [k,v]of Object.entries(live))if(typeof v==='number')t.ingest(k,v,NaN,Date.now(),'SIM');

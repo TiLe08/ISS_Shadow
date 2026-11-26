@@ -1,6 +1,6 @@
 """Prüft das Auslesen laufender Livestreams aus YouTube-Stream-Seiten (streams.py) an nachgebildeten Seiten."""
 import json, os, sys, unittest
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "server"))
 import streams
 
 

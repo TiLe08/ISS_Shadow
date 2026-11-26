@@ -3,7 +3,7 @@
 //   - Einbett-Adressen für YouTube-Links, Auswahlliste der Streams, Einpassen des Bildformats
 //   - Einbaustellen: Jede Kamera liegt an der Struktur, an der sie laut Quelle sitzt.
 import assert from 'node:assert/strict'; import * as THREE from 'three';
-import { CAMERAS, DOUG_RIGS, OPTICS, FOV_MIN, FOV_MAX, fovToSlider, sliderToFov, clampFov, fineStep, wrapAngle, CHANNELS, KNOWN_STREAMS, FEEDS, feedUrl, embedUrl, streamChoices, fitRect } from '../cameras.mjs';
+import { CAMERAS, DOUG_RIGS, OPTICS, FOV_MIN, FOV_MAX, fovToSlider, sliderToFov, clampFov, fineStep, wrapAngle, CHANNELS, KNOWN_STREAMS, FEEDS, feedUrl, embedUrl, streamChoices, fitRect } from '../web/cameras.mjs';
 const hfov = o => 2 * Math.atan(Math.tan(o.fovMax * Math.PI / 360) * o.aspect) * 180 / Math.PI;
 // SD-Kamera der ETVCG: 77° × 61° bis 10° × 8° (NTSC 4:3).
 assert.ok(Math.abs(hfov(OPTICS.sd) - 77) < 1.5 && OPTICS.sd.fovMax === 61 && OPTICS.sd.fovMin === 8 && OPTICS.sd.aspect === 4 / 3);

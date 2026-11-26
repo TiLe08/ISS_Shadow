@@ -2,7 +2,7 @@
 // das Nachführen gesetzter Werte und auf der Seite: Ankunft an einem freien Port, Abdocken, Entfernen,
 // Rückkehr zu den Daten, Luke der Crewlock und Gelenkwerte über tv().
 import assert from 'node:assert/strict';
-import * as DEVP from '../dev-panel.mjs'; import * as P from '../proxops.mjs';
+import * as DEVP from '../web/dev-panel.mjs'; import * as P from '../web/proxops.mjs';
 import { loadTwin } from './harness.mjs';
 
 // --- reine Funktionen ---

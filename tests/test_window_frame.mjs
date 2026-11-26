@@ -3,7 +3,7 @@
 //   - Ziehen an Kanten und Ecken hält die Mindestgröße ein und die gegenüberliegende Kante fest
 //   - Zurückholen in den sichtbaren Bereich nach Verkleinern des Browserfensters
 import assert from 'node:assert/strict';
-import { frameRect, clampRect, EDGES } from '../window-frame.mjs';
+import { frameRect, clampRect, EDGES } from '../web/window-frame.mjs';
 const L = { minW: 400, minH: 240, vw: 1600, vh: 900 }, r = { x: 300, y: 200, w: 800, h: 400 };
 // Verschieben
 assert.deepEqual(frameRect(r, 'move', 50, -30, L), { x: 350, y: 170, w: 800, h: 400 });

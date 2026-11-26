@@ -2,7 +2,7 @@
 Abrufregeln bei Fehlern."""
 import io, json, sys, tempfile, time, unittest, urllib.error
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "server"))
 import tle  # noqa: E402
 
 ISS = [{"OBJECT_NAME": "ISS (ZARYA)", "NORAD_CAT_ID": 25544, "EPOCH": "2026-11-18T12:00:00.000000", "MEAN_MOTION": 15.5,

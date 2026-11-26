@@ -6,3 +6,5 @@ __pycache__/
 .venv/
 # Abgabedokumente (Doku, Demo, Poster) liegen nicht im Repository, sondern im Projektordner
 Dokumentation/
+cache/
+.deps_ok

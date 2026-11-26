@@ -24,7 +24,7 @@ async def main():
   await pg.route('**/*',route)
   if os.environ.get('T0'):
     await ctx.add_init_script("(()=>{const R=Date,off=R.parse('%s')-R.now();class F extends R{constructor(...a){if(a.length===0)super(R.now()+off);else super(...a);}static now(){return R.now()+off;}};window.Date=F;})()" % os.environ['T0'])
-  await pg.goto(f'http://127.0.0.1:{PORT}/iss_twin.html#sim'); await pg.wait_for_function('window.ISS&&ISS.MODEL&&ISS.TM.size>50',timeout=120000)
+  await pg.goto(f'http://127.0.0.1:{PORT}/web/iss_twin.html#sim'); await pg.wait_for_function('window.ISS&&ISS.MODEL&&ISS.TM.size>50',timeout=120000)
   await pg.wait_for_timeout(3000)
   await pg.evaluate("()=>{document.querySelectorAll('.hud,#hudAtt,#hudJoint,.lbl,#planetLabels').forEach(e=>e.style.visibility='hidden');ISS.S.labelR.domElement.style.display='none'}")
   mode=None

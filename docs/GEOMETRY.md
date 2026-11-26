@@ -3,7 +3,7 @@
 Dieses Dokument hält fest, woher Lage und Maße des 3D-Modells stammen, was gegen echte Daten
 geprüft wurde und was eine Annahme bleibt. Koordinaten in Metern im Körpersystem der Station:
 **+X vorwärts** (Flugrichtung, Ende mit Node 2), **+Y Steuerbord** (Gitterträger), **+Z Nadir**
-(zur Erde). Hintergrund zu den Begriffen steht in [docs/MODELL_UND_KALIBRIERUNG.md](docs/MODELL_UND_KALIBRIERUNG.md).
+(zur Erde). Hintergrund zu den Begriffen steht in [MODELL_UND_KALIBRIERUNG.md](MODELL_UND_KALIBRIERUNG.md).
 
 ## v1.15: Radiatoren rollen um X, Modell neu aufgebaut
 

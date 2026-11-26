@@ -151,7 +151,7 @@ cd ISS-Shadow
 npm install                       # three, jsdom, mermaid für Tests und Doku
 npm test                          # 13 Testdateien, 15 PASS-Zeilen (v1.16)
 npm run test:py                   # 24 Python-Tests, OK (mit requirements.txt läuft auch der Feed-Test)
-python launcher.py                # oder unter Windows: Start ISS Shadow.bat
+python server/launcher.py         # oder unter Windows: Start ISS Shadow.bat
 node tools/export_viewer.mjs      # 3D-Viewer neu
 cd Dokumentation && python skripte/screenshots.py && python skripte/pdf_bauen.py && python skripte/poster_bauen.py
 ```

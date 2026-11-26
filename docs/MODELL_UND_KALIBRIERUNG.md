@@ -2,7 +2,7 @@
 
 Dieses Dokument erklärt, wie das 3D-Modell der Station aufgebaut ist, wie Telemetriewerte zu
 Gelenkstellungen werden und wie das Programm Kollisionen prüft. Die Herkunft jeder einzelnen
-Koordinate und die Prüfungen gegen Live-Daten stehen in [../GEOMETRY.md](../GEOMETRY.md).
+Koordinate und die Prüfungen gegen Live-Daten stehen in [GEOMETRY.md](GEOMETRY.md).
 
 ## Koordinatensysteme
 

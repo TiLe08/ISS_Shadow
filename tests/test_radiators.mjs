@@ -7,7 +7,7 @@
 //   - checkTrrjSense: Autotrack-Daten bestätigen das Vorzeichen oder kehren es um.
 //   - Der ganze Bereich bleibt frei von der Struktur; Abstand zur Bishop-Luftschleuse.
 import assert from 'node:assert/strict';import * as THREE from 'three';import{loadTwin}from'./harness.mjs';
-import{CollisionMonitor,radiatorTarget}from'../model-checks.mjs';
+import{CollisionMonitor,radiatorTarget}from'../web/model-checks.mjs';
 const{t,w}=await loadTwin(['buildISS','MODEL','LINK','TM','CAL','ingest','cal','applyJoints','liveJoints','radiatorGoal','autotrack','checkTrrjSense','TRRJ_SENSE']);
 const root=t.buildISS(),M=t.MODEL,V3=(...a)=>new THREE.Vector3(...a);
 const mesh=n=>M.parts.find(p=>p.mesh.userData.name===n).mesh,pos=n=>mesh(n).getWorldPosition(V3());

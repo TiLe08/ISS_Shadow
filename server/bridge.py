@@ -17,8 +17,8 @@ Topics (Präfix einstellbar, Vorgabe "iss"):
   iss/ack/<id>      ausgehend {"id", "status", "reason", "rx"}
 
 Voraussetzungen:  pip install lightstreamer-client-lib paho-mqtt
-Start:            python bridge.py --broker localhost --port 1883
-Wiedergabe:       python bridge.py --replay logs/iss_tm_20261026.csv --speed 10
+Start:            python server/bridge.py --broker localhost --port 1883
+Wiedergabe:       python server/bridge.py --replay logs/iss_tm_20261026.csv --speed 10
 """
 import argparse, csv, json, logging, os, signal, sys, threading, time
 from datetime import datetime, timezone
@@ -214,7 +214,7 @@ class Bridge:
         self.gen = 0; self.ls = None; self.subs = []; self.lock = threading.RLock()
         self.ls_since = time.time(); self.status_since = time.time(); self.last_time_rx = None; self.last_ts = None
         self.restarts = 0; self.last_item_fresh = 0.0; self.link_pub = 0.0; self.feed_clock = None; self.retry_base = 60.0; self.stale_s = 15.0; self.retry_after = self.retry_base; self.stop_ev = threading.Event(); self.status_pub = 0.0; self.last_pub = {}
-        self.orbit = OrbitService(os.path.join(os.path.dirname(__file__), "cache"), self.publish_orbit)
+        self.orbit = OrbitService(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "cache"), self.publish_orbit)  # cache/ im Projektordner
         self.m = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=f"iss-bridge-{os.getpid()}")
         if a.user: self.m.username_pw_set(a.user, a.password)
         self.m.will_set(f"{self.root}/bridge", json.dumps({"state": "offline"}), qos=1, retain=True)
